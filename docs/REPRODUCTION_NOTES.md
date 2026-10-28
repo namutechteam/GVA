@@ -30,10 +30,11 @@ The source archives and their hashes are listed in
 ## Release status
 
 This folder is a local preparation for a repository named `namutechteam/GVA`.
-The owner confirmed the initial private GitHub upload. No public release or
-DOI has been created as part of preparation.
-Author spellings, final author-order approval, corresponding emails
-and archival metadata remain in `RELEASE_CHECKLIST.md`.
+The owner confirmed the initial GitHub upload and authorized public visibility.
+The repository is now public. No tagged release or DOI has been created.
+Two author romanizations, final author-order approval and archival metadata
+remain in `RELEASE_CHECKLIST.md`; corresponding emails and the contribution
+statement have been supplied for the working manuscript.
 The manuscript and SI in the working `paper/` directory still contain metadata
 placeholders and are not included in this preparation.
 

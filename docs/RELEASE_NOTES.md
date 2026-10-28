@@ -47,3 +47,13 @@ logs and project-created figures. LICENSE-DATA.md states the scope and links
 to the official legal code. Code remains MIT; third-party rights are preserved.
 The initial private GitHub upload was confirmed by the owner. These licence changes are committed from the server while retaining the
 initial GitHub history. The repository remains private.
+
+## Public repository
+
+The project owner authorized public visibility on 2026-10-28. GitHub confirms
+that namutechteam/GVA is public. A pre-publication scan of tracked files and
+log archive entries found no known GitHub token, AWS key ID or private-key
+patterns; this was a targeted check, not an exhaustive security audit.
+The working manuscript now cites source-data commit
+f65a20ed047628c767385dab5690079d86c2977a, MIT code and CC BY 4.0 original data.
+No DOI or tagged release is claimed.

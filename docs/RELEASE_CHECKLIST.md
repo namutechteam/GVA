@@ -12,10 +12,10 @@
 - Run scientific validation in an environment with the recorded PySCF and
   OpenFermion dependencies. The preparation report distinguishes completed checks.
 - Review manuscript/table/workbook consistency beyond the execution checks here.
-- Private repository `namutechteam/GVA` created and initial upload confirmed by the owner.
+- Repository `namutechteam/GVA` created and changed to public at the owner’s request.
 - Licence updates are managed through the server Git clone; pull in GitHub Desktop
   before making further edits on the Mac.
-- Review files before changing repository visibility.
+- Known credential patterns were checked before publication (474 files/archive entries; zero matches).
 - Select an initial release tag; finalize citation metadata and archive the release
   with a persistent identifier (for example, Zenodo).
 - Insert actual repository URL, release, licences, and DOI into the manuscript.
