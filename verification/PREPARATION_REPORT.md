@@ -33,8 +33,10 @@ Date: 2026-10-28 (Asia/Seoul).
 - Original requirements versions are supplied metadata; a clean installation of
   the complete scientific environment has not been tested here.
 - Code licence was subsequently set to MIT by the project owner (2026 NamuICT).
-  Data licensing, author metadata, DOI and GitHub publication remain pending.
-  No external upload took place.
+  Data and project-created figures were subsequently licensed under CC BY 4.0.
+  The owner confirmed the initial private GitHub upload; licence changes are
+  synchronized through the server Git clone. Author metadata, DOI and public release remain
+  pending. No upload was performed by the preparation script.
 
 ## Preparation environment
 

@@ -39,3 +39,11 @@ On 2026-10-28 the project owner selected MIT for the code. Added LICENSE with
 Copyright (c) 2026 NamuICT and updated the README. Data, logs and figure exports
 remain outside this code-licence declaration until their terms are specified.
 The earlier preparation status above records the state before this selection.
+
+## Data and figure licence selection
+
+On 2026-10-28 the project owner selected CC BY 4.0 for original data, outputs,
+logs and project-created figures. LICENSE-DATA.md states the scope and links
+to the official legal code. Code remains MIT; third-party rights are preserved.
+The initial private GitHub upload was confirmed by the owner. These licence changes are committed from the server while retaining the
+initial GitHub history. The repository remains private.

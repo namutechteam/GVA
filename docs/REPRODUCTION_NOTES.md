@@ -30,8 +30,9 @@ The source archives and their hashes are listed in
 ## Release status
 
 This folder is a local preparation for a repository named `namutechteam/GVA`.
-No public repository, release or DOI has been created as part of preparation.
-Author spellings, final author-order approval, corresponding emails, data licensing
+The owner confirmed the initial private GitHub upload. No public release or
+DOI has been created as part of preparation.
+Author spellings, final author-order approval, corresponding emails
 and archival metadata remain in `RELEASE_CHECKLIST.md`.
 The manuscript and SI in the working `paper/` directory still contain metadata
 placeholders and are not included in this preparation.
@@ -44,4 +45,5 @@ The README layout was reviewed against the company repositories
 The GVA commands and reported checks refer to this package only.
 
 The code and software documentation now use MIT (2026 NamuICT), as selected
-by the project owner. Dataset, log and figure licensing remains separate.
+by the project owner. Original datasets, logs and project-created figures are separately licensed
+under CC BY 4.0; see LICENSE-DATA.md.

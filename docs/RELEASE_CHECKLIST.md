@@ -3,7 +3,7 @@
 - Confirm all five author spellings, author order, affiliations and corresponding
   author emails with the authors; complete manuscript and SI metadata separately.
 - Code licence: MIT, selected by the project owner on 2026-10-28; copyright notice: NamuICT.
-- Specify a separate licence for research datasets, calculation logs and figure exports.
+- Data and project-created figure licence: CC BY 4.0, selected on 2026-10-28; see LICENSE-DATA.md.
 - Supply Arimo redistribution notices if the original fonts are to be bundled;
   otherwise approve the documented DejaVu Sans fallback for regeneration.
 - Independently review the supplied provenance and logs for internal information
@@ -12,7 +12,10 @@
 - Run scientific validation in an environment with the recorded PySCF and
   OpenFermion dependencies. The preparation report distinguishes completed checks.
 - Review manuscript/table/workbook consistency beyond the execution checks here.
-- Create `namutechteam/GVA`, decide visibility, and review the prepared files.
+- Private repository `namutechteam/GVA` created and initial upload confirmed by the owner.
+- Licence updates are managed through the server Git clone; pull in GitHub Desktop
+  before making further edits on the Mac.
+- Review files before changing repository visibility.
 - Select an initial release tag; finalize citation metadata and archive the release
   with a persistent identifier (for example, Zenodo).
 - Insert actual repository URL, release, licences, and DOI into the manuscript.

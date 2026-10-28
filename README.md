@@ -136,5 +136,7 @@ and public release are finalized.
 The research code and associated software documentation are released under the
 [MIT License](LICENSE). Copyright © 2026 NamuICT.
 
-A separate licence for the research datasets, calculation logs and figure exports
-has not yet been specified. Third-party dependencies retain their own licences.
+Original research datasets, numerical outputs, calculation logs and project-created
+figure exports are licensed under [CC BY 4.0](LICENSE-DATA.md), with scope and
+attribution described in that notice. Third-party materials retain their original
+terms.
