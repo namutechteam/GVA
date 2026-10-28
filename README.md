@@ -117,6 +117,7 @@ included in the code package and the separate log archive.
 - [`PROVENANCE.md`](code/gva_repro/PROVENANCE.md): calculation history and code changes.
 - [`METHODS_AND_REFERENCES.md`](code/gva_repro/METHODS_AND_REFERENCES.md): implementation details and literature.
 - [`PREPARATION_REPORT.md`](verification/PREPARATION_REPORT.md): checks executed during repository preparation and their limits.
+- [`PAPER_DATA_AUDIT.md`](verification/PAPER_DATA_AUDIT.md): manuscript/SI consistency checks against the stored data.
 
 Check the integrity of the included files from the repository root:
 
@@ -128,8 +129,8 @@ This checks SHA-256 hashes; it does not validate scientific claims.
 
 ## Citation
 
-Citation metadata and the archival DOI will be added when the author details
-and public release are finalized.
+Citation metadata will be finalized after the remaining author details are
+confirmed. The repository is public; no archival DOI has been assigned.
 
 ## License
 

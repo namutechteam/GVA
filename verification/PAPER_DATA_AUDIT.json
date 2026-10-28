@@ -1,0 +1,91 @@
+{
+  "workbook": {
+    "sheets": {
+      "Index": 93,
+      "Table1_SmallMolecules": 429,
+      "Runs_SmallMolecules": 3787,
+      "Fig2d_BeH2x2_Convergence": 7016,
+      "SuppFig4_Measurement": 102,
+      "Runs_Cisplatin": 201,
+      "Table2_Cisplatin_References": 18,
+      "Fig3b_Cisplatin_Convergence": 4967,
+      "Fig3c_Cisplatin_ADAPT": 610,
+      "Fig3a_ActiveNOs": 44,
+      "SuppFig2_Scaling": 110,
+      "SuppFig5_NoiseBudget": 207,
+      "SuppFig5a_Cisplatin_Bias": 410,
+      "SuppFig6_PtCl_Scan": 210,
+      "TableS10_OrbitalChoice": 72,
+      "Theta_Cisplatin": 80730,
+      "Theta_SmallMolecules": 162916,
+      "Geometries": 115,
+      "TableS11_PeriodicSystems": 330,
+      "PeriodicCounts_Systems": 388,
+      "TableS14_PeriodicRuns": 2763,
+      "Fig5_SuppFig7_Data": 1264,
+      "Fig4_RatioVsGroupOrder": 873,
+      "TableS13_PeriodicScaling": 1512,
+      "TableS12_EnumerationCheck": 273,
+      "TableS15_PeriodicMeasurement": 55,
+      "Periodic_TyingCheck": 88,
+      "Periodic_VerifyTheta": 2153,
+      "Periodic_EnergyHistory": 523818,
+      "Theta_Periodic": 449193,
+      "ParameterFormulas": 37
+    },
+    "nonempty_cells": 1244784,
+    "numeric_cells": 789816,
+    "differences": []
+  },
+  "documents": {
+    "GVA_npjQI_Manuscript": {
+      "tables": 9,
+      "cells": 249,
+      "mismatched_tables": []
+    },
+    "GVA_npjQI_Supplementary_Information": {
+      "tables": 18,
+      "cells": 2264,
+      "mismatched_tables": []
+    }
+  },
+  "paragraph_differences": [
+    {
+      "document": "GVA_npjQI_Manuscript",
+      "paragraph": 21,
+      "current": "Random starting parameters revealed a difference that the Hartree–Fock start hides. At H4 ×2.0 and BeH2 ×2.0, all four random starts drove single-layer UCCSD to energies 3.5 and 9.3 mHa below its symmetric optimum, but the states found had ⟨Ŝ2⟩ = 0.63 and 1.05, that is, they mixed higher spin states into the singlet (Fig. 2a and Supplementary Fig. 1). The truncated ansatz lowers its energy by breaking spin symmetry, much as unrestricted Hartree–Fock does, and the lower energy belongs to a physically wrong state. In the stretched H4 chain the lowest triplet lies only 3.4 mHa above the singlet, which makes such mixing easy. The CI vectors of singlet and quintet states are symmetric under α↔β exchange and those of triplets antisymmetric, so the exchange symmetry kept by tying removes the triplet channel. GVA converged to the same spin-pure solution from every start (largest ⟨Ŝ2⟩ 9.3×10−5). In total 8 of the 240 UCCSD and GVA runs ended with ⟨Ŝ2⟩ > 0.01, all of them UCCSD from random starts.",
+      "rebuilt": "Random starting parameters revealed a difference that the Hartree–Fock start hides. At H4 ×2.0 and BeH2 ×2.0, all four random starts drove single-layer UCCSD to energies 3.5 and 9.3 mHa below its symmetric optimum, but the states found had ⟨Ŝ2⟩ = 0.63 and 1.05, that is, they mixed higher spin states into the singlet (Fig. 2a and Supplementary Fig. 1). The truncated ansatz lowers its energy by breaking spin symmetry, much as unrestricted Hartree–Fock does, and the lower energy belongs to a physically wrong state. In the stretched H4 chain the lowest triplet lies only nan mHa above the singlet, which makes such mixing easy. The CI vectors of singlet and quintet states are symmetric under α↔β exchange and those of triplets antisymmetric, so the exchange symmetry kept by tying removes the triplet channel. GVA converged to the same spin-pure solution from every start (largest ⟨Ŝ2⟩ 9.3×10−5). In total 8 of the 240 UCCSD and GVA runs ended with ⟨Ŝ2⟩ > 0.01, all of them UCCSD from random starts."
+    },
+    {
+      "document": "GVA_npjQI_Manuscript",
+      "paragraph": 35,
+      "current": "Fig. 3 | Cisplatin CAS(10e,10o). a, Deviation of the active MP2 natural-orbital occupations from 2 (strongly occupied, dark gray) or 0 (weakly occupied, light gray), labelled by C2v irrep. b, Energy error relative to CASCI during optimization from the Hartree–Fock start for UCCSD (dashed) and GVA (solid) with one to three layers. Dash-dotted lines give the CISD, CCSD and CCSD(T) errors; the dotted line marks 1.6 mHa. c, ADAPT-VQE with the GVA pool: error after each operator is added and the parameters are re-optimized.",
+      "rebuilt": "Fig. 3 | Cisplatin CAS(10e,10o). a, Deviation of the active MP2 natural-orbital occupations from 2 (strongly occupied, orange) or 0 (weakly occupied, blue), labelled by C2v irrep. b, Energy error relative to CASCI during optimization from the Hartree–Fock start for UCCSD (dashed) and GVA (solid) with one to three layers. Dash-dotted lines give the CISD, CCSD and CCSD(T) errors; the dotted line marks 1.6 mHa. c, ADAPT-VQE with the GVA pool: error after each operator is added and the parameters are re-optimized."
+    },
+    {
+      "document": "GVA_npjQI_Supplementary_Information",
+      "paragraph": 31,
+      "current": "For a closed-shell singlet the exact CI vector satisfies c(Iα, Iβ) = c(Iβ, Iα); in the same convention triplet vectors are antisymmetric and quintet vectors symmetric, which we verified numerically for the lowest six roots of H4 ×2.0. Let P̂ exchange α and β strings. A tied pair satisfies P̂ĜkP̂ = Ĝk', so P̂ maps the GVA product onto the same product with the members of each pair interchanged. An α single and its β partner act on different strings and commute, and so do an αα double and its ββ partner, so for these the interchange changes nothing; αβ partners need not commute, and only their ordering can break the exchange symmetry. The ansatz therefore suppresses triplet admixture. It does not enforce Ŝ2 exactly, because a tied αβ, αα and ββ set is not a complete spin-adapted double excitation, and the energy cost of tying is the difference between the GVA and screening-only rows of Supplementary Table S4 (at most 16 µHa over all geometries). The largest ⟨Ŝ2⟩ over all 120 GVA runs was 9.3×10−5. For H4 ×2.0 the lowest triplet lies 3.4 mHa above the singlet ground state.",
+      "rebuilt": "For a closed-shell singlet the exact CI vector satisfies c(Iα, Iβ) = c(Iβ, Iα); in the same convention triplet vectors are antisymmetric and quintet vectors symmetric, which we verified numerically for the lowest six roots of H4 ×2.0. Let P̂ exchange α and β strings. A tied pair satisfies P̂ĜkP̂ = Ĝk', so P̂ maps the GVA product onto the same product with the members of each pair interchanged. An α single and its β partner act on different strings and commute, and so do an αα double and its ββ partner, so for these the interchange changes nothing; αβ partners need not commute, and only their ordering can break the exchange symmetry. The ansatz therefore suppresses triplet admixture. It does not enforce Ŝ2 exactly, because a tied αβ, αα and ββ set is not a complete spin-adapted double excitation, and the energy cost of tying is the difference between the GVA and screening-only rows of Supplementary Table S4 (at most 16 µHa over all geometries). The largest ⟨Ŝ2⟩ over all 120 GVA runs was 9.3×10−5. For H4 ×2.0 the lowest triplet lies nan mHa above the singlet ground state."
+    }
+  ],
+  "excluded": [
+    "Independent H4 triplet-gap recalculation omitted in temporary facts.py; value replaced by NaN only in temporary regeneration."
+  ],
+  "repository_commit": "f65a20ed047628c767385dab5690079d86c2977a",
+  "inputs_sha256": {
+    "paper/GVA_npjQI_Supplementary_Information_new_figures.docx": "a501e82642726ff408d0193446235fab42da05ea5da3f95b2e3b62824c012b98",
+    "paper/GVA_npjQI_Manuscript_new_figures.docx": "ea22697e2ad756bd6ad03af7e771ffc5e94396ef5fdcd19686c36fafeb4d7e45",
+    "GVA/data/GVA_Source_Data.xlsx": "30f53317db80d0e3cc987c84d7165a0af0e4a767599ce4e373fb867975a001e2"
+  },
+  "numeric_comparison": {
+    "relative_tolerance": 2e-15,
+    "absolute_tolerance": 2e-15,
+    "note": "Serialization-level tolerance, not physical accuracy; formulas/text/booleans compared exactly."
+  },
+  "images": {
+    "main": 5,
+    "supplementary": 7,
+    "embedded_pngs_match_repository_exports": true
+  }
+}

@@ -24,8 +24,10 @@ Date: 2026-10-28 (Asia/Seoul).
 - PySCF and OpenFermion are absent from the current host Python environment.
   Molecular/periodic energy reconstruction, gradients and full optimization were
   not rerun. Existing verification logs are supplied provenance, not new validation.
-- Workbook and stored results were inventoried and read; this is not a cell-by-cell
-  audit of all manuscript tables or numerical claims.
+- A subsequent stored-data consistency audit compared all 31 workbook sheets,
+  27 manuscript/SI tables and 12 embedded figure files. See PAPER_DATA_AUDIT.md
+  and PAPER_DATA_AUDIT.json for results, exclusions and limitations. This does
+  not independently validate the underlying physical calculations.
 - Figure executions check functionality; no new visual review of all panels was
   performed. Original exports are preserved. DejaVu Sans fallback can alter text layout.
 - Nonfatal font fallback and existing invalid-escape warnings appeared during
@@ -35,8 +37,9 @@ Date: 2026-10-28 (Asia/Seoul).
 - Code licence was subsequently set to MIT by the project owner (2026 NamuICT).
   Data and project-created figures were subsequently licensed under CC BY 4.0.
   The owner confirmed the initial private GitHub upload; licence changes are
-  synchronized through the server Git clone. Author metadata, DOI and public release remain
-  pending. No upload was performed by the preparation script.
+  synchronized through the server Git clone. The repository is now public.
+  Two author romanizations and final submission metadata remain to be confirmed;
+  no DOI or tagged release has been created.
 
 ## Preparation environment
 
