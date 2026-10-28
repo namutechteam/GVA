@@ -1,0 +1,168 @@
+#INFO: **** input file is /home/claude/gva_repro/run_small.py ****
+"""Small-molecule benchmark: H2, H4, LiH, BeH2 (STO-3G), three geometries each.
+
+Ansaetze: UCCSD and GVA, 1 and 2 layers, 5 initialisations each
+(seed 0 = Hartree-Fock start, theta = 0; seeds 1-4 = N(0, 0.05^2) start).
+Ablation (1 layer, HF start): PG screening only, spin tying only.
+ADAPT-VQE with the spin-complemented, symmetry-screened pool.
+"""
+import json
+import pickle
+import time
+
+import numpy as np
+
+from datetime import datetime, timezone
+
+from gva.systems import small_molecule_hamiltonian, classical_references, set_pyscf_log
+from gva.ansatz import (uccsd_pool, gva_groups, counts_summary, cnot_count_ladder,
+                        parameter_map, excitation_label)
+
+
+def now():
+    return datetime.now(timezone.utc).astimezone().isoformat(timespec="seconds")
+
+from gva.engine import DeterminantSpace, Ansatz, run_vqe, adapt_vqe
+
+MOLS = ["H2", "H4", "LiH", "BeH2"]
+SCALES = [1.0, 1.5, 2.0]
+SEEDS = range(5)
+VARIANTS = {"UCCSD": (False, False), "GVA": (True, True),
+            "PG only": (True, False), "spin only": (False, True)}
+
+records, systems = [], []
+t_all = time.time()
+for name in MOLS:
+    for sc in SCALES:
+        set_pyscf_log("results/logs/pyscf", f"{name}_x{sc:.1f}")
+        H = small_molecule_hamiltonian(name, sc)
+        ref = classical_references(H)
+        space = DeterminantSpace(H.norb, H.nelec, H.h1, H.eri, H.ecore)
+        pool = uccsd_pool(H.nocc, H.norb)
+        cs = counts_summary(H.nocc, H.norb, H.orbsym)
+        ef = ref["E_FCI"]
+        systems.append({
+            "system": name, "scale": sc, "n_qubits": 2 * H.norb,
+            "n_electrons": sum(H.nelec), "irreps": H.irrep_names,
+            "E_RHF": ref["E_ref"], "E_CISD": ref["E_CISD"],
+            "E_CCSD": ref["E_CCSD"], "E_CCSD(T)": ref["E_CCSD(T)"],
+            "E_FCI": ef, "E_corr": ef - ref["E_ref"],
+            "c0_sq": ref["c0_ref_weight"], "counts": cs,
+            "parameter_maps_1L": {v: parameter_map(gva_groups(pool, H.orbsym, *f))
+                                  for v, f in VARIANTS.items()}})
+        for var, (pg, spn) in VARIANTS.items():
+            groups = gva_groups(pool, H.orbsym, pg, spn)
+            layer_list = [1, 2] if var in ("UCCSD", "GVA") else [1]
+            for L in layer_list:
+                seeds = SEEDS if var in ("UCCSD", "GVA") else [0]
+                for s in seeds:
+                    A = Ansatz(space, groups, layers=L)
+                    th0 = np.zeros(A.n_params) if s == 0 else \
+                        np.random.default_rng(1000 + s).normal(0, 0.05, A.n_params)
+                    t_start = now()
+                    r = run_vqe(A, th0, e_exact=ef)
+                    records.append({
+                        "system": name, "scale": sc, "ansatz": var, "layers": L,
+                        "seed": s, "n_params": A.n_params,
+                        "cnot": L * cs[var]["cnot_1L"], "E": r["E"],
+                        "dE": r["dE"], "nit": r["nit"], "nfev": r["nfev"],
+                        "iter_to_chem_acc": r["iter_to_chem_acc"],
+                        "S2": r["S2"], "wall_s": r["wall_s"],
+                        "grad_norm": r["grad_norm"], "message": r["message"],
+                        "started": t_start, "finished": now(),
+                        "theta": r["theta"].tolist(),
+                        "history": r["history"].tolist()})
+        t_start = now()
+        ad = adapt_vqe(space, gva_groups(pool, H.orbsym, True, True), e_exact=ef,
+                       grad_tol=1e-3, max_ops=120)
+        records.append({"system": name, "scale": sc, "ansatz": "ADAPT-VQE",
+                        "layers": None, "seed": 0, "n_params": ad["n_ops"],
+                        "cnot": sum(cnot_count_ladder(e) for g in ad["chosen"] for e in g),
+                        "E": ad["E"], "dE": ad["dE"], "trace": ad["trace"], "stop_reason": ad["stop_reason"],
+                        "wall_s": ad["wall_s"], "started": t_start, "finished": now(),
+                        "operators": [[excitation_label(e) for e in g] for g in ad["chosen"]],
+                        "theta": np.asarray(ad["theta"]).tolist()})
+        print(f"{name} {sc}: done ({time.time()-t_all:.0f}s)", flush=True)
+
+json.dump({"systems": systems, "runs": records},
+          open("results/small_molecules.json", "w"), indent=1, default=float)
+print("total", time.time() - t_all)
+#INFO: ******************** input file end ********************
+
+
+System: uname_result(system='Linux', node='vm', release='6.18.44-fc-v153', version='#1 SMP PREEMPT_DYNAMIC @0', machine='x86_64')  Threads 1
+Python 3.13.17 (main, Oct 22 2026, 14:06:04) [GCC 13.3.0]
+numpy 2.5.3  scipy 1.18.1  h5py 3.16.0
+Date: Fri Oct 23 21:52:38 2026
+PySCF version 2.14.0
+PySCF path  /usr/local/lib/python3.13/dist-packages/pyscf
+
+[CONFIG] conf_file None
+[INPUT] verbose = 4
+[INPUT] num. atoms = 2
+[INPUT] num. electrons = 4
+[INPUT] charge = 0
+[INPUT] spin (= nelec alpha-beta = 2S) = 0
+[INPUT] symmetry True subgroup C2v
+[INPUT] Mole.unit = angstrom
+[INPUT] Symbol           X                Y                Z      unit          X                Y                Z       unit  Magmom
+[INPUT]  1 Li     0.000000000000   0.000000000000   0.000000000000 AA    0.000000000000   0.000000000000   0.000000000000 Bohr   0.0
+[INPUT]  2 H      0.000000000000   0.000000000000   3.190000000000 AA    0.000000000000   0.000000000000   6.028226337363 Bohr   0.0
+
+nuclear repulsion = 0.497658819047022
+point group symmetry = Coov, use subgroup C2v
+symmetry origin: [0.         0.         1.50705658]
+symmetry axis x: [1. 0. 0.]
+symmetry axis y: [0. 1. 0.]
+symmetry axis z: [0. 0. 1.]
+num. orbitals of irrep A1 = 4
+num. orbitals of irrep B1 = 1
+num. orbitals of irrep B2 = 1
+number of shells = 4
+number of NR pGTOs = 18
+number of NR cGTOs = 6
+basis = sto-3g
+ecp = {}
+CPU time:       280.21
+
+
+******** <class 'pyscf.scf.hf_symm.SymAdaptedRHF'> ********
+method = SymAdaptedRHF
+initial guess = minao
+damping factor = 0
+level_shift factor = 0
+DIIS = <class 'pyscf.scf.diis.CDIIS'>
+diis_start_cycle = 1
+diis_space = 8
+diis_damp = 0
+SCF conv_tol = 1e-12
+SCF conv_tol_grad = None
+SCF max_cycles = 50
+direct_scf = True
+direct_scf_tol = 1e-13
+chkfile to save SCF result = /tmp/tmp90491jnl
+max_memory 4000 MB (current use 112 MB)
+Freeze 0 electrons in irreps []
+    4 free electrons in irreps A1 B1 B2
+Set gradient conv threshold to 1e-06
+Initial guess from minao.
+init E= -7.52219280122266
+HOMO (A1) = -0.132354367053837  LUMO (A1) = -0.0188078015537862  gap/eV = 3.08976
+cycle= 1 E= -7.66067851625963  delta_E= -0.138  |g|= 0.156  |ddm|= 1.28
+HOMO (A1) = -0.118034306121414  LUMO (A1) = 0.0395545386451787  gap/eV = 4.28821
+cycle= 2 E= -7.6788053967525  delta_E= -0.0181  |g|= 0.0957  |ddm|= 0.877
+HOMO (A1) = -0.165068706645426  LUMO (A1) = 0.0501579415388876  gap/eV = 5.85662
+cycle= 3 E= -7.6901048678278  delta_E= -0.0113  |g|= 0.0112  |ddm|= 0.364
+HOMO (A1) = -0.169313905677081  LUMO (A1) = 0.0546881194538345  gap/eV = 6.09541
+cycle= 4 E= -7.69042880230021  delta_E= -0.000324  |g|= 0.00198  |ddm|= 0.0772
+HOMO (A1) = -0.164474226909384  LUMO (A1) = 0.0537303807095584  gap/eV = 5.93765
+cycle= 5 E= -7.69043997811561  delta_E= -1.12e-05  |g|= 0.000127  |ddm|= 0.0171
+HOMO (A1) = -0.16471365671532  LUMO (A1) = 0.0538190383784644  gap/eV = 5.94658
+cycle= 6 E= -7.69043999744495  delta_E= -1.93e-08  |g|= 5.2e-06  |ddm|= 0.000611
+HOMO (A1) = -0.16472523155088  LUMO (A1) = 0.0538207394827418  gap/eV = 5.94694
+cycle= 7 E= -7.69043999747591  delta_E= -3.1e-11  |g|= 4.81e-08  |ddm|= 1.92e-05
+HOMO (A1) = -0.164724441031087  LUMO (A1) = 0.0538206023582867  gap/eV = 5.94691
+cycle= 8 E= -7.69043999747591  delta_E= -1.78e-15  |g|= 7.27e-09  |ddm|= 3.63e-07
+HOMO (A1) = -0.164724449205647  LUMO (A1) = 0.0538206032754887  gap/eV = 5.94691
+Extra cycle  E= -7.69043999747591  delta_E=    0  |g|= 4.77e-09  |ddm|= 4.55e-08
+converged SCF energy = -7.69043999747591

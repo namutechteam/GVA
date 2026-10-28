@@ -1,0 +1,10 @@
+H2chain_r0.74_d1.50_Nk2      max|t| 7.581e-02  TR dev 4.6e-17 (0.0%)  spin dev 4.1e-09 (0.0%)  E(k only) - E(GVA-k) +0.0000 mHa
+H2chain_r0.74_d1.50_Nk3      max|t| 5.755e-02  TR dev 2.4e-04 (0.4%)  spin dev 1.2e-04 (0.2%)  E(k only) - E(GVA-k) -0.0000 mHa
+H2chain_r0.74_d1.50_Nk4      max|t| 4.167e-02  TR dev 3.3e-04 (0.8%)  spin dev 1.7e-04 (0.4%)  E(k only) - E(GVA-k) -0.0000 mHa
+H2chain_r0.74_d1.50_Nk5      max|t| 3.899e-02  TR dev 3.0e-04 (0.8%)  spin dev 1.5e-04 (0.4%)  E(k only) - E(GVA-k) +0.0000 mHa
+H2chain_r1.00_d1.00_Nk3      max|t| 9.616e-02  TR dev 3.4e-04 (0.4%)  spin dev 2.1e-04 (0.2%)  E(k only) - E(GVA-k) +0.0002 mHa
+H2chain_r1.00_d1.00_Nk5      max|t| 1.243e-01  TR dev 7.8e-04 (0.6%)  spin dev 5.4e-04 (0.4%)  E(k only) - E(GVA-k) +0.0017 mHa
+H2chain_r1.50_d1.50_Nk3      max|t| 2.157e-01  TR dev 7.8e-03 (3.6%)  spin dev 1.6e-03 (0.8%)  E(k only) - E(GVA-k) -0.0314 mHa
+H2chain_r1.50_d1.50_Nk5      max|t| 2.634e-01  TR dev 1.5e-02 (5.8%)  spin dev 5.6e-03 (2.1%)  E(k only) - E(GVA-k) -0.5077 mHa
+H2chain_r2.00_d2.00_Nk3      max|t| 4.115e-01  TR dev 3.8e-02 (9.3%)  spin dev 5.9e-03 (1.4%)  E(k only) - E(GVA-k) -1.7323 mHa
+H2chain_r2.00_d2.00_Nk5      max|t| 3.730e-01  TR dev 7.0e-02 (18.9%)  spin dev 1.4e-02 (3.7%)  E(k only) - E(GVA-k) -7.4305 mHa

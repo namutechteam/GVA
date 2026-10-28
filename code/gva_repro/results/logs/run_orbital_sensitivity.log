@@ -1,0 +1,14 @@
+output file: results/logs/pyscf/orbital_sensitivity__mol1.log
+output file: results/logs/pyscf/orbital_sensitivity__mol2.log
+A: MP2 natural orbitals GVA_1L 0.3431 mHa
+A: MP2 natural orbitals UCCSD_1L 0.3431 mHa
+A: MP2 natural orbitals GVA_2L 0.0399 mHa
+output file: results/logs/pyscf/orbital_sensitivity__mol3.log
+B: canonical RHF (HOMO-4 to LUMO+4) GVA_1L 0.0282 mHa
+B: canonical RHF (HOMO-4 to LUMO+4) UCCSD_1L 0.0282 mHa
+B: canonical RHF (HOMO-4 to LUMO+4) GVA_2L 0.0282 mHa
+output file: results/logs/pyscf/orbital_sensitivity__mol4.log
+C: CASSCF(10e,10o) natural orbitals GVA_1L 0.7808 mHa
+C: CASSCF(10e,10o) natural orbitals UCCSD_1L 0.7808 mHa
+C: CASSCF(10e,10o) natural orbitals GVA_2L 0.0454 mHa
+done

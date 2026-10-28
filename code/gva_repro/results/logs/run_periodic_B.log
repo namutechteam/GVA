@@ -1,0 +1,26 @@
+2026-10-24T02:47:03+09:00 start [(1.5, 1.5, 5), (2.0, 2.0, 5), (0.74, 1.5, 3), (0.74, 1.5, 4), (1.5, 1.5, 3), (2.0, 2.0, 3)]
+output file: results/logs/pyscf_pbc/H2chain_r1.50_d1.50_Nk5__krhf.log
+output file: results/logs/pyscf_pbc/H2chain_r1.50_d1.50_Nk5__supercell.log
+output file: results/logs/pyscf/H2chain_r1.50_d1.50_Nk5__mol1.log
+2026-10-24T02:47:46+09:00 H2chain_r1.50_d1.50_Nk5 FCI -4.4028150872  Bloch-FCI diff 3.8e-13  supercell-FCI diff 1.5e-13  E_corr -361.232 mHa  c0^2 0.4596  K-sector weight outside K_HF 4.2e-14
+   counts {'UCCSD': (875, 108800), 'k only': (350, 21760), 'k + spin': (180, 21760), 'k + TR': (175, 21760), 'GVA-k': (90, 21760)}
+   UCCSD     1L s0: dE   24.0297 mHa  S2 1.6e-04  |<FCI|psi>|^2 0.94875  nit 21  7s
+      JW check |E_JW - E| = 5.6e-13 Ha, 4511 Pauli terms
+   UCCSD     1L s1: dE   24.0297 mHa  S2 1.6e-04  |<FCI|psi>|^2 0.94875  nit 33  10s
+   UCCSD     1L s2: dE   24.0297 mHa  S2 1.6e-04  |<FCI|psi>|^2 0.94875  nit 34  12s
+   UCCSD     2L s0: dE   15.8119 mHa  S2 1.1e-02  |<FCI|psi>|^2 0.97167  nit 534  317s
+   UCCSD     2L s1: dE   15.8241 mHa  S2 9.4e-03  |<FCI|psi>|^2 0.96911  nit 1975  1211s
+   UCCSD     2L s2: dE   10.8568 mHa  S2 1.3e-03  |<FCI|psi>|^2 0.97356  nit 807  595s
+   k only    1L s0: dE   24.0989 mHa  S2 1.6e-04  |<FCI|psi>|^2 0.94889  nit 18  15s
+   k only    1L s1: dE   24.0989 mHa  S2 1.6e-04  |<FCI|psi>|^2 0.94889  nit 33  27s
+   k only    1L s2: dE   24.0989 mHa  S2 1.6e-04  |<FCI|psi>|^2 0.94889  nit 32  24s
+   k + spin  1L s0: dE   24.0388 mHa  S2 2.3e-04  |<FCI|psi>|^2 0.94893  nit 20  17s
+   k + TR    1L s0: dE   24.4868 mHa  S2 6.2e-04  |<FCI|psi>|^2 0.94787  nit 18  14s
+   GVA-k     1L s0: dE   24.6065 mHa  S2 7.7e-04  |<FCI|psi>|^2 0.94804  nit 21  17s
+      JW check |E_JW - E| = 2.3e-13 Ha, 8311 Pauli terms
+   GVA-k     1L s1: dE   24.6065 mHa  S2 7.7e-04  |<FCI|psi>|^2 0.94804  nit 27  14s
+   GVA-k     1L s2: dE   24.6065 mHa  S2 7.7e-04  |<FCI|psi>|^2 0.94804  nit 27  14s
+   GVA-k     2L s0: dE   14.9880 mHa  S2 3.0e-03  |<FCI|psi>|^2 0.91031  nit 523  289s
+      max |dE/dt| over 700 momentum-violating excitations: 0.0e+00
+   GVA-k     2L s1: dE   12.0964 mHa  S2 3.5e-03  |<FCI|psi>|^2 0.97722  nit 644  348s
+   GVA-k     2L s2: dE   12.0964 mHa  S2 3.5e-03  |<FCI|psi>|^2 0.97722  nit 588  310s

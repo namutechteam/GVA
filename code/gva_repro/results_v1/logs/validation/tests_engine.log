@@ -1,0 +1,17 @@
+# tests_engine.py run 2026-10-23T21:30:10+09:00
+H2 1.0 ['Ag', 'B1u'] {'UCCSD': {'n_params': 3, 'n_generators': 3, 'cnot_1L': 64}, 'PG only': {'n_params': 1, 'n_generators': 1, 'cnot_1L': 48}, 'spin only': {'n_params': 2, 'n_generators': 3, 'cnot_1L': 64}, 'GVA': {'n_params': 1, 'n_generators': 1, 'cnot_1L': 48}, 'formula_UCCSD': 3}
+  UCCSD: grad 0.56673228 fd 0.56673228 | 1L dE=0.00000 mHa nit=4 S2=0.00e+00 | 2L dE=0.000000
+  GVA: grad 0.71729789 fd 0.71729789 | 1L dE=0.00000 mHa nit=4 S2=0.00e+00 | 2L dE=0.000000
+  refs dE(mHa): CISD 0.0000 CCSD -0.0000 CCSD(T) -0.0000  Ecorr 20.586
+LiH 1.0 ['A1', 'A1', 'A1', 'B1', 'B2', 'A1'] {'UCCSD': {'n_params': 92, 'n_generators': 92, 'cnot_1L': 6976}, 'PG only': {'n_params': 34, 'n_generators': 34, 'cnot_1L': 2464}, 'spin only': {'n_params': 50, 'n_generators': 92, 'cnot_1L': 6976}, 'GVA': {'n_params': 21, 'n_generators': 34, 'cnot_1L': 2464}, 'formula_UCCSD': 92}
+  UCCSD: grad -1.22003920 fd -1.22003920 | 1L dE=0.01064 mHa nit=21 S2=3.29e-11 | 2L dE=0.000058
+  GVA: grad 2.76924824 fd 2.76924824 | 1L dE=0.01064 mHa nit=21 S2=1.09e-08 | 2L dE=0.000090
+  refs dE(mHa): CISD 0.0133 CCSD 0.0105 CCSD(T) 0.0021  Ecorr 20.378
+H4 1.0 ['Ag', 'B1u', 'Ag', 'B1u'] {'UCCSD': {'n_params': 26, 'n_generators': 26, 'cnot_1L': 1312}, 'PG only': {'n_params': 14, 'n_generators': 14, 'cnot_1L': 736}, 'spin only': {'n_params': 15, 'n_generators': 26, 'cnot_1L': 1312}, 'GVA': {'n_params': 9, 'n_generators': 14, 'cnot_1L': 736}, 'formula_UCCSD': 26}
+  UCCSD: grad -0.41244919 fd -0.41244919 | 1L dE=0.37836 mHa nit=11 S2=2.08e-11 | 2L dE=0.000000
+  GVA: grad -0.43879400 fd -0.43879400 | 1L dE=0.37876 mHa nit=11 S2=1.07e-10 | 2L dE=0.000000
+  refs dE(mHa): CISD 4.4946 CCSD -0.0974 CCSD(T) -0.2937  Ecorr 104.347
+BeH2 2.0 ['Ag', 'Ag', 'B1u', 'Ag', 'B2u', 'B3u', 'B1u'] {'UCCSD': {'n_params': 204, 'n_generators': 204, 'cnot_1L': 18208}, 'PG only': {'n_params': 38, 'n_generators': 38, 'cnot_1L': 3152}, 'spin only': {'n_params': 108, 'n_generators': 204, 'cnot_1L': 18208}, 'GVA': {'n_params': 25, 'n_generators': 38, 'cnot_1L': 3152}, 'formula_UCCSD': 204}
+  UCCSD: grad -2.24233652 fd -2.24233653 | 1L dE=15.42084 mHa nit=42 S2=1.08e-07 | 2L dE=0.003529
+  GVA: grad 4.28732642 fd 4.28732642 | 1L dE=15.42820 mHa nit=37 S2=4.48e-09 | 2L dE=0.003929
+  refs dE(mHa): CISD 28.5197 CCSD 5.8492 CCSD(T) -6.3909  Ecorr 228.698

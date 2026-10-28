@@ -1,0 +1,220 @@
+#INFO: **** input file is /home/claude/gva_repro/run_orbital_sensitivity.py ****
+"""Dependence of the cisplatin CAS(10e,10o) results on the choice of active orbitals.
+
+Three choices at the same C2v geometry, basis and ECP:
+  A  symmetry-adapted MP2 natural orbitals (as in the main text): the five
+     strongly occupied NOs with the lowest occupations and the five weakly
+     occupied NOs with the highest occupations;
+  B  canonical RHF orbitals: HOMO-4 ... HOMO and LUMO ... LUMO+4;
+  C  CASSCF(10e,10o) orbitals optimized from guess A (state-specific ground
+     state), expressed as active natural orbitals.
+For each: correlation energy in the active space, reference weight, classical
+references, parameter/CNOT counts and VQE errors (GVA 1L, 2L; UCCSD 1L; HF start).
+Writes results/orbital_sensitivity.json and PySCF logs.
+"""
+import json
+import time
+from datetime import datetime, timezone
+
+import numpy as np
+from pyscf import mcscf, symm
+
+from gva.systems import (build_cisplatin_mol, run_rhf, mp2_natural_orbitals,
+                         select_active_by_occupation, cas_hamiltonian_from_orbitals,
+                         classical_references, set_pyscf_log)
+from gva.ansatz import uccsd_pool, gva_groups, counts_summary
+from gva.engine import DeterminantSpace, Ansatz, run_vqe
+
+OUT = "results/orbital_sensitivity.json"
+
+
+def now():
+    return datetime.now(timezone.utc).astimezone().isoformat(timespec="seconds")
+
+
+def composition(mol, C):
+    S = mol.intor("int1e_ovlp")
+    lab = mol.ao_labels(fmt=False)
+    out = []
+    for k in range(C.shape[1]):
+        c = C[:, k]
+        pop = c * (S @ c)
+        agg = {}
+        for i, (ia, el, nl, m) in enumerate(lab):
+            key = f"{el} {nl[-1]}"
+            agg[key] = agg.get(key, 0.0) + pop[i]
+        top = sorted(agg.items(), key=lambda x: -abs(x[1]))[:3]
+        out.append(", ".join(f"{a} {v:.2f}" for a, v in top))
+    return out
+
+
+def evaluate(label, H, mol, extra):
+    t0 = time.time()
+    ref = classical_references(H)
+    ef = ref["E_FCI"]
+    space = DeterminantSpace(H.norb, H.nelec, H.h1, H.eri, H.ecore)
+    pool = uccsd_pool(H.nocc, H.norb)
+    cs = counts_summary(H.nocc, H.norb, H.orbsym)
+    rec = {"choice": label, "E_ref": ref["E_ref"], "E_CASCI": ef,
+           "E_corr_active_mHa": (ef - ref["E_ref"]) * 1e3, "c0_sq": ref["c0_ref_weight"],
+           "CISD_err_mHa": (ref["E_CISD"] - ef) * 1e3, "CCSD_err_mHa": (ref["E_CCSD"] - ef) * 1e3,
+           "CCSD(T)_err_mHa": (ref["E_CCSD(T)"] - ef) * 1e3,
+           "active_irreps": H.irrep_names,
+           "active_composition": composition(mol, H.extra["C_act_ao"]),
+           "counts": cs, "started": now()}
+    rec.update(extra)
+    for key, var, L in (("GVA_1L", (True, True), 1), ("UCCSD_1L", (False, False), 1),
+                        ("GVA_2L", (True, True), 2)):
+        A = Ansatz(space, gva_groups(pool, H.orbsym, *var), layers=L)
+        rv = run_vqe(A, e_exact=ef, maxiter=2500, record=False)
+        rec[key] = {"E": rv["E"], "dE_mHa": rv["dE"] * 1e3, "n_params": A.n_params,
+                    "nit": rv["nit"], "S2": rv["S2"], "wall_s": rv["wall_s"],
+                    "theta": rv["theta"].tolist()}
+        print(label, key, f"{rv['dE'] * 1e3:.4f} mHa", flush=True)
+    rec["finished"] = now()
+    rec["wall_s"] = time.time() - t0
+    return rec
+
+
+set_pyscf_log("results/logs/pyscf", "orbital_sensitivity")
+mol = build_cisplatin_mol()
+mf = run_rhf(mol)
+irr = np.array(symm.label_orb_symm(mol, mol.irrep_id, mol.symm_orb, mf.mo_coeff))
+nocc = mol.nelectron // 2
+rows = []
+
+# ---- A: MP2 natural orbitals
+nos, occs, syms, e_mp2 = mp2_natural_orbitals(mol, mf)
+actA = select_active_by_occupation(occs, 5, 5)
+HA = cas_hamiltonian_from_orbitals(mol, mf, nos, occs, syms, actA, "A")
+rows.append(evaluate("A: MP2 natural orbitals", HA, mol,
+                     {"selected": f"NOs ranked {actA.min() + 1}-{actA.max() + 1} by occupation "
+                                  f"(of {len(occs)}); occupations "
+                                  + ", ".join(f"{o:.4f}" for o in occs[actA])}))
+json.dump(rows, open(OUT, "w"), indent=1, default=float)
+
+# ---- B: canonical RHF frontier orbitals
+actB = np.arange(nocc - 5, nocc + 5)
+occB = mf.mo_occ.copy()
+HB = cas_hamiltonian_from_orbitals(mol, mf, mf.mo_coeff, occB, irr, actB, "B")
+rows.append(evaluate("B: canonical RHF (HOMO-4 to LUMO+4)", HB, mol,
+                     {"selected": f"canonical MOs {nocc - 4}-{nocc + 5} (HOMO = {nocc}); "
+                                  "orbital energies (Ha) "
+                                  + ", ".join(f"{e:.3f}" for e in mf.mo_energy[actB])}))
+json.dump(rows, open(OUT, "w"), indent=1, default=float)
+
+# ---- C: CASSCF(10e,10o) from guess A
+ncore = HA.extra["n_core"]
+core = np.array([k for k in np.where(occs > 1.0)[0] if k not in set(actA)])
+virt = np.array([k for k in range(len(occs)) if k not in set(core) | set(actA)])
+order = np.concatenate([core, actA, virt])
+mc = mcscf.CASSCF(mf, 10, 10)
+mc.natorb = True
+mc.conv_tol = 1e-9
+mc.max_cycle_macro = 100
+t = time.time()
+mc.kernel(nos[:, order])
+mo = mc.mo_coeff
+irrC = np.array(symm.label_orb_symm(mol, mol.irrep_id, mol.symm_orb, mo))
+occC = np.zeros(mo.shape[1])
+occC[:ncore] = 2.0
+nat = np.asarray(mc.mo_occ)[ncore:ncore + 10] if mc.mo_occ is not None else None
+occC[ncore:ncore + 10] = nat if nat is not None else np.r_[np.full(5, 1.99), np.full(5, 0.01)]
+actC = np.arange(ncore, ncore + 10)
+HC = cas_hamiltonian_from_orbitals(mol, mf, mo, occC, irrC, actC, "C")
+rows.append(evaluate("C: CASSCF(10e,10o) natural orbitals", HC, mol,
+                     {"selected": f"CASSCF converged={bool(mc.converged)}, "
+                                  f"E_CASSCF = {mc.e_tot:.8f} Ha, {time.time() - t:.0f} s; "
+                                  "natural occupations "
+                                  + ", ".join(f"{o:.4f}" for o in occC[actC]),
+                      "E_CASSCF": float(mc.e_tot)}))
+json.dump(rows, open(OUT, "w"), indent=1, default=float)
+print("done", flush=True)
+#INFO: ******************** input file end ********************
+
+
+System: uname_result(system='Linux', node='vm', release='6.18.44-fc-v153', version='#1 SMP PREEMPT_DYNAMIC @0', machine='x86_64')  Threads 1
+Python 3.13.17 (main, Oct 22 2026, 14:06:04) [GCC 13.3.0]
+numpy 2.5.3  scipy 1.18.1  h5py 3.16.0
+Date: Fri Oct 23 22:40:21 2026
+PySCF version 2.14.0
+PySCF path  /usr/local/lib/python3.13/dist-packages/pyscf
+
+[CONFIG] conf_file None
+[INPUT] verbose = 4
+[INPUT] num. atoms = 0
+[INPUT] num. electrons = 0
+[INPUT] charge = 0
+[INPUT] spin (= nelec alpha-beta = 2S) = 0
+[INPUT] symmetry False subgroup None
+[INPUT] Mole.unit = angstrom
+[INPUT] Symbol           X                Y                Z      unit          X                Y                Z       unit  Magmom
+
+nuclear repulsion = 0
+number of shells = 0
+number of NR pGTOs = 0
+number of NR cGTOs = 0
+basis = sto-3g
+ecp = {}
+CPU time:        25.72
+
+******** <class 'pyscf.ci.cisd.RCISD'> ********
+CISD nocc = 5, nmo = 10
+max_cycle = 50
+direct = 0
+conv_tol = 1e-10
+max_cycle = 50
+max_space = 12
+lindep = 0
+nroots = 1
+max_memory 4000 MB (current use 394 MB)
+Init t2, MP2 energy = -0.0195392086302824
+RCISD converged
+E(RCISD) = -1149.567755963986  E_corr = -0.02474227482686471
+
+******** <class 'pyscf.cc.ccsd.CCSD'> ********
+CC2 = 0
+CCSD nocc = 5, nmo = 10
+max_cycle = 500
+direct = 0
+conv_tol = 1e-11
+conv_tol_normt = 1e-05
+diis_space = 6
+diis_start_cycle = 0
+diis_start_energy_diff = 1e+09
+max_memory 4000 MB (current use 394 MB)
+Init t2, MP2 energy = -1149.56255289779  E_corr(MP2) -0.0195392086302824
+Init E_corr(CCSD) = -0.0195392086302826
+cycle = 1  E_corr(CCSD) = -0.023125523612524  dE = -0.00358631498  norm(t1,t2) = 0.0243913
+cycle = 2  E_corr(CCSD) = -0.0242392749472375  dE = -0.00111375133  norm(t1,t2) = 0.00978109
+cycle = 3  E_corr(CCSD) = -0.0249368593691699  dE = -0.000697584422  norm(t1,t2) = 0.00430761
+cycle = 4  E_corr(CCSD) = -0.0249301107310622  dE = 6.74863811e-06  norm(t1,t2) = 0.000561115
+cycle = 5  E_corr(CCSD) = -0.0249339834608809  dE = -3.87272982e-06  norm(t1,t2) = 7.89126e-05
+cycle = 6  E_corr(CCSD) = -0.0249337806648373  dE = 2.02796044e-07  norm(t1,t2) = 1.7851e-05
+cycle = 7  E_corr(CCSD) = -0.0249338022470248  dE = -2.15821875e-08  norm(t1,t2) = 4.87013e-06
+cycle = 8  E_corr(CCSD) = -0.0249338181236711  dE = -1.58766463e-08  norm(t1,t2) = 1.13654e-06
+cycle = 9  E_corr(CCSD) = -0.0249338228719922  dE = -4.74832109e-09  norm(t1,t2) = 3.03629e-07
+cycle = 10  E_corr(CCSD) = -0.0249338202885704  dE = 2.5834218e-09  norm(t1,t2) = 7.02864e-08
+cycle = 11  E_corr(CCSD) = -0.0249338184888479  dE = 1.7997225e-09  norm(t1,t2) = 4.14316e-08
+cycle = 12  E_corr(CCSD) = -0.0249338184200007  dE = 6.88471606e-11  norm(t1,t2) = 1.58144e-08
+cycle = 13  E_corr(CCSD) = -0.024933818157236  dE = 2.62764675e-10  norm(t1,t2) = 1.2612e-08
+cycle = 14  E_corr(CCSD) = -0.0249338181867623  dE = -2.95263258e-11  norm(t1,t2) = 9.71823e-09
+cycle = 15  E_corr(CCSD) = -0.0249338181346048  dE = 5.21575005e-11  norm(t1,t2) = 1.02833e-08
+cycle = 16  E_corr(CCSD) = -0.0249338178342024  dE = 3.00402443e-10  norm(t1,t2) = 1.22391e-08
+cycle = 17  E_corr(CCSD) = -0.0249338176570383  dE = 1.77164075e-10  norm(t1,t2) = 7.97099e-09
+cycle = 18  E_corr(CCSD) = -0.0249338175916701  dE = 6.536819e-11  norm(t1,t2) = 5.49899e-09
+cycle = 19  E_corr(CCSD) = -0.0249338175313954  dE = 6.02747297e-11  norm(t1,t2) = 4.67844e-09
+cycle = 20  E_corr(CCSD) = -0.0249338174852471  dE = 4.61483143e-11  norm(t1,t2) = 4.0672e-09
+cycle = 21  E_corr(CCSD) = -0.0249338174335871  dE = 5.16599472e-11  norm(t1,t2) = 3.65653e-09
+cycle = 22  E_corr(CCSD) = -0.0249338173814347  dE = 5.21524213e-11  norm(t1,t2) = 3.18347e-09
+cycle = 23  E_corr(CCSD) = -0.0249338173460459  dE = 3.53887718e-11  norm(t1,t2) = 2.45008e-09
+cycle = 24  E_corr(CCSD) = -0.0249338173211542  dE = 2.48917206e-11  norm(t1,t2) = 1.99282e-09
+cycle = 25  E_corr(CCSD) = -0.0249338172998294  dE = 2.1324862e-11  norm(t1,t2) = 1.69946e-09
+cycle = 26  E_corr(CCSD) = -0.0249338172815052  dE = 1.83241373e-11  norm(t1,t2) = 1.45107e-09
+cycle = 27  E_corr(CCSD) = -0.024933817265359  dE = 1.6146199e-11  norm(t1,t2) = 1.23202e-09
+cycle = 28  E_corr(CCSD) = -0.0249338172519255  dE = 1.34335182e-11  norm(t1,t2) = 1.0289e-09
+cycle = 29  E_corr(CCSD) = -0.0249338172414583  dE = 1.04671723e-11  norm(t1,t2) = 8.46899e-10
+cycle = 30  E_corr(CCSD) = -0.0249338172329751  dE = 8.48324189e-12  norm(t1,t2) = 7.10719e-10
+CCSD converged
+E(CCSD) = -1149.567947506392  E_corr = -0.0249338172329751
+CCSD(T) correction = -0.000244221593899137

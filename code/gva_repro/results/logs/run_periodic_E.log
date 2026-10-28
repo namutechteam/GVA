@@ -1,0 +1,24 @@
+2026-10-24T05:17:38+09:00 start [(2.0, 2.0, 5)]
+output file: results/logs/pyscf_pbc/H2chain_r2.00_d2.00_Nk5__krhf.log
+output file: results/logs/pyscf_pbc/H2chain_r2.00_d2.00_Nk5__supercell.log
+output file: results/logs/pyscf/H2chain_r2.00_d2.00_Nk5__mol1.log
+2026-10-24T05:18:48+09:00 H2chain_r2.00_d2.00_Nk5 FCI -4.2751045526  Bloch-FCI diff 3.1e-12  supercell-FCI diff 1.3e-13  E_corr -784.340 mHa  c0^2 0.0999  K-sector weight outside K_HF 7.0e-15
+   counts {'UCCSD': (875, 108800), 'k only': (350, 21760), 'k + spin': (180, 21760), 'k + TR': (175, 21760), 'GVA-k': (90, 21760)}
+   UCCSD     1L s0: dE   62.1268 mHa  S2 3.3e-03  |<FCI|psi>|^2 0.80364  nit 30  9s
+      JW check |E_JW - E| = 1.1e-14 Ha, 2735 Pauli terms
+   UCCSD     1L s1: dE   22.3310 mHa  S2 2.2e+00  |<FCI|psi>|^2 0.31892  nit 71  21s
+   UCCSD     1L s2: dE   22.3310 mHa  S2 2.2e+00  |<FCI|psi>|^2 0.31892  nit 82  22s
+   UCCSD     2L s0: dE   29.3900 mHa  S2 3.1e-02  |<FCI|psi>|^2 0.77102  nit 424  205s
+   k only    1L s0: dE   62.1467 mHa  S2 3.3e-03  |<FCI|psi>|^2 0.80613  nit 21  10s
+   k only    1L s1: dE   62.1467 mHa  S2 3.3e-03  |<FCI|psi>|^2 0.80613  nit 38  19s
+   k only    1L s2: dE   22.4038 mHa  S2 2.2e+00  |<FCI|psi>|^2 0.31935  nit 68  33s
+   k + spin  1L s0: dE   61.4404 mHa  S2 4.5e-03  |<FCI|psi>|^2 0.80611  nit 20  10s
+   k + TR    1L s0: dE   67.0051 mHa  S2 1.1e-02  |<FCI|psi>|^2 0.80044  nit 19  10s
+   GVA-k     1L s0: dE   69.5772 mHa  S2 1.4e-02  |<FCI|psi>|^2 0.80142  nit 27  14s
+      JW check |E_JW - E| = 4.4e-15 Ha, 18679 Pauli terms
+   GVA-k     1L s1: dE   69.5772 mHa  S2 1.4e-02  |<FCI|psi>|^2 0.80142  nit 29  14s
+   GVA-k     1L s2: dE   69.5772 mHa  S2 1.4e-02  |<FCI|psi>|^2 0.80142  nit 30  15s
+   GVA-k     2L s0: dE   22.4701 mHa  S2 1.6e-02  |<FCI|psi>|^2 0.78435  nit 317  171s
+      max |dE/dt| over 700 momentum-violating excitations: 0.0e+00
+   GVA-k     2L s1: dE   22.4701 mHa  S2 1.6e-02  |<FCI|psi>|^2 0.78435  nit 425  228s
+   GVA-k     2L s2: dE   14.7508 mHa  S2 2.6e-03  |<FCI|psi>|^2 0.64286  nit 200  105s

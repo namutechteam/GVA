@@ -1,0 +1,170 @@
+#INFO: **** input file is /home/claude/gva_repro/run_small.py ****
+"""Small-molecule benchmark: H2, H4, LiH, BeH2 (STO-3G), three geometries each.
+
+Ansaetze: UCCSD and GVA, 1 and 2 layers, 5 initialisations each
+(seed 0 = Hartree-Fock start, theta = 0; seeds 1-4 = N(0, 0.05^2) start).
+Ablation (1 layer, HF start): PG screening only, spin tying only.
+ADAPT-VQE with the spin-complemented, symmetry-screened pool.
+"""
+import json
+import pickle
+import time
+
+import numpy as np
+
+from datetime import datetime, timezone
+
+from gva.systems import small_molecule_hamiltonian, classical_references, set_pyscf_log
+from gva.ansatz import (uccsd_pool, gva_groups, counts_summary, cnot_count_ladder,
+                        parameter_map, excitation_label)
+
+
+def now():
+    return datetime.now(timezone.utc).astimezone().isoformat(timespec="seconds")
+
+from gva.engine import DeterminantSpace, Ansatz, run_vqe, adapt_vqe
+
+MOLS = ["H2", "H4", "LiH", "BeH2"]
+SCALES = [1.0, 1.5, 2.0]
+SEEDS = range(5)
+VARIANTS = {"UCCSD": (False, False), "GVA": (True, True),
+            "PG only": (True, False), "spin only": (False, True)}
+
+records, systems = [], []
+t_all = time.time()
+for name in MOLS:
+    for sc in SCALES:
+        set_pyscf_log("results/logs/pyscf", f"{name}_x{sc:.1f}")
+        H = small_molecule_hamiltonian(name, sc)
+        ref = classical_references(H)
+        space = DeterminantSpace(H.norb, H.nelec, H.h1, H.eri, H.ecore)
+        pool = uccsd_pool(H.nocc, H.norb)
+        cs = counts_summary(H.nocc, H.norb, H.orbsym)
+        ef = ref["E_FCI"]
+        systems.append({
+            "system": name, "scale": sc, "n_qubits": 2 * H.norb,
+            "n_electrons": sum(H.nelec), "irreps": H.irrep_names,
+            "E_RHF": ref["E_ref"], "E_CISD": ref["E_CISD"],
+            "E_CCSD": ref["E_CCSD"], "E_CCSD(T)": ref["E_CCSD(T)"],
+            "E_FCI": ef, "E_corr": ef - ref["E_ref"],
+            "c0_sq": ref["c0_ref_weight"], "counts": cs,
+            "parameter_maps_1L": {v: parameter_map(gva_groups(pool, H.orbsym, *f))
+                                  for v, f in VARIANTS.items()}})
+        for var, (pg, spn) in VARIANTS.items():
+            groups = gva_groups(pool, H.orbsym, pg, spn)
+            layer_list = [1, 2] if var in ("UCCSD", "GVA") else [1]
+            for L in layer_list:
+                seeds = SEEDS if var in ("UCCSD", "GVA") else [0]
+                for s in seeds:
+                    A = Ansatz(space, groups, layers=L)
+                    th0 = np.zeros(A.n_params) if s == 0 else \
+                        np.random.default_rng(1000 + s).normal(0, 0.05, A.n_params)
+                    t_start = now()
+                    r = run_vqe(A, th0, e_exact=ef)
+                    records.append({
+                        "system": name, "scale": sc, "ansatz": var, "layers": L,
+                        "seed": s, "n_params": A.n_params,
+                        "cnot": L * cs[var]["cnot_1L"], "E": r["E"],
+                        "dE": r["dE"], "nit": r["nit"], "nfev": r["nfev"],
+                        "iter_to_chem_acc": r["iter_to_chem_acc"],
+                        "S2": r["S2"], "wall_s": r["wall_s"],
+                        "grad_norm": r["grad_norm"], "message": r["message"],
+                        "started": t_start, "finished": now(),
+                        "theta": r["theta"].tolist(),
+                        "history": r["history"].tolist()})
+        t_start = now()
+        ad = adapt_vqe(space, gva_groups(pool, H.orbsym, True, True), e_exact=ef,
+                       grad_tol=1e-3, max_ops=120)
+        records.append({"system": name, "scale": sc, "ansatz": "ADAPT-VQE",
+                        "layers": None, "seed": 0, "n_params": ad["n_ops"],
+                        "cnot": sum(cnot_count_ladder(e) for g in ad["chosen"] for e in g),
+                        "E": ad["E"], "dE": ad["dE"], "trace": ad["trace"], "stop_reason": ad["stop_reason"],
+                        "wall_s": ad["wall_s"], "started": t_start, "finished": now(),
+                        "operators": [[excitation_label(e) for e in g] for g in ad["chosen"]],
+                        "theta": np.asarray(ad["theta"]).tolist()})
+        print(f"{name} {sc}: done ({time.time()-t_all:.0f}s)", flush=True)
+
+json.dump({"systems": systems, "runs": records},
+          open("results/small_molecules.json", "w"), indent=1, default=float)
+print("total", time.time() - t_all)
+#INFO: ******************** input file end ********************
+
+
+System: uname_result(system='Linux', node='vm', release='6.18.44-fc-v153', version='#1 SMP PREEMPT_DYNAMIC @0', machine='x86_64')  Threads 1
+Python 3.13.17 (main, Oct 22 2026, 14:06:04) [GCC 13.3.0]
+numpy 2.5.3  scipy 1.18.1  h5py 3.16.0
+Date: Fri Oct 23 22:24:54 2026
+PySCF version 2.14.0
+PySCF path  /usr/local/lib/python3.13/dist-packages/pyscf
+
+[CONFIG] conf_file None
+[INPUT] verbose = 4
+[INPUT] num. atoms = 3
+[INPUT] num. electrons = 6
+[INPUT] charge = 0
+[INPUT] spin (= nelec alpha-beta = 2S) = 0
+[INPUT] symmetry True subgroup D2h
+[INPUT] Mole.unit = angstrom
+[INPUT] Symbol           X                Y                Z      unit          X                Y                Z       unit  Magmom
+[INPUT]  1 H      0.000000000000   0.000000000000  -2.652800000000 AA    0.000000000000   0.000000000000  -5.013065463246 Bohr   0.0
+[INPUT]  2 Be     0.000000000000   0.000000000000   0.000000000000 AA    0.000000000000   0.000000000000   0.000000000000 Bohr   0.0
+[INPUT]  3 H      0.000000000000   0.000000000000   2.652800000000 AA    0.000000000000   0.000000000000   5.013065463246 Bohr   0.0
+
+nuclear repulsion = 1.69556932027292
+point group symmetry = Dooh, use subgroup D2h
+symmetry origin: [0. 0. 0.]
+symmetry axis x: [1. 0. 0.]
+symmetry axis y: [0. 1. 0.]
+symmetry axis z: [0. 0. 1.]
+num. orbitals of irrep Ag = 3
+num. orbitals of irrep B1u = 2
+num. orbitals of irrep B2u = 1
+num. orbitals of irrep B3u = 1
+number of shells = 5
+number of NR pGTOs = 21
+number of NR cGTOs = 7
+basis = sto-3g
+ecp = {}
+CPU time:      2179.84
+
+
+******** <class 'pyscf.scf.hf_symm.SymAdaptedRHF'> ********
+method = SymAdaptedRHF
+initial guess = minao
+damping factor = 0
+level_shift factor = 0
+DIIS = <class 'pyscf.scf.diis.CDIIS'>
+diis_start_cycle = 1
+diis_space = 8
+diis_damp = 0
+SCF conv_tol = 1e-12
+SCF conv_tol_grad = None
+SCF max_cycles = 50
+direct_scf = True
+direct_scf_tol = 1e-13
+chkfile to save SCF result = /tmp/tmpj3diht93
+max_memory 4000 MB (current use 116 MB)
+Freeze 0 electrons in irreps []
+    6 free electrons in irreps Ag B1u B2u B3u
+Set gradient conv threshold to 1e-06
+Initial guess from minao.
+init E= -14.9176740552942
+HOMO (B1u) = -0.119218662859266  LUMO (Ag) = -0.0498065218274863  gap/eV = 1.88880
+cycle= 1 E= -15.079720070154  delta_E= -0.162  |g|= 0.113  |ddm|= 1.45
+HOMO (B1u) = -0.179729646073052  LUMO (Ag) = 0.04014756883186  gap/eV = 5.98316
+cycle= 2 E= -15.1036098671898  delta_E= -0.0239  |g|= 0.0606  |ddm|= 0.417
+HOMO (B1u) = -0.207757405400361  LUMO (Ag) = 0.0655149526716974  gap/eV = 7.43612
+cycle= 3 E= -15.1133284453457  delta_E= -0.00972  |g|= 0.012  |ddm|= 0.444
+HOMO (B1u) = -0.205750748855736  LUMO (Ag) = 0.0692921346278767  gap/eV = 7.48430
+cycle= 4 E= -15.1135112217972  delta_E= -0.000183  |g|= 0.00154  |ddm|= 0.0585
+HOMO (B1u) = -0.206244539099901  LUMO (Ag) = 0.0695616106664507  gap/eV = 7.50507
+cycle= 5 E= -15.1135099112698  delta_E= 1.31e-06  |g|= 0.0019  |ddm|= 0.00131
+HOMO (B1u) = -0.203691437760999  LUMO (Ag) = 0.068157611486713  gap/eV = 7.39739
+cycle= 6 E= -15.1135136882678  delta_E= -3.78e-06  |g|= 5.55e-06  |ddm|= 0.00683
+HOMO (B1u) = -0.203698898627054  LUMO (Ag) = 0.0681624985033004  gap/eV = 7.39773
+cycle= 7 E= -15.1135136883  delta_E= -3.22e-11  |g|= 8.95e-08  |ddm|= 1.96e-05
+HOMO (B1u) = -0.203698959185201  LUMO (Ag) = 0.0681625381184953  gap/eV = 7.39773
+cycle= 8 E= -15.1135136883  delta_E= -1.78e-14  |g|= 4.52e-08  |ddm|= 1.59e-07
+HOMO (B1u) = -0.203699015918074  LUMO (Ag) = 0.0681625749398669  gap/eV = 7.39773
+Extra cycle  E= -15.1135136883  delta_E= 3.55e-15  |g|= 1.96e-08  |ddm|= 1.46e-07
+converged SCF energy = -15.1135136883

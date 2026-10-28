@@ -1,0 +1,437 @@
+# LiH_x2.0: reference calculations re-run 2026-10-23T21:30:14+0900
+# E_RHF          new=-7.6904399975  stored=-7.6904399975  |diff|=0.0e+00  OK
+# E_CISD         new=-7.7934001577  stored=-7.7934001577  |diff|=0.0e+00  OK
+# E_CCSD         new=-7.7934100294  stored=-7.7934100294  |diff|=0.0e+00  OK
+# E_CCSD(T)      new=-7.7935329675  stored=-7.7935329675  |diff|=0.0e+00  OK
+# E_FCI          new=-7.7935053948  stored=-7.7935053948  |diff|=0.0e+00  OK
+
+######## LiH_x2.0__part1.log ########
+#INFO: **** input file is /home/claude/gva_repro/log_references.py ****
+"""Re-run every electronic-structure reference step with full PySCF output.
+
+The production scripts ran PySCF with verbose=0, so no SCF/MP2/CC output was
+kept. This script repeats exactly the same code path (the gva.systems functions)
+with PySCF's verbose level raised to 4, writes one log per system to
+results/logs/reference/, and checks every energy against the values stored in
+results/*.json. Any deviation larger than 1e-7 Ha raises an error.
+
+VQE optimizations are not repeated here (see PROVENANCE.md).
+"""
+import json
+import os
+import time
+
+import numpy as np
+from pyscf import gto
+
+import gva.systems as S
+
+LOGDIR = "results/logs/reference"
+os.makedirs(LOGDIR, exist_ok=True)
+TOL = 1e-7
+_orig_M = gto.M
+_state = {"stem": None, "k": 0}
+
+
+def _logged_M(*args, **kw):
+    _state["k"] += 1
+    kw["verbose"] = 4
+    kw["output"] = os.path.join(LOGDIR, f"{_state['stem']}__part{_state['k']}.log")
+    return _orig_M(*args, **kw)
+
+
+gto.M = _logged_M          # S.gto is pyscf.gto, so the production code is unchanged
+
+
+def start(stem):
+    _state["stem"], _state["k"] = stem, 0
+
+
+def merge(stem, summary_lines):
+    parts = sorted(f for f in os.listdir(LOGDIR) if f.startswith(stem + "__part"))
+    with open(os.path.join(LOGDIR, stem + ".log"), "w") as out:
+        out.write(f"# {stem}: reference calculations re-run {time.strftime('%Y-%m-%dT%H:%M:%S%z')}\n")
+        for line in summary_lines:
+            out.write("# " + line + "\n")
+        for p in parts:
+            out.write(f"\n######## {p} ########\n")
+            out.write(open(os.path.join(LOGDIR, p)).read())
+            os.remove(os.path.join(LOGDIR, p))
+
+
+def check(label, new, old):
+    d = abs(new - old)
+    status = "OK" if d < TOL else "MISMATCH"
+    line = f"{label:14s} new={new:.10f}  stored={old:.10f}  |diff|={d:.1e}  {status}"
+    if d >= TOL:
+        raise AssertionError(line)
+    return line
+
+
+report = []
+# ------------------------------------------------------------ small molecules
+sm = json.load(open("results/small_molecules.json"))
+for s in sm["systems"]:
+    stem = f"{s['system']}_x{s['scale']:.1f}"
+    start(stem)
+    H = S.small_molecule_hamiltonian(s["system"], s["scale"])
+    ref = S.classical_references(H)
+    lines = [check("E_RHF", ref["E_ref"], s["E_RHF"]),
+             check("E_CISD", ref["E_CISD"], s["E_CISD"]),
+             check("E_CCSD", ref["E_CCSD"], s["E_CCSD"]),
+             check("E_CCSD(T)", ref["E_CCSD(T)"], s["E_CCSD(T)"]),
+             check("E_FCI", ref["E_FCI"], s["E_FCI"])]
+    merge(stem, lines)
+    report += [stem] + ["  " + l for l in lines]
+    print(stem, "ok", flush=True)
+
+# ------------------------------------------------------------ cisplatin, C2v
+cis = json.load(open("results/cisplatin_eq.json"))
+start("cisplatin_C2v_eq")
+H = S.cisplatin_cas_hamiltonian()
+ref = S.classical_references(H)
+lines = [check("E_RHF", H.e_rhf_total, cis["E_RHF"]),
+         check("E_MP2_corr", H.extra["e_mp2_corr"], cis["E_MP2_corr"]),
+         check("E_ref", ref["E_ref"], cis["E_ref"]),
+         check("E_CISD", ref["E_CISD"], cis["E_CISD"]),
+         check("E_CCSD", ref["E_CCSD"], cis["E_CCSD"]),
+         check("E_CCSD(T)", ref["E_CCSD(T)"], cis["E_CCSD(T)"]),
+         check("E_CASCI", ref["E_FCI"], cis["E_CASCI"]),
+         f"point group {H.extra['mol'].groupname}, n_core {H.extra['n_core']}, "
+         f"active irreps {H.irrep_names}"]
+d = np.load("results/cisplatin_cas10_10.npz")
+lines.append(f"max |h1 - stored h1| = {np.abs(H.h1 - d['h1']).max():.1e}, "
+             f"max |eri - stored eri| = {np.abs(H.eri - d['eri']).max():.1e}")
+assert np.abs(H.h1 - d["h1"]).max() < 1e-8 and np.abs(H.eri - d["eri"]).max() < 1e-8
+merge("cisplatin_C2v_eq", lines)
+report += ["cisplatin_C2v_eq"] + ["  " + l for l in lines]
+print("cisplatin eq ok", flush=True)
+
+# ------------------------------------------------------------ Pt-Cl scan, Cs
+pes = {round(r["R_PtCl"], 3): r for r in json.load(open("results/pes.json"))}
+R_EQ = 2.32
+prev = None
+order = [2.32, 2.5, 2.7, 2.9, 3.2, 3.5, 3.8, "eq", 2.2, 2.0]
+states = {}
+for r in order:
+    if r == "eq":
+        prev = states[R_EQ]
+        continue
+    stem = f"cisplatin_Cs_R{r:.2f}"
+    start(stem)
+    H = S.cisplatin_cas_hamiltonian(r1=r, r2=R_EQ, prev=prev, label=stem, symmetry="Cs")
+    ref = S.classical_references(H)
+    old = pes[round(r, 3)]
+    lines = [check("E_RHF", H.e_rhf_total, old["E_RHF"]),
+             check("E_ref", ref["E_ref"], old["E_ref"]),
+             check("E_CISD", ref["E_CISD"], old["E_CISD"]),
+             check("E_CCSD", ref["E_CCSD"], old["E_CCSD"]),
+             check("E_CCSD(T)", ref["E_CCSD(T)"], old["E_CCSD(T)"]),
+             check("E_CASCI", ref["E_FCI"], old["E_CASCI"]),
+             f"tracked from R = {('none (occupation selection)' if prev is None else 'previous point')}"]
+    merge(stem, lines)
+    report += [stem] + ["  " + l for l in lines]
+    states[r] = {"mol": H.extra["mol"], "mf": H.extra["mf"], "C_act_ao": H.extra["C_act_ao"]}
+    prev = states[r]
+    print(stem, "ok", flush=True)
+
+with open(os.path.join(LOGDIR, "SUMMARY.txt"), "w") as f:
+    f.write("Reference energies recomputed with full PySCF output and compared with "
+            f"stored values (tolerance {TOL:g} Ha)\n\n")
+    f.write("\n".join(report) + "\n")
+print("all reference energies reproduced")
+#INFO: ******************** input file end ********************
+
+
+System: uname_result(system='Linux', node='vm', release='6.18.44-fc-v153', version='#1 SMP PREEMPT_DYNAMIC @0', machine='x86_64')  Threads 1
+Python 3.13.17 (main, Oct 22 2026, 14:06:04) [GCC 13.3.0]
+numpy 2.5.3  scipy 1.18.1  h5py 3.16.0
+Date: Fri Oct 23 21:30:14 2026
+PySCF version 2.14.0
+PySCF path  /usr/local/lib/python3.13/dist-packages/pyscf
+
+[CONFIG] conf_file None
+[INPUT] verbose = 4
+[INPUT] num. atoms = 2
+[INPUT] num. electrons = 4
+[INPUT] charge = 0
+[INPUT] spin (= nelec alpha-beta = 2S) = 0
+[INPUT] symmetry True subgroup C2v
+[INPUT] Mole.unit = angstrom
+[INPUT] Symbol           X                Y                Z      unit          X                Y                Z       unit  Magmom
+[INPUT]  1 Li     0.000000000000   0.000000000000   0.000000000000 AA    0.000000000000   0.000000000000   0.000000000000 Bohr   0.0
+[INPUT]  2 H      0.000000000000   0.000000000000   3.190000000000 AA    0.000000000000   0.000000000000   6.028226337363 Bohr   0.0
+
+nuclear repulsion = 0.497658819047022
+point group symmetry = Coov, use subgroup C2v
+symmetry origin: [0.         0.         1.50705658]
+symmetry axis x: [1. 0. 0.]
+symmetry axis y: [0. 1. 0.]
+symmetry axis z: [0. 0. 1.]
+num. orbitals of irrep A1 = 4
+num. orbitals of irrep B1 = 1
+num. orbitals of irrep B2 = 1
+number of shells = 4
+number of NR pGTOs = 18
+number of NR cGTOs = 6
+basis = sto-3g
+ecp = {}
+CPU time:         2.74
+
+
+******** <class 'pyscf.scf.hf_symm.SymAdaptedRHF'> ********
+method = SymAdaptedRHF
+initial guess = minao
+damping factor = 0
+level_shift factor = 0
+DIIS = <class 'pyscf.scf.diis.CDIIS'>
+diis_start_cycle = 1
+diis_space = 8
+diis_damp = 0
+SCF conv_tol = 1e-12
+SCF conv_tol_grad = None
+SCF max_cycles = 50
+direct_scf = True
+direct_scf_tol = 1e-13
+chkfile to save SCF result = /tmp/tmpmqvqlpej
+max_memory 4000 MB (current use 115 MB)
+Freeze 0 electrons in irreps []
+    4 free electrons in irreps A1 B1 B2
+Set gradient conv threshold to 1e-06
+Initial guess from minao.
+init E= -7.52219280122266
+HOMO (A1) = -0.132354367053837  LUMO (A1) = -0.0188078015537862  gap/eV = 3.08976
+cycle= 1 E= -7.66067851625963  delta_E= -0.138  |g|= 0.156  |ddm|= 1.28
+HOMO (A1) = -0.118034306121414  LUMO (A1) = 0.0395545386451787  gap/eV = 4.28821
+cycle= 2 E= -7.6788053967525  delta_E= -0.0181  |g|= 0.0957  |ddm|= 0.877
+HOMO (A1) = -0.165068706645426  LUMO (A1) = 0.0501579415388876  gap/eV = 5.85662
+cycle= 3 E= -7.6901048678278  delta_E= -0.0113  |g|= 0.0112  |ddm|= 0.364
+HOMO (A1) = -0.169313905677081  LUMO (A1) = 0.0546881194538345  gap/eV = 6.09541
+cycle= 4 E= -7.69042880230021  delta_E= -0.000324  |g|= 0.00198  |ddm|= 0.0772
+HOMO (A1) = -0.164474226909384  LUMO (A1) = 0.0537303807095584  gap/eV = 5.93765
+cycle= 5 E= -7.69043997811561  delta_E= -1.12e-05  |g|= 0.000127  |ddm|= 0.0171
+HOMO (A1) = -0.16471365671532  LUMO (A1) = 0.0538190383784644  gap/eV = 5.94658
+cycle= 6 E= -7.69043999744495  delta_E= -1.93e-08  |g|= 5.2e-06  |ddm|= 0.000611
+HOMO (A1) = -0.16472523155088  LUMO (A1) = 0.0538207394827418  gap/eV = 5.94694
+cycle= 7 E= -7.69043999747591  delta_E= -3.1e-11  |g|= 4.81e-08  |ddm|= 1.92e-05
+HOMO (A1) = -0.164724441031087  LUMO (A1) = 0.0538206023582867  gap/eV = 5.94691
+cycle= 8 E= -7.69043999747591  delta_E= -1.78e-15  |g|= 7.27e-09  |ddm|= 3.63e-07
+HOMO (A1) = -0.164724449205647  LUMO (A1) = 0.0538206032754887  gap/eV = 5.94691
+Extra cycle  E= -7.69043999747591  delta_E=    0  |g|= 4.77e-09  |ddm|= 4.55e-08
+converged SCF energy = -7.69043999747591
+
+######## LiH_x2.0__part2.log ########
+#INFO: **** input file is /home/claude/gva_repro/log_references.py ****
+"""Re-run every electronic-structure reference step with full PySCF output.
+
+The production scripts ran PySCF with verbose=0, so no SCF/MP2/CC output was
+kept. This script repeats exactly the same code path (the gva.systems functions)
+with PySCF's verbose level raised to 4, writes one log per system to
+results/logs/reference/, and checks every energy against the values stored in
+results/*.json. Any deviation larger than 1e-7 Ha raises an error.
+
+VQE optimizations are not repeated here (see PROVENANCE.md).
+"""
+import json
+import os
+import time
+
+import numpy as np
+from pyscf import gto
+
+import gva.systems as S
+
+LOGDIR = "results/logs/reference"
+os.makedirs(LOGDIR, exist_ok=True)
+TOL = 1e-7
+_orig_M = gto.M
+_state = {"stem": None, "k": 0}
+
+
+def _logged_M(*args, **kw):
+    _state["k"] += 1
+    kw["verbose"] = 4
+    kw["output"] = os.path.join(LOGDIR, f"{_state['stem']}__part{_state['k']}.log")
+    return _orig_M(*args, **kw)
+
+
+gto.M = _logged_M          # S.gto is pyscf.gto, so the production code is unchanged
+
+
+def start(stem):
+    _state["stem"], _state["k"] = stem, 0
+
+
+def merge(stem, summary_lines):
+    parts = sorted(f for f in os.listdir(LOGDIR) if f.startswith(stem + "__part"))
+    with open(os.path.join(LOGDIR, stem + ".log"), "w") as out:
+        out.write(f"# {stem}: reference calculations re-run {time.strftime('%Y-%m-%dT%H:%M:%S%z')}\n")
+        for line in summary_lines:
+            out.write("# " + line + "\n")
+        for p in parts:
+            out.write(f"\n######## {p} ########\n")
+            out.write(open(os.path.join(LOGDIR, p)).read())
+            os.remove(os.path.join(LOGDIR, p))
+
+
+def check(label, new, old):
+    d = abs(new - old)
+    status = "OK" if d < TOL else "MISMATCH"
+    line = f"{label:14s} new={new:.10f}  stored={old:.10f}  |diff|={d:.1e}  {status}"
+    if d >= TOL:
+        raise AssertionError(line)
+    return line
+
+
+report = []
+# ------------------------------------------------------------ small molecules
+sm = json.load(open("results/small_molecules.json"))
+for s in sm["systems"]:
+    stem = f"{s['system']}_x{s['scale']:.1f}"
+    start(stem)
+    H = S.small_molecule_hamiltonian(s["system"], s["scale"])
+    ref = S.classical_references(H)
+    lines = [check("E_RHF", ref["E_ref"], s["E_RHF"]),
+             check("E_CISD", ref["E_CISD"], s["E_CISD"]),
+             check("E_CCSD", ref["E_CCSD"], s["E_CCSD"]),
+             check("E_CCSD(T)", ref["E_CCSD(T)"], s["E_CCSD(T)"]),
+             check("E_FCI", ref["E_FCI"], s["E_FCI"])]
+    merge(stem, lines)
+    report += [stem] + ["  " + l for l in lines]
+    print(stem, "ok", flush=True)
+
+# ------------------------------------------------------------ cisplatin, C2v
+cis = json.load(open("results/cisplatin_eq.json"))
+start("cisplatin_C2v_eq")
+H = S.cisplatin_cas_hamiltonian()
+ref = S.classical_references(H)
+lines = [check("E_RHF", H.e_rhf_total, cis["E_RHF"]),
+         check("E_MP2_corr", H.extra["e_mp2_corr"], cis["E_MP2_corr"]),
+         check("E_ref", ref["E_ref"], cis["E_ref"]),
+         check("E_CISD", ref["E_CISD"], cis["E_CISD"]),
+         check("E_CCSD", ref["E_CCSD"], cis["E_CCSD"]),
+         check("E_CCSD(T)", ref["E_CCSD(T)"], cis["E_CCSD(T)"]),
+         check("E_CASCI", ref["E_FCI"], cis["E_CASCI"]),
+         f"point group {H.extra['mol'].groupname}, n_core {H.extra['n_core']}, "
+         f"active irreps {H.irrep_names}"]
+d = np.load("results/cisplatin_cas10_10.npz")
+lines.append(f"max |h1 - stored h1| = {np.abs(H.h1 - d['h1']).max():.1e}, "
+             f"max |eri - stored eri| = {np.abs(H.eri - d['eri']).max():.1e}")
+assert np.abs(H.h1 - d["h1"]).max() < 1e-8 and np.abs(H.eri - d["eri"]).max() < 1e-8
+merge("cisplatin_C2v_eq", lines)
+report += ["cisplatin_C2v_eq"] + ["  " + l for l in lines]
+print("cisplatin eq ok", flush=True)
+
+# ------------------------------------------------------------ Pt-Cl scan, Cs
+pes = {round(r["R_PtCl"], 3): r for r in json.load(open("results/pes.json"))}
+R_EQ = 2.32
+prev = None
+order = [2.32, 2.5, 2.7, 2.9, 3.2, 3.5, 3.8, "eq", 2.2, 2.0]
+states = {}
+for r in order:
+    if r == "eq":
+        prev = states[R_EQ]
+        continue
+    stem = f"cisplatin_Cs_R{r:.2f}"
+    start(stem)
+    H = S.cisplatin_cas_hamiltonian(r1=r, r2=R_EQ, prev=prev, label=stem, symmetry="Cs")
+    ref = S.classical_references(H)
+    old = pes[round(r, 3)]
+    lines = [check("E_RHF", H.e_rhf_total, old["E_RHF"]),
+             check("E_ref", ref["E_ref"], old["E_ref"]),
+             check("E_CISD", ref["E_CISD"], old["E_CISD"]),
+             check("E_CCSD", ref["E_CCSD"], old["E_CCSD"]),
+             check("E_CCSD(T)", ref["E_CCSD(T)"], old["E_CCSD(T)"]),
+             check("E_CASCI", ref["E_FCI"], old["E_CASCI"]),
+             f"tracked from R = {('none (occupation selection)' if prev is None else 'previous point')}"]
+    merge(stem, lines)
+    report += [stem] + ["  " + l for l in lines]
+    states[r] = {"mol": H.extra["mol"], "mf": H.extra["mf"], "C_act_ao": H.extra["C_act_ao"]}
+    prev = states[r]
+    print(stem, "ok", flush=True)
+
+with open(os.path.join(LOGDIR, "SUMMARY.txt"), "w") as f:
+    f.write("Reference energies recomputed with full PySCF output and compared with "
+            f"stored values (tolerance {TOL:g} Ha)\n\n")
+    f.write("\n".join(report) + "\n")
+print("all reference energies reproduced")
+#INFO: ******************** input file end ********************
+
+
+System: uname_result(system='Linux', node='vm', release='6.18.44-fc-v153', version='#1 SMP PREEMPT_DYNAMIC @0', machine='x86_64')  Threads 1
+Python 3.13.17 (main, Oct 22 2026, 14:06:04) [GCC 13.3.0]
+numpy 2.5.3  scipy 1.18.1  h5py 3.16.0
+Date: Fri Oct 23 21:30:14 2026
+PySCF version 2.14.0
+PySCF path  /usr/local/lib/python3.13/dist-packages/pyscf
+
+[CONFIG] conf_file None
+[INPUT] verbose = 4
+[INPUT] num. atoms = 0
+[INPUT] num. electrons = 0
+[INPUT] charge = 0
+[INPUT] spin (= nelec alpha-beta = 2S) = 0
+[INPUT] symmetry False subgroup None
+[INPUT] Mole.unit = angstrom
+[INPUT] Symbol           X                Y                Z      unit          X                Y                Z       unit  Magmom
+
+nuclear repulsion = 0
+number of shells = 0
+number of NR pGTOs = 0
+number of NR cGTOs = 0
+basis = sto-3g
+ecp = {}
+CPU time:         2.86
+
+******** <class 'pyscf.ci.cisd.RCISD'> ********
+CISD nocc = 2, nmo = 6
+max_cycle = 50
+direct = 0
+conv_tol = 1e-10
+max_cycle = 50
+max_space = 12
+lindep = 0
+nroots = 1
+max_memory 4000 MB (current use 115 MB)
+Init t2, MP2 energy = -0.0531823812975086
+RCISD converged
+E(RCISD) = -7.793400157716845  E_corr = -0.102960160240934
+
+******** <class 'pyscf.cc.ccsd.CCSD'> ********
+CC2 = 0
+CCSD nocc = 2, nmo = 6
+max_cycle = 500
+direct = 0
+conv_tol = 1e-11
+conv_tol_normt = 1e-05
+diis_space = 6
+diis_start_cycle = 0
+diis_start_energy_diff = 1e+09
+max_memory 4000 MB (current use 115 MB)
+Init t2, MP2 energy = -7.74362237877342  E_corr(MP2) -0.0531823812975085
+Init E_corr(CCSD) = -0.0531823812975086
+cycle = 1  E_corr(CCSD) = -0.0785803700521382  dE = -0.0253979888  norm(t1,t2) = 0.147355
+cycle = 2  E_corr(CCSD) = -0.0920781153929582  dE = -0.0134977453  norm(t1,t2) = 0.0863542
+cycle = 3  E_corr(CCSD) = -0.0988107674160795  dE = -0.00673265202  norm(t1,t2) = 0.0471236
+cycle = 4  E_corr(CCSD) = -0.102203380575609  dE = -0.00339261316  norm(t1,t2) = 0.0345464
+cycle = 5  E_corr(CCSD) = -0.101976311722561  dE = 0.000227068853  norm(t1,t2) = 0.019245
+cycle = 6  E_corr(CCSD) = -0.103718129128825  dE = -0.00174181741  norm(t1,t2) = 0.00586646
+cycle = 7  E_corr(CCSD) = -0.102702562688867  dE = 0.00101556644  norm(t1,t2) = 0.00388482
+cycle = 8  E_corr(CCSD) = -0.102962515252121  dE = -0.000259952563  norm(t1,t2) = 0.00162445
+cycle = 9  E_corr(CCSD) = -0.102969782103361  dE = -7.26685124e-06  norm(t1,t2) = 0.000135662
+cycle = 10  E_corr(CCSD) = -0.102970034717598  dE = -2.52614237e-07  norm(t1,t2) = 3.77554e-06
+cycle = 11  E_corr(CCSD) = -0.10297003097094  dE = 3.74665743e-09  norm(t1,t2) = 2.08989e-07
+cycle = 12  E_corr(CCSD) = -0.102970031117336  dE = -1.46395354e-10  norm(t1,t2) = 3.39833e-08
+cycle = 13  E_corr(CCSD) = -0.102970031476736  dE = -3.59400121e-10  norm(t1,t2) = 2.10058e-08
+cycle = 14  E_corr(CCSD) = -0.102970031637665  dE = -1.60928992e-10  norm(t1,t2) = 1.64061e-08
+cycle = 15  E_corr(CCSD) = -0.102970031584714  dE = 5.29506577e-11  norm(t1,t2) = 1.32237e-08
+cycle = 16  E_corr(CCSD) = -0.102970032109269  dE = -5.24554802e-10  norm(t1,t2) = 9.90969e-09
+cycle = 17  E_corr(CCSD) = -0.102970032157295  dE = -4.8026097e-11  norm(t1,t2) = 1.32182e-08
+cycle = 18  E_corr(CCSD) = -0.102970032038157  dE = 1.19138435e-10  norm(t1,t2) = 1.32994e-08
+cycle = 19  E_corr(CCSD) = -0.102970031987404  dE = 5.07524855e-11  norm(t1,t2) = 1.1085e-08
+cycle = 20  E_corr(CCSD) = -0.102970031941524  dE = 4.58800359e-11  norm(t1,t2) = 1.00149e-08
+cycle = 21  E_corr(CCSD) = -0.102970031902853  dE = 3.86712051e-11  norm(t1,t2) = 9.54542e-09
+cycle = 22  E_corr(CCSD) = -0.102970031906517  dE = -3.66377761e-12  norm(t1,t2) = 9.01724e-09
+CCSD converged
+E(CCSD) = -7.793410029382428  E_corr = -0.1029700319065168
+CCSD(T) correction = -0.000122938073508468

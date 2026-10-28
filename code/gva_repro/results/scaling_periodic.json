@@ -1,0 +1,2401 @@
+{
+ "one_d": [
+  {
+   "mesh": [
+    1
+   ],
+   "n_k": 1,
+   "o": 1,
+   "v": 1,
+   "n_qubits": 4,
+   "UCCSD_params": 3,
+   "UCCSD_cnot_1L": 64,
+   "S_per_spin": 1,
+   "D_ss_per_spin": 0,
+   "D_ab": 1,
+   "n_self": 1,
+   "k_generators": 3,
+   "k_only_params": 6,
+   "k_spin_params": 4,
+   "k_TR_params": 3,
+   "GVA_k_params": 2,
+   "k_cnot_1L": 64
+  },
+  {
+   "mesh": [
+    2
+   ],
+   "n_k": 2,
+   "o": 1,
+   "v": 1,
+   "n_qubits": 8,
+   "UCCSD_params": 26,
+   "UCCSD_cnot_1L": 1312,
+   "S_per_spin": 2,
+   "D_ss_per_spin": 1,
+   "D_ab": 8,
+   "n_self": 4,
+   "k_generators": 14,
+   "k_only_params": 28,
+   "k_spin_params": 18,
+   "k_TR_params": 14,
+   "GVA_k_params": 9,
+   "k_cnot_1L": 736
+  },
+  {
+   "mesh": [
+    3
+   ],
+   "n_k": 3,
+   "o": 1,
+   "v": 1,
+   "n_qubits": 12,
+   "UCCSD_params": 117,
+   "UCCSD_cnot_1L": 9024,
+   "S_per_spin": 3,
+   "D_ss_per_spin": 3,
+   "D_ab": 27,
+   "n_self": 3,
+   "k_generators": 39,
+   "k_only_params": 78,
+   "k_spin_params": 42,
+   "k_TR_params": 39,
+   "GVA_k_params": 21,
+   "k_cnot_1L": 3008
+  },
+  {
+   "mesh": [
+    4
+   ],
+   "n_k": 4,
+   "o": 1,
+   "v": 1,
+   "n_qubits": 16,
+   "UCCSD_params": 360,
+   "UCCSD_cnot_1L": 36480,
+   "S_per_spin": 4,
+   "D_ss_per_spin": 10,
+   "D_ab": 64,
+   "n_self": 8,
+   "k_generators": 92,
+   "k_only_params": 184,
+   "k_spin_params": 100,
+   "k_TR_params": 92,
+   "GVA_k_params": 50,
+   "k_cnot_1L": 9280
+  },
+  {
+   "mesh": [
+    5
+   ],
+   "n_k": 5,
+   "o": 1,
+   "v": 1,
+   "n_qubits": 20,
+   "UCCSD_params": 875,
+   "UCCSD_cnot_1L": 108800,
+   "S_per_spin": 5,
+   "D_ss_per_spin": 20,
+   "D_ab": 125,
+   "n_self": 5,
+   "k_generators": 175,
+   "k_only_params": 350,
+   "k_spin_params": 180,
+   "k_TR_params": 175,
+   "GVA_k_params": 90,
+   "k_cnot_1L": 21760
+  },
+  {
+   "mesh": [
+    6
+   ],
+   "n_k": 6,
+   "o": 1,
+   "v": 1,
+   "n_qubits": 24,
+   "UCCSD_params": 1818,
+   "UCCSD_cnot_1L": 266784,
+   "S_per_spin": 6,
+   "D_ss_per_spin": 39,
+   "D_ab": 216,
+   "n_self": 12,
+   "k_generators": 306,
+   "k_only_params": 612,
+   "k_spin_params": 318,
+   "k_TR_params": 306,
+   "GVA_k_params": 159,
+   "k_cnot_1L": 44704
+  },
+  {
+   "mesh": [
+    7
+   ],
+   "n_k": 7,
+   "o": 1,
+   "v": 1,
+   "n_qubits": 28,
+   "UCCSD_params": 3381,
+   "UCCSD_cnot_1L": 570752,
+   "S_per_spin": 7,
+   "D_ss_per_spin": 63,
+   "D_ab": 343,
+   "n_self": 7,
+   "k_generators": 483,
+   "k_only_params": 966,
+   "k_spin_params": 490,
+   "k_TR_params": 483,
+   "GVA_k_params": 245,
+   "k_cnot_1L": 81536
+  },
+  {
+   "mesh": [
+    8
+   ],
+   "n_k": 8,
+   "o": 1,
+   "v": 1,
+   "n_qubits": 32,
+   "UCCSD_params": 5792,
+   "UCCSD_cnot_1L": 1104384,
+   "S_per_spin": 8,
+   "D_ss_per_spin": 100,
+   "D_ab": 512,
+   "n_self": 16,
+   "k_generators": 728,
+   "k_only_params": 1456,
+   "k_spin_params": 744,
+   "k_TR_params": 728,
+   "GVA_k_params": 372,
+   "k_cnot_1L": 138368
+  },
+  {
+   "mesh": [
+    9
+   ],
+   "n_k": 9,
+   "o": 1,
+   "v": 1,
+   "n_qubits": 36,
+   "UCCSD_params": 9315,
+   "UCCSD_cnot_1L": 1978560,
+   "S_per_spin": 9,
+   "D_ss_per_spin": 144,
+   "D_ab": 729,
+   "n_self": 9,
+   "k_generators": 1035,
+   "k_only_params": 2070,
+   "k_spin_params": 1044,
+   "k_TR_params": 1035,
+   "GVA_k_params": 522,
+   "k_cnot_1L": 219840
+  },
+  {
+   "mesh": [
+    10
+   ],
+   "n_k": 10,
+   "o": 1,
+   "v": 1,
+   "n_qubits": 40,
+   "UCCSD_params": 14250,
+   "UCCSD_cnot_1L": 3335200,
+   "S_per_spin": 10,
+   "D_ss_per_spin": 205,
+   "D_ab": 1000,
+   "n_self": 20,
+   "k_generators": 1430,
+   "k_only_params": 2860,
+   "k_spin_params": 1450,
+   "k_TR_params": 1430,
+   "GVA_k_params": 725,
+   "k_cnot_1L": 333920
+  },
+  {
+   "mesh": [
+    11
+   ],
+   "n_k": 11,
+   "o": 1,
+   "v": 1,
+   "n_qubits": 44,
+   "UCCSD_params": 20933,
+   "UCCSD_cnot_1L": 5351104,
+   "S_per_spin": 11,
+   "D_ss_per_spin": 275,
+   "D_ab": 1331,
+   "n_self": 11,
+   "k_generators": 1903,
+   "k_only_params": 3806,
+   "k_spin_params": 1914,
+   "k_TR_params": 1903,
+   "GVA_k_params": 957,
+   "k_cnot_1L": 486464
+  },
+  {
+   "mesh": [
+    12
+   ],
+   "n_k": 12,
+   "o": 1,
+   "v": 1,
+   "n_qubits": 48,
+   "UCCSD_params": 29736,
+   "UCCSD_cnot_1L": 8241792,
+   "S_per_spin": 12,
+   "D_ss_per_spin": 366,
+   "D_ab": 1728,
+   "n_self": 24,
+   "k_generators": 2484,
+   "k_only_params": 4968,
+   "k_spin_params": 2508,
+   "k_TR_params": 2484,
+   "GVA_k_params": 1254,
+   "k_cnot_1L": 687296
+  },
+  {
+   "mesh": [
+    13
+   ],
+   "n_k": 13,
+   "o": 1,
+   "v": 1,
+   "n_qubits": 52,
+   "UCCSD_params": 41067,
+   "UCCSD_cnot_1L": 12265344,
+   "S_per_spin": 13,
+   "D_ss_per_spin": 468,
+   "D_ab": 2197,
+   "n_self": 13,
+   "k_generators": 3159,
+   "k_only_params": 6318,
+   "k_spin_params": 3172,
+   "k_TR_params": 3159,
+   "GVA_k_params": 1586,
+   "k_cnot_1L": 943488
+  },
+  {
+   "mesh": [
+    14
+   ],
+   "n_k": 14,
+   "o": 1,
+   "v": 1,
+   "n_qubits": 56,
+   "UCCSD_params": 55370,
+   "UCCSD_cnot_1L": 17726240,
+   "S_per_spin": 14,
+   "D_ss_per_spin": 595,
+   "D_ab": 2744,
+   "n_self": 28,
+   "k_generators": 3962,
+   "k_only_params": 7924,
+   "k_spin_params": 3990,
+   "k_TR_params": 3962,
+   "GVA_k_params": 1995,
+   "k_cnot_1L": 1266720
+  },
+  {
+   "mesh": [
+    15
+   ],
+   "n_k": 15,
+   "o": 1,
+   "v": 1,
+   "n_qubits": 60,
+   "UCCSD_params": 73125,
+   "UCCSD_cnot_1L": 24979200,
+   "S_per_spin": 15,
+   "D_ss_per_spin": 735,
+   "D_ab": 3375,
+   "n_self": 15,
+   "k_generators": 4875,
+   "k_only_params": 9750,
+   "k_spin_params": 4890,
+   "k_TR_params": 4875,
+   "GVA_k_params": 2445,
+   "k_cnot_1L": 1665280
+  },
+  {
+   "mesh": [
+    16
+   ],
+   "n_k": 16,
+   "o": 1,
+   "v": 1,
+   "n_qubits": 64,
+   "UCCSD_params": 94848,
+   "UCCSD_cnot_1L": 34433024,
+   "S_per_spin": 16,
+   "D_ss_per_spin": 904,
+   "D_ab": 4096,
+   "n_self": 32,
+   "k_generators": 5936,
+   "k_only_params": 11872,
+   "k_spin_params": 5968,
+   "k_TR_params": 5936,
+   "GVA_k_params": 2984,
+   "k_cnot_1L": 2152704
+  },
+  {
+   "mesh": [
+    17
+   ],
+   "n_k": 17,
+   "o": 1,
+   "v": 1,
+   "n_qubits": 68,
+   "UCCSD_params": 121091,
+   "UCCSD_cnot_1L": 46554432,
+   "S_per_spin": 17,
+   "D_ss_per_spin": 1088,
+   "D_ab": 4913,
+   "n_self": 17,
+   "k_generators": 7123,
+   "k_only_params": 14246,
+   "k_spin_params": 7140,
+   "k_TR_params": 7123,
+   "GVA_k_params": 3570,
+   "k_cnot_1L": 2738496
+  },
+  {
+   "mesh": [
+    18
+   ],
+   "n_k": 18,
+   "o": 1,
+   "v": 1,
+   "n_qubits": 72,
+   "UCCSD_params": 152442,
+   "UCCSD_cnot_1L": 61871904,
+   "S_per_spin": 18,
+   "D_ss_per_spin": 1305,
+   "D_ab": 5832,
+   "n_self": 36,
+   "k_generators": 8478,
+   "k_only_params": 16956,
+   "k_spin_params": 8514,
+   "k_TR_params": 8478,
+   "GVA_k_params": 4257,
+   "k_cnot_1L": 3438048
+  },
+  {
+   "mesh": [
+    19
+   ],
+   "n_k": 19,
+   "o": 1,
+   "v": 1,
+   "n_qubits": 76,
+   "UCCSD_params": 189525,
+   "UCCSD_cnot_1L": 80979520,
+   "S_per_spin": 19,
+   "D_ss_per_spin": 1539,
+   "D_ab": 6859,
+   "n_self": 19,
+   "k_generators": 9975,
+   "k_only_params": 19950,
+   "k_spin_params": 9994,
+   "k_TR_params": 9975,
+   "GVA_k_params": 4997,
+   "k_cnot_1L": 4262080
+  },
+  {
+   "mesh": [
+    20
+   ],
+   "n_k": 20,
+   "o": 1,
+   "v": 1,
+   "n_qubits": 80,
+   "UCCSD_params": 233000,
+   "UCCSD_cnot_1L": 104540800,
+   "S_per_spin": 20,
+   "D_ss_per_spin": 1810,
+   "D_ab": 8000,
+   "n_self": 40,
+   "k_generators": 11660,
+   "k_only_params": 23320,
+   "k_spin_params": 11700,
+   "k_TR_params": 11660,
+   "GVA_k_params": 5850,
+   "k_cnot_1L": 5227840
+  },
+  {
+   "mesh": [
+    21
+   ],
+   "n_k": 21,
+   "o": 1,
+   "v": 1,
+   "n_qubits": 84,
+   "UCCSD_params": 283563,
+   "UCCSD_cnot_1L": 133292544,
+   "S_per_spin": 21,
+   "D_ss_per_spin": 2100,
+   "D_ab": 9261,
+   "n_self": 21,
+   "k_generators": 13503,
+   "k_only_params": 27006,
+   "k_spin_params": 13524,
+   "k_TR_params": 13503,
+   "GVA_k_params": 6762,
+   "k_cnot_1L": 6347264
+  },
+  {
+   "mesh": [
+    22
+   ],
+   "n_k": 22,
+   "o": 1,
+   "v": 1,
+   "n_qubits": 88,
+   "UCCSD_params": 341946,
+   "UCCSD_cnot_1L": 168048672,
+   "S_per_spin": 22,
+   "D_ss_per_spin": 2431,
+   "D_ab": 10648,
+   "n_self": 44,
+   "k_generators": 15554,
+   "k_only_params": 31108,
+   "k_spin_params": 15598,
+   "k_TR_params": 15554,
+   "GVA_k_params": 7799,
+   "k_cnot_1L": 7639456
+  },
+  {
+   "mesh": [
+    23
+   ],
+   "n_k": 23,
+   "o": 1,
+   "v": 1,
+   "n_qubits": 92,
+   "UCCSD_params": 408917,
+   "UCCSD_cnot_1L": 209704064,
+   "S_per_spin": 23,
+   "D_ss_per_spin": 2783,
+   "D_ab": 12167,
+   "n_self": 23,
+   "k_generators": 17779,
+   "k_only_params": 35558,
+   "k_spin_params": 17802,
+   "k_TR_params": 17779,
+   "GVA_k_params": 8901,
+   "k_cnot_1L": 9117568
+  },
+  {
+   "mesh": [
+    24
+   ],
+   "n_k": 24,
+   "o": 1,
+   "v": 1,
+   "n_qubits": 96,
+   "UCCSD_params": 485280,
+   "UCCSD_cnot_1L": 259238400,
+   "S_per_spin": 24,
+   "D_ss_per_spin": 3180,
+   "D_ab": 13824,
+   "n_self": 48,
+   "k_generators": 20232,
+   "k_only_params": 40464,
+   "k_spin_params": 20280,
+   "k_TR_params": 20232,
+   "GVA_k_params": 10140,
+   "k_cnot_1L": 10802560
+  },
+  {
+   "mesh": [
+    25
+   ],
+   "n_k": 25,
+   "o": 1,
+   "v": 1,
+   "n_qubits": 100,
+   "UCCSD_params": 571875,
+   "UCCSD_cnot_1L": 317720000,
+   "S_per_spin": 25,
+   "D_ss_per_spin": 3600,
+   "D_ab": 15625,
+   "n_self": 25,
+   "k_generators": 22875,
+   "k_only_params": 45750,
+   "k_spin_params": 22900,
+   "k_TR_params": 22875,
+   "GVA_k_params": 11450,
+   "k_cnot_1L": 12708800
+  },
+  {
+   "mesh": [
+    26
+   ],
+   "n_k": 26,
+   "o": 1,
+   "v": 1,
+   "n_qubits": 104,
+   "UCCSD_params": 669578,
+   "UCCSD_cnot_1L": 386309664,
+   "S_per_spin": 26,
+   "D_ss_per_spin": 4069,
+   "D_ab": 17576,
+   "n_self": 52,
+   "k_generators": 25766,
+   "k_only_params": 51532,
+   "k_spin_params": 25818,
+   "k_TR_params": 25766,
+   "GVA_k_params": 12909,
+   "k_cnot_1L": 14859104
+  },
+  {
+   "mesh": [
+    27
+   ],
+   "n_k": 27,
+   "o": 1,
+   "v": 1,
+   "n_qubits": 108,
+   "UCCSD_params": 779301,
+   "UCCSD_cnot_1L": 466264512,
+   "S_per_spin": 27,
+   "D_ss_per_spin": 4563,
+   "D_ab": 19683,
+   "n_self": 27,
+   "k_generators": 28863,
+   "k_only_params": 57726,
+   "k_spin_params": 28890,
+   "k_TR_params": 28863,
+   "GVA_k_params": 14445,
+   "k_cnot_1L": 17269056
+  },
+  {
+   "mesh": [
+    28
+   ],
+   "n_k": 28,
+   "o": 1,
+   "v": 1,
+   "n_qubits": 112,
+   "UCCSD_params": 901992,
+   "UCCSD_cnot_1L": 558941824,
+   "S_per_spin": 28,
+   "D_ss_per_spin": 5110,
+   "D_ab": 21952,
+   "n_self": 56,
+   "k_generators": 32228,
+   "k_only_params": 64456,
+   "k_spin_params": 32284,
+   "k_TR_params": 32228,
+   "GVA_k_params": 16142,
+   "k_cnot_1L": 19963328
+  },
+  {
+   "mesh": [
+    29
+   ],
+   "n_k": 29,
+   "o": 1,
+   "v": 1,
+   "n_qubits": 116,
+   "UCCSD_params": 1038635,
+   "UCCSD_cnot_1L": 665802880,
+   "S_per_spin": 29,
+   "D_ss_per_spin": 5684,
+   "D_ab": 24389,
+   "n_self": 29,
+   "k_generators": 35815,
+   "k_only_params": 71630,
+   "k_spin_params": 35844,
+   "k_TR_params": 35815,
+   "GVA_k_params": 17922,
+   "k_cnot_1L": 22958720
+  },
+  {
+   "mesh": [
+    30
+   ],
+   "n_k": 30,
+   "o": 1,
+   "v": 1,
+   "n_qubits": 120,
+   "UCCSD_params": 1190250,
+   "UCCSD_cnot_1L": 788416800,
+   "S_per_spin": 30,
+   "D_ss_per_spin": 6315,
+   "D_ab": 27000,
+   "n_self": 60,
+   "k_generators": 39690,
+   "k_only_params": 79380,
+   "k_spin_params": 39750,
+   "k_TR_params": 39690,
+   "GVA_k_params": 19875,
+   "k_cnot_1L": 26281760
+  },
+  {
+   "mesh": [
+    31
+   ],
+   "n_k": 31,
+   "o": 1,
+   "v": 1,
+   "n_qubits": 124,
+   "UCCSD_params": 1357893,
+   "UCCSD_cnot_1L": 928464384,
+   "S_per_spin": 31,
+   "D_ss_per_spin": 6975,
+   "D_ab": 29791,
+   "n_self": 31,
+   "k_generators": 43803,
+   "k_only_params": 87606,
+   "k_spin_params": 43834,
+   "k_TR_params": 43803,
+   "GVA_k_params": 21917,
+   "k_cnot_1L": 29950464
+  },
+  {
+   "mesh": [
+    32
+   ],
+   "n_k": 32,
+   "o": 1,
+   "v": 1,
+   "n_qubits": 128,
+   "UCCSD_params": 1542656,
+   "UCCSD_cnot_1L": 1087741952,
+   "S_per_spin": 32,
+   "D_ss_per_spin": 7696,
+   "D_ab": 32768,
+   "n_self": 64,
+   "k_generators": 48224,
+   "k_only_params": 96448,
+   "k_spin_params": 48288,
+   "k_TR_params": 48224,
+   "GVA_k_params": 24144,
+   "k_cnot_1L": 33993216
+  },
+  {
+   "mesh": [
+    1
+   ],
+   "n_k": 1,
+   "o": 2,
+   "v": 2,
+   "n_qubits": 8,
+   "UCCSD_params": 26,
+   "UCCSD_cnot_1L": 1312,
+   "S_per_spin": 4,
+   "D_ss_per_spin": 1,
+   "D_ab": 16,
+   "n_self": 4,
+   "k_generators": 26,
+   "k_only_params": 52,
+   "k_spin_params": 30,
+   "k_TR_params": 26,
+   "GVA_k_params": 15,
+   "k_cnot_1L": 1312
+  },
+  {
+   "mesh": [
+    2
+   ],
+   "n_k": 2,
+   "o": 2,
+   "v": 2,
+   "n_qubits": 16,
+   "UCCSD_params": 360,
+   "UCCSD_cnot_1L": 36480,
+   "S_per_spin": 8,
+   "D_ss_per_spin": 20,
+   "D_ab": 128,
+   "n_self": 16,
+   "k_generators": 184,
+   "k_only_params": 368,
+   "k_spin_params": 200,
+   "k_TR_params": 184,
+   "GVA_k_params": 100,
+   "k_cnot_1L": 19072
+  },
+  {
+   "mesh": [
+    3
+   ],
+   "n_k": 3,
+   "o": 2,
+   "v": 2,
+   "n_qubits": 24,
+   "UCCSD_params": 1818,
+   "UCCSD_cnot_1L": 266784,
+   "S_per_spin": 12,
+   "D_ss_per_spin": 75,
+   "D_ab": 432,
+   "n_self": 12,
+   "k_generators": 606,
+   "k_only_params": 1212,
+   "k_spin_params": 618,
+   "k_TR_params": 606,
+   "GVA_k_params": 309,
+   "k_cnot_1L": 88928
+  },
+  {
+   "mesh": [
+    4
+   ],
+   "n_k": 4,
+   "o": 2,
+   "v": 2,
+   "n_qubits": 32,
+   "UCCSD_params": 5792,
+   "UCCSD_cnot_1L": 1104384,
+   "S_per_spin": 16,
+   "D_ss_per_spin": 200,
+   "D_ab": 1024,
+   "n_self": 32,
+   "k_generators": 1456,
+   "k_only_params": 2912,
+   "k_spin_params": 1488,
+   "k_TR_params": 1456,
+   "GVA_k_params": 744,
+   "k_cnot_1L": 277760
+  },
+  {
+   "mesh": [
+    5
+   ],
+   "n_k": 5,
+   "o": 2,
+   "v": 2,
+   "n_qubits": 40,
+   "UCCSD_params": 14250,
+   "UCCSD_cnot_1L": 3335200,
+   "S_per_spin": 20,
+   "D_ss_per_spin": 405,
+   "D_ab": 2000,
+   "n_self": 20,
+   "k_generators": 2850,
+   "k_only_params": 5700,
+   "k_spin_params": 2870,
+   "k_TR_params": 2850,
+   "GVA_k_params": 1435,
+   "k_cnot_1L": 667040
+  },
+  {
+   "mesh": [
+    6
+   ],
+   "n_k": 6,
+   "o": 2,
+   "v": 2,
+   "n_qubits": 48,
+   "UCCSD_params": 29736,
+   "UCCSD_cnot_1L": 8241792,
+   "S_per_spin": 24,
+   "D_ss_per_spin": 732,
+   "D_ab": 3456,
+   "n_self": 48,
+   "k_generators": 4968,
+   "k_only_params": 9936,
+   "k_spin_params": 5016,
+   "k_TR_params": 4968,
+   "GVA_k_params": 2508,
+   "k_cnot_1L": 1376128
+  },
+  {
+   "mesh": [
+    7
+   ],
+   "n_k": 7,
+   "o": 2,
+   "v": 2,
+   "n_qubits": 56,
+   "UCCSD_params": 55370,
+   "UCCSD_cnot_1L": 17726240,
+   "S_per_spin": 28,
+   "D_ss_per_spin": 1183,
+   "D_ab": 5488,
+   "n_self": 28,
+   "k_generators": 7910,
+   "k_only_params": 15820,
+   "k_spin_params": 7938,
+   "k_TR_params": 7910,
+   "GVA_k_params": 3969,
+   "k_cnot_1L": 2532320
+  },
+  {
+   "mesh": [
+    8
+   ],
+   "n_k": 8,
+   "o": 2,
+   "v": 2,
+   "n_qubits": 64,
+   "UCCSD_params": 94848,
+   "UCCSD_cnot_1L": 34433024,
+   "S_per_spin": 32,
+   "D_ss_per_spin": 1808,
+   "D_ab": 8192,
+   "n_self": 64,
+   "k_generators": 11872,
+   "k_only_params": 23744,
+   "k_spin_params": 11936,
+   "k_TR_params": 11872,
+   "GVA_k_params": 5968,
+   "k_cnot_1L": 4307456
+  },
+  {
+   "mesh": [
+    9
+   ],
+   "n_k": 9,
+   "o": 2,
+   "v": 2,
+   "n_qubits": 72,
+   "UCCSD_params": 152442,
+   "UCCSD_cnot_1L": 61871904,
+   "S_per_spin": 36,
+   "D_ss_per_spin": 2601,
+   "D_ab": 11664,
+   "n_self": 36,
+   "k_generators": 16938,
+   "k_only_params": 33876,
+   "k_spin_params": 16974,
+   "k_TR_params": 16938,
+   "GVA_k_params": 8487,
+   "k_cnot_1L": 6874656
+  },
+  {
+   "mesh": [
+    10
+   ],
+   "n_k": 10,
+   "o": 2,
+   "v": 2,
+   "n_qubits": 80,
+   "UCCSD_params": 233000,
+   "UCCSD_cnot_1L": 104540800,
+   "S_per_spin": 40,
+   "D_ss_per_spin": 3620,
+   "D_ab": 16000,
+   "n_self": 80,
+   "k_generators": 23320,
+   "k_only_params": 46640,
+   "k_spin_params": 23400,
+   "k_TR_params": 23320,
+   "GVA_k_params": 11700,
+   "k_cnot_1L": 10458240
+  },
+  {
+   "mesh": [
+    11
+   ],
+   "n_k": 11,
+   "o": 2,
+   "v": 2,
+   "n_qubits": 88,
+   "UCCSD_params": 341946,
+   "UCCSD_cnot_1L": 168048672,
+   "S_per_spin": 44,
+   "D_ss_per_spin": 4851,
+   "D_ab": 21296,
+   "n_self": 44,
+   "k_generators": 31086,
+   "k_only_params": 62172,
+   "k_spin_params": 31130,
+   "k_TR_params": 31086,
+   "GVA_k_params": 15565,
+   "k_cnot_1L": 15277152
+  },
+  {
+   "mesh": [
+    12
+   ],
+   "n_k": 12,
+   "o": 2,
+   "v": 2,
+   "n_qubits": 96,
+   "UCCSD_params": 485280,
+   "UCCSD_cnot_1L": 259238400,
+   "S_per_spin": 48,
+   "D_ss_per_spin": 6360,
+   "D_ab": 27648,
+   "n_self": 96,
+   "k_generators": 40464,
+   "k_only_params": 80928,
+   "k_spin_params": 40560,
+   "k_TR_params": 40464,
+   "GVA_k_params": 20280,
+   "k_cnot_1L": 21608192
+  },
+  {
+   "mesh": [
+    13
+   ],
+   "n_k": 13,
+   "o": 2,
+   "v": 2,
+   "n_qubits": 104,
+   "UCCSD_params": 669578,
+   "UCCSD_cnot_1L": 386309664,
+   "S_per_spin": 52,
+   "D_ss_per_spin": 8125,
+   "D_ab": 35152,
+   "n_self": 52,
+   "k_generators": 51506,
+   "k_only_params": 103012,
+   "k_spin_params": 51558,
+   "k_TR_params": 51506,
+   "GVA_k_params": 25779,
+   "k_cnot_1L": 29716128
+  },
+  {
+   "mesh": [
+    14
+   ],
+   "n_k": 14,
+   "o": 2,
+   "v": 2,
+   "n_qubits": 112,
+   "UCCSD_params": 901992,
+   "UCCSD_cnot_1L": 558941824,
+   "S_per_spin": 56,
+   "D_ss_per_spin": 10220,
+   "D_ab": 43904,
+   "n_self": 112,
+   "k_generators": 64456,
+   "k_only_params": 128912,
+   "k_spin_params": 64568,
+   "k_TR_params": 64456,
+   "GVA_k_params": 32284,
+   "k_cnot_1L": 39930240
+  },
+  {
+   "mesh": [
+    15
+   ],
+   "n_k": 15,
+   "o": 2,
+   "v": 2,
+   "n_qubits": 120,
+   "UCCSD_params": 1190250,
+   "UCCSD_cnot_1L": 788416800,
+   "S_per_spin": 60,
+   "D_ss_per_spin": 12615,
+   "D_ab": 54000,
+   "n_self": 60,
+   "k_generators": 79350,
+   "k_only_params": 158700,
+   "k_spin_params": 79410,
+   "k_TR_params": 79350,
+   "GVA_k_params": 39705,
+   "k_cnot_1L": 52561120
+  },
+  {
+   "mesh": [
+    16
+   ],
+   "n_k": 16,
+   "o": 2,
+   "v": 2,
+   "n_qubits": 128,
+   "UCCSD_params": 1542656,
+   "UCCSD_cnot_1L": 1087741952,
+   "S_per_spin": 64,
+   "D_ss_per_spin": 15392,
+   "D_ab": 65536,
+   "n_self": 128,
+   "k_generators": 96448,
+   "k_only_params": 192896,
+   "k_spin_params": 96576,
+   "k_TR_params": 96448,
+   "GVA_k_params": 48288,
+   "k_cnot_1L": 67990528
+  },
+  {
+   "mesh": [
+    17
+   ],
+   "n_k": 17,
+   "o": 2,
+   "v": 2,
+   "n_qubits": 136,
+   "UCCSD_params": 1968090,
+   "UCCSD_cnot_1L": 1471772960,
+   "S_per_spin": 68,
+   "D_ss_per_spin": 18513,
+   "D_ab": 78608,
+   "n_self": 68,
+   "k_generators": 115770,
+   "k_only_params": 231540,
+   "k_spin_params": 115838,
+   "k_TR_params": 115770,
+   "GVA_k_params": 57919,
+   "k_cnot_1L": 86574880
+  },
+  {
+   "mesh": [
+    18
+   ],
+   "n_k": 18,
+   "o": 2,
+   "v": 2,
+   "n_qubits": 144,
+   "UCCSD_params": 2476008,
+   "UCCSD_cnot_1L": 1957336704,
+   "S_per_spin": 72,
+   "D_ss_per_spin": 22068,
+   "D_ab": 93312,
+   "n_self": 144,
+   "k_generators": 137592,
+   "k_only_params": 275184,
+   "k_spin_params": 137736,
+   "k_TR_params": 137592,
+   "GVA_k_params": 68868,
+   "k_cnot_1L": 108748416
+  },
+  {
+   "mesh": [
+    19
+   ],
+   "n_k": 19,
+   "o": 2,
+   "v": 2,
+   "n_qubits": 152,
+   "UCCSD_params": 3076442,
+   "UCCSD_cnot_1L": 2563354144,
+   "S_per_spin": 76,
+   "D_ss_per_spin": 26011,
+   "D_ab": 109744,
+   "n_self": 76,
+   "k_generators": 161918,
+   "k_only_params": 323836,
+   "k_spin_params": 161994,
+   "k_TR_params": 161918,
+   "GVA_k_params": 80997,
+   "k_cnot_1L": 134913376
+  },
+  {
+   "mesh": [
+    20
+   ],
+   "n_k": 20,
+   "o": 2,
+   "v": 2,
+   "n_qubits": 160,
+   "UCCSD_params": 3780000,
+   "UCCSD_cnot_1L": 3310963200,
+   "S_per_spin": 80,
+   "D_ss_per_spin": 30440,
+   "D_ab": 128000,
+   "n_self": 160,
+   "k_generators": 189040,
+   "k_only_params": 378080,
+   "k_spin_params": 189200,
+   "k_TR_params": 189040,
+   "GVA_k_params": 94600,
+   "k_cnot_1L": 165556480
+  },
+  {
+   "mesh": [
+    21
+   ],
+   "n_k": 21,
+   "o": 2,
+   "v": 2,
+   "n_qubits": 168,
+   "UCCSD_params": 4597866,
+   "UCCSD_cnot_1L": 4223641632,
+   "S_per_spin": 84,
+   "D_ss_per_spin": 35301,
+   "D_ab": 148176,
+   "n_self": 84,
+   "k_generators": 218946,
+   "k_only_params": 437892,
+   "k_spin_params": 219030,
+   "k_TR_params": 218946,
+   "GVA_k_params": 109515,
+   "k_cnot_1L": 201125792
+  },
+  {
+   "mesh": [
+    22
+   ],
+   "n_k": 22,
+   "o": 2,
+   "v": 2,
+   "n_qubits": 176,
+   "UCCSD_params": 5541800,
+   "UCCSD_cnot_1L": 5327329920,
+   "S_per_spin": 88,
+   "D_ss_per_spin": 40700,
+   "D_ab": 170368,
+   "n_self": 176,
+   "k_generators": 251944,
+   "k_only_params": 503888,
+   "k_spin_params": 252120,
+   "k_TR_params": 251944,
+   "GVA_k_params": 126060,
+   "k_cnot_1L": 242160512
+  },
+  {
+   "mesh": [
+    23
+   ],
+   "n_k": 23,
+   "o": 2,
+   "v": 2,
+   "n_qubits": 184,
+   "UCCSD_params": 6624138,
+   "UCCSD_cnot_1L": 6650554144,
+   "S_per_spin": 92,
+   "D_ss_per_spin": 46575,
+   "D_ab": 194672,
+   "n_self": 92,
+   "k_generators": 288006,
+   "k_only_params": 576012,
+   "k_spin_params": 288098,
+   "k_TR_params": 288006,
+   "GVA_k_params": 144049,
+   "k_cnot_1L": 289154528
+  },
+  {
+   "mesh": [
+    24
+   ],
+   "n_k": 24,
+   "o": 2,
+   "v": 2,
+   "n_qubits": 192,
+   "UCCSD_params": 7857792,
+   "UCCSD_cnot_1L": 8224548864,
+   "S_per_spin": 96,
+   "D_ss_per_spin": 53040,
+   "D_ab": 221184,
+   "n_self": 192,
+   "k_generators": 327456,
+   "k_only_params": 654912,
+   "k_spin_params": 327648,
+   "k_TR_params": 327456,
+   "GVA_k_params": 163824,
+   "k_cnot_1L": 342699520
+  },
+  {
+   "mesh": [
+    25
+   ],
+   "n_k": 25,
+   "o": 2,
+   "v": 2,
+   "n_qubits": 200,
+   "UCCSD_params": 9256250,
+   "UCCSD_cnot_1L": 10083380000,
+   "S_per_spin": 100,
+   "D_ss_per_spin": 60025,
+   "D_ab": 250000,
+   "n_self": 100,
+   "k_generators": 370250,
+   "k_only_params": 740500,
+   "k_spin_params": 370350,
+   "k_TR_params": 370250,
+   "GVA_k_params": 185175,
+   "k_cnot_1L": 403335200
+  },
+  {
+   "mesh": [
+    26
+   ],
+   "n_k": 26,
+   "o": 2,
+   "v": 2,
+   "n_qubits": 208,
+   "UCCSD_params": 10833576,
+   "UCCSD_cnot_1L": 12264067712,
+   "S_per_spin": 104,
+   "D_ss_per_spin": 67652,
+   "D_ab": 281216,
+   "n_self": 208,
+   "k_generators": 416728,
+   "k_only_params": 833456,
+   "k_spin_params": 416936,
+   "k_TR_params": 416728,
+   "GVA_k_params": 208468,
+   "k_cnot_1L": 471705728
+  },
+  {
+   "mesh": [
+    27
+   ],
+   "n_k": 27,
+   "o": 2,
+   "v": 2,
+   "n_qubits": 216,
+   "UCCSD_params": 12604410,
+   "UCCSD_cnot_1L": 14806709280,
+   "S_per_spin": 108,
+   "D_ss_per_spin": 75843,
+   "D_ab": 314928,
+   "n_self": 108,
+   "k_generators": 466830,
+   "k_only_params": 933660,
+   "k_spin_params": 466938,
+   "k_TR_params": 466830,
+   "GVA_k_params": 233469,
+   "k_cnot_1L": 548396640
+  },
+  {
+   "mesh": [
+    28
+   ],
+   "n_k": 28,
+   "o": 2,
+   "v": 2,
+   "n_qubits": 224,
+   "UCCSD_params": 14583968,
+   "UCCSD_cnot_1L": 17754601984,
+   "S_per_spin": 112,
+   "D_ss_per_spin": 84728,
+   "D_ab": 351232,
+   "n_self": 224,
+   "k_generators": 520912,
+   "k_only_params": 1041824,
+   "k_spin_params": 521136,
+   "k_TR_params": 520912,
+   "GVA_k_params": 260568,
+   "k_cnot_1L": 634104576
+  },
+  {
+   "mesh": [
+    29
+   ],
+   "n_k": 29,
+   "o": 2,
+   "v": 2,
+   "n_qubits": 232,
+   "UCCSD_params": 16788042,
+   "UCCSD_cnot_1L": 21154365984,
+   "S_per_spin": 116,
+   "D_ss_per_spin": 94221,
+   "D_ab": 390224,
+   "n_self": 116,
+   "k_generators": 578898,
+   "k_only_params": 1157796,
+   "k_spin_params": 579014,
+   "k_TR_params": 578898,
+   "GVA_k_params": 289507,
+   "k_cnot_1L": 729460896
+  },
+  {
+   "mesh": [
+    30
+   ],
+   "n_k": 30,
+   "o": 2,
+   "v": 2,
+   "n_qubits": 240,
+   "UCCSD_params": 19233000,
+   "UCCSD_cnot_1L": 25056067200,
+   "S_per_spin": 120,
+   "D_ss_per_spin": 104460,
+   "D_ab": 432000,
+   "n_self": 240,
+   "k_generators": 641160,
+   "k_only_params": 1282320,
+   "k_spin_params": 641400,
+   "k_TR_params": 641160,
+   "GVA_k_params": 320700,
+   "k_cnot_1L": 835214720
+  },
+  {
+   "mesh": [
+    31
+   ],
+   "n_k": 31,
+   "o": 2,
+   "v": 2,
+   "n_qubits": 248,
+   "UCCSD_params": 21935786,
+   "UCCSD_cnot_1L": 29513340192,
+   "S_per_spin": 124,
+   "D_ss_per_spin": 115351,
+   "D_ab": 476656,
+   "n_self": 124,
+   "k_generators": 707606,
+   "k_only_params": 1415212,
+   "k_spin_params": 707730,
+   "k_TR_params": 707606,
+   "GVA_k_params": 353865,
+   "k_cnot_1L": 952043232
+  },
+  {
+   "mesh": [
+    32
+   ],
+   "n_k": 32,
+   "o": 2,
+   "v": 2,
+   "n_qubits": 256,
+   "UCCSD_params": 24913920,
+   "UCCSD_cnot_1L": 34583511040,
+   "S_per_spin": 128,
+   "D_ss_per_spin": 127040,
+   "D_ab": 524288,
+   "n_self": 256,
+   "k_generators": 778624,
+   "k_only_params": 1557248,
+   "k_spin_params": 778880,
+   "k_TR_params": 778624,
+   "GVA_k_params": 389440,
+   "k_cnot_1L": 1080748032
+  }
+ ],
+ "three_d": [
+  {
+   "mesh": [
+    1,
+    1,
+    1
+   ],
+   "n_k": 1,
+   "o": 1,
+   "v": 1,
+   "n_qubits": 4,
+   "UCCSD_params": 3,
+   "UCCSD_cnot_1L": 64,
+   "S_per_spin": 1,
+   "D_ss_per_spin": 0,
+   "D_ab": 1,
+   "n_self": 1,
+   "k_generators": 3,
+   "k_only_params": 6,
+   "k_spin_params": 4,
+   "k_TR_params": 3,
+   "GVA_k_params": 2,
+   "k_cnot_1L": 64
+  },
+  {
+   "mesh": [
+    2,
+    2,
+    2
+   ],
+   "n_k": 8,
+   "o": 1,
+   "v": 1,
+   "n_qubits": 32,
+   "UCCSD_params": 5792,
+   "UCCSD_cnot_1L": 1104384,
+   "S_per_spin": 8,
+   "D_ss_per_spin": 112,
+   "D_ab": 512,
+   "n_self": 64,
+   "k_generators": 752,
+   "k_only_params": 1504,
+   "k_spin_params": 816,
+   "k_TR_params": 752,
+   "GVA_k_params": 408,
+   "k_cnot_1L": 143872
+  },
+  {
+   "mesh": [
+    3,
+    3,
+    3
+   ],
+   "n_k": 27,
+   "o": 1,
+   "v": 1,
+   "n_qubits": 108,
+   "UCCSD_params": 779301,
+   "UCCSD_cnot_1L": 466264512,
+   "S_per_spin": 27,
+   "D_ss_per_spin": 4563,
+   "D_ab": 19683,
+   "n_self": 27,
+   "k_generators": 28863,
+   "k_only_params": 57726,
+   "k_spin_params": 28890,
+   "k_TR_params": 28863,
+   "GVA_k_params": 14445,
+   "k_cnot_1L": 17269056
+  },
+  {
+   "mesh": [
+    4,
+    4,
+    4
+   ],
+   "n_k": 64,
+   "o": 1,
+   "v": 1,
+   "n_qubits": 256,
+   "UCCSD_params": 24913920,
+   "UCCSD_cnot_1L": 34583511040,
+   "S_per_spin": 64,
+   "D_ss_per_spin": 63616,
+   "D_ab": 262144,
+   "n_self": 512,
+   "k_generators": 389504,
+   "k_only_params": 779008,
+   "k_spin_params": 390016,
+   "k_TR_params": 389504,
+   "GVA_k_params": 195008,
+   "k_cnot_1L": 540774400
+  },
+  {
+   "mesh": [
+    5,
+    5,
+    5
+   ],
+   "n_k": 125,
+   "o": 1,
+   "v": 1,
+   "n_qubits": 500,
+   "UCCSD_params": 364296875,
+   "UCCSD_cnot_1L": 979818000000,
+   "S_per_spin": 125,
+   "D_ss_per_spin": 480500,
+   "D_ab": 1953125,
+   "n_self": 125,
+   "k_generators": 2914375,
+   "k_only_params": 5828750,
+   "k_spin_params": 2914500,
+   "k_TR_params": 2914375,
+   "GVA_k_params": 1457250,
+   "k_cnot_1L": 7838544000
+  },
+  {
+   "mesh": [
+    1,
+    1,
+    1
+   ],
+   "n_k": 1,
+   "o": 2,
+   "v": 2,
+   "n_qubits": 8,
+   "UCCSD_params": 26,
+   "UCCSD_cnot_1L": 1312,
+   "S_per_spin": 4,
+   "D_ss_per_spin": 1,
+   "D_ab": 16,
+   "n_self": 4,
+   "k_generators": 26,
+   "k_only_params": 52,
+   "k_spin_params": 30,
+   "k_TR_params": 26,
+   "GVA_k_params": 15,
+   "k_cnot_1L": 1312
+  },
+  {
+   "mesh": [
+    2,
+    2,
+    2
+   ],
+   "n_k": 8,
+   "o": 2,
+   "v": 2,
+   "n_qubits": 64,
+   "UCCSD_params": 94848,
+   "UCCSD_cnot_1L": 34433024,
+   "S_per_spin": 32,
+   "D_ss_per_spin": 1856,
+   "D_ab": 8192,
+   "n_self": 256,
+   "k_generators": 11968,
+   "k_only_params": 23936,
+   "k_spin_params": 12224,
+   "k_TR_params": 11968,
+   "GVA_k_params": 6112,
+   "k_cnot_1L": 4384768
+  },
+  {
+   "mesh": [
+    3,
+    3,
+    3
+   ],
+   "n_k": 27,
+   "o": 2,
+   "v": 2,
+   "n_qubits": 216,
+   "UCCSD_params": 12604410,
+   "UCCSD_cnot_1L": 14806709280,
+   "S_per_spin": 108,
+   "D_ss_per_spin": 75843,
+   "D_ab": 314928,
+   "n_self": 108,
+   "k_generators": 466830,
+   "k_only_params": 933660,
+   "k_spin_params": 466938,
+   "k_TR_params": 466830,
+   "GVA_k_params": 233469,
+   "k_cnot_1L": 548396640
+  },
+  {
+   "mesh": [
+    4,
+    4,
+    4
+   ],
+   "n_k": 64,
+   "o": 2,
+   "v": 2,
+   "n_qubits": 512,
+   "UCCSD_params": 400596992,
+   "UCCSD_cnot_1L": 1103091073024,
+   "S_per_spin": 256,
+   "D_ss_per_spin": 1032704,
+   "D_ab": 4194304,
+   "n_self": 2048,
+   "k_generators": 6260224,
+   "k_only_params": 12520448,
+   "k_spin_params": 6262272,
+   "k_TR_params": 6260224,
+   "GVA_k_params": 3131136,
+   "k_cnot_1L": 17242210304
+  },
+  {
+   "mesh": [
+    5,
+    5,
+    5
+   ],
+   "n_k": 125,
+   "o": 2,
+   "v": 2,
+   "n_qubits": 1000,
+   "UCCSD_params": 5843906250,
+   "UCCSD_cnot_1L": 31302084500000,
+   "S_per_spin": 500,
+   "D_ss_per_spin": 7750125,
+   "D_ab": 31250000,
+   "n_self": 500,
+   "k_generators": 46751250,
+   "k_only_params": 93502500,
+   "k_spin_params": 46751750,
+   "k_TR_params": 46751250,
+   "GVA_k_params": 23375875,
+   "k_cnot_1L": 250416676000
+  },
+  {
+   "mesh": [
+    1,
+    1,
+    1
+   ],
+   "n_k": 1,
+   "o": 4,
+   "v": 4,
+   "n_qubits": 16,
+   "UCCSD_params": 360,
+   "UCCSD_cnot_1L": 36480,
+   "S_per_spin": 16,
+   "D_ss_per_spin": 36,
+   "D_ab": 256,
+   "n_self": 16,
+   "k_generators": 360,
+   "k_only_params": 720,
+   "k_spin_params": 376,
+   "k_TR_params": 360,
+   "GVA_k_params": 188,
+   "k_cnot_1L": 36480
+  },
+  {
+   "mesh": [
+    2,
+    2,
+    2
+   ],
+   "n_k": 8,
+   "o": 4,
+   "v": 4,
+   "n_qubits": 128,
+   "UCCSD_params": 1542656,
+   "UCCSD_cnot_1L": 1087741952,
+   "S_per_spin": 128,
+   "D_ss_per_spin": 30976,
+   "D_ab": 131072,
+   "n_self": 1024,
+   "k_generators": 193280,
+   "k_only_params": 386560,
+   "k_spin_params": 194304,
+   "k_TR_params": 193280,
+   "GVA_k_params": 97152,
+   "k_cnot_1L": 137207808
+  },
+  {
+   "mesh": [
+    3,
+    3,
+    3
+   ],
+   "n_k": 27,
+   "o": 4,
+   "v": 4,
+   "n_qubits": 432,
+   "UCCSD_params": 202842792,
+   "UCCSD_cnot_1L": 471999187584,
+   "S_per_spin": 432,
+   "D_ss_per_spin": 1236492,
+   "D_ab": 5038848,
+   "n_self": 432,
+   "k_generators": 7512696,
+   "k_only_params": 15025392,
+   "k_spin_params": 7513128,
+   "k_TR_params": 7512696,
+   "GVA_k_params": 3756564,
+   "k_cnot_1L": 17481451392
+  },
+  {
+   "mesh": [
+    4,
+    4,
+    4
+   ],
+   "n_k": 64,
+   "o": 4,
+   "v": 4,
+   "n_qubits": 1024,
+   "UCCSD_params": 6425837568,
+   "UCCSD_cnot_1L": 35241639542784,
+   "S_per_spin": 1024,
+   "D_ss_per_spin": 16648192,
+   "D_ab": 67108864,
+   "n_self": 8192,
+   "k_generators": 100407296,
+   "k_only_params": 200814592,
+   "k_spin_params": 100415488,
+   "k_TR_params": 100407296,
+   "GVA_k_params": 50207744,
+   "k_cnot_1L": 550752813056
+  },
+  {
+   "mesh": [
+    5,
+    5,
+    5
+   ],
+   "n_k": 125,
+   "o": 4,
+   "v": 4,
+   "n_qubits": 2000,
+   "UCCSD_params": 93625625000,
+   "UCCSD_cnot_1L": 1000833338000000,
+   "S_per_spin": 2000,
+   "D_ss_per_spin": 124500500,
+   "D_ab": 500000000,
+   "n_self": 2000,
+   "k_generators": 749005000,
+   "k_only_params": 1498010000,
+   "k_spin_params": 749007000,
+   "k_TR_params": 749005000,
+   "GVA_k_params": 374503500,
+   "k_cnot_1L": 8006666704000
+  }
+ ],
+ "molecular_crystal": [
+  {
+   "mesh": [
+    1,
+    1,
+    1
+   ],
+   "n_k": 1,
+   "o": 8,
+   "v": 8,
+   "n_qubits": 32,
+   "UCCSD_params": 5792,
+   "UCCSD_cnot_1L": 1104384,
+   "S_per_spin": 64,
+   "D_ss_per_spin": 784,
+   "D_ab": 4096,
+   "n_self": 64,
+   "k_generators": 5792,
+   "k_only_params": 11584,
+   "k_spin_params": 5856,
+   "k_TR_params": 5792,
+   "GVA_k_params": 2928,
+   "k_cnot_1L": 1104384
+  },
+  {
+   "mesh": [
+    2,
+    2,
+    2
+   ],
+   "n_k": 8,
+   "o": 8,
+   "v": 8,
+   "n_qubits": 256,
+   "UCCSD_params": 24913920,
+   "UCCSD_cnot_1L": 34583511040,
+   "S_per_spin": 512,
+   "D_ss_per_spin": 508928,
+   "D_ab": 2097152,
+   "n_self": 4096,
+   "k_generators": 3116032,
+   "k_only_params": 6232064,
+   "k_spin_params": 3120128,
+   "k_TR_params": 3116032,
+   "GVA_k_params": 1560064,
+   "k_cnot_1L": 4342579200
+  },
+  {
+   "mesh": [
+    3,
+    3,
+    3
+   ],
+   "n_k": 27,
+   "o": 8,
+   "v": 8,
+   "n_qubits": 864,
+   "UCCSD_params": 3255212448,
+   "UCCSD_cnot_1L": 15074944141824,
+   "S_per_spin": 1728,
+   "D_ss_per_spin": 19969200,
+   "D_ab": 80621568,
+   "n_self": 1728,
+   "k_generators": 120563424,
+   "k_only_params": 241126848,
+   "k_spin_params": 120565152,
+   "k_TR_params": 120563424,
+   "GVA_k_params": 60282576,
+   "k_cnot_1L": 558331264512
+  },
+  {
+   "mesh": [
+    4,
+    4,
+    4
+   ],
+   "n_k": 64,
+   "o": 8,
+   "v": 8,
+   "n_qubits": 2048,
+   "UCCSD_params": 102945652736,
+   "UCCSD_cnot_1L": 1126816171425792,
+   "S_per_spin": 4096,
+   "D_ss_per_spin": 267395072,
+   "D_ab": 1073741824,
+   "n_self": 32768,
+   "k_generators": 1608540160,
+   "k_only_params": 3217080320,
+   "k_spin_params": 1608572928,
+   "k_TR_params": 1608540160,
+   "GVA_k_params": 804286464,
+   "k_cnot_1L": 17608136196096
+  }
+ ],
+ "enumeration_check": [
+  {
+   "mesh": [
+    2
+   ],
+   "o": 1,
+   "v": 1,
+   "pool": 26,
+   "UCCSD_params_enum": 26,
+   "UCCSD_cnot_enum": 1312,
+   "k only": {
+    "n_params": 28,
+    "cnot_1L": 736,
+    "n_generators": 14,
+    "n_zero_orbits": 0,
+    "n_real_orbits": 0
+   },
+   "k + spin": {
+    "n_params": 18,
+    "cnot_1L": 736,
+    "n_generators": 14,
+    "n_zero_orbits": 0,
+    "n_real_orbits": 0
+   },
+   "k + TR": {
+    "n_params": 14,
+    "cnot_1L": 736,
+    "n_generators": 14,
+    "n_zero_orbits": 0,
+    "n_real_orbits": 14
+   },
+   "GVA-k": {
+    "n_params": 9,
+    "cnot_1L": 736,
+    "n_generators": 14,
+    "n_zero_orbits": 0,
+    "n_real_orbits": 9
+   },
+   "closed_form": {
+    "UCCSD_params": 26,
+    "UCCSD_cnot_1L": 1312,
+    "k_only_params": 28,
+    "k_spin_params": 18,
+    "k_TR_params": 14,
+    "GVA_k_params": 9,
+    "k_cnot_1L": 736,
+    "k_generators": 14
+   },
+   "agree": true,
+   "wall_s": 0.006320476531982422
+  },
+  {
+   "mesh": [
+    3
+   ],
+   "o": 1,
+   "v": 1,
+   "pool": 117,
+   "UCCSD_params_enum": 117,
+   "UCCSD_cnot_enum": 9024,
+   "k only": {
+    "n_params": 78,
+    "cnot_1L": 3008,
+    "n_generators": 39,
+    "n_zero_orbits": 0,
+    "n_real_orbits": 0
+   },
+   "k + spin": {
+    "n_params": 42,
+    "cnot_1L": 3008,
+    "n_generators": 39,
+    "n_zero_orbits": 0,
+    "n_real_orbits": 0
+   },
+   "k + TR": {
+    "n_params": 39,
+    "cnot_1L": 3008,
+    "n_generators": 39,
+    "n_zero_orbits": 0,
+    "n_real_orbits": 5
+   },
+   "GVA-k": {
+    "n_params": 21,
+    "cnot_1L": 3008,
+    "n_generators": 39,
+    "n_zero_orbits": 0,
+    "n_real_orbits": 7
+   },
+   "closed_form": {
+    "UCCSD_params": 117,
+    "UCCSD_cnot_1L": 9024,
+    "k_only_params": 78,
+    "k_spin_params": 42,
+    "k_TR_params": 39,
+    "GVA_k_params": 21,
+    "k_cnot_1L": 3008,
+    "k_generators": 39
+   },
+   "agree": true,
+   "wall_s": 0.013256311416625977
+  },
+  {
+   "mesh": [
+    4
+   ],
+   "o": 1,
+   "v": 1,
+   "pool": 360,
+   "UCCSD_params_enum": 360,
+   "UCCSD_cnot_enum": 36480,
+   "k only": {
+    "n_params": 184,
+    "cnot_1L": 9280,
+    "n_generators": 92,
+    "n_zero_orbits": 0,
+    "n_real_orbits": 0
+   },
+   "k + spin": {
+    "n_params": 100,
+    "cnot_1L": 9280,
+    "n_generators": 92,
+    "n_zero_orbits": 0,
+    "n_real_orbits": 0
+   },
+   "k + TR": {
+    "n_params": 92,
+    "cnot_1L": 9280,
+    "n_generators": 92,
+    "n_zero_orbits": 0,
+    "n_real_orbits": 16
+   },
+   "GVA-k": {
+    "n_params": 50,
+    "cnot_1L": 9280,
+    "n_generators": 92,
+    "n_zero_orbits": 0,
+    "n_real_orbits": 16
+   },
+   "closed_form": {
+    "UCCSD_params": 360,
+    "UCCSD_cnot_1L": 36480,
+    "k_only_params": 184,
+    "k_spin_params": 100,
+    "k_TR_params": 92,
+    "GVA_k_params": 50,
+    "k_cnot_1L": 9280,
+    "k_generators": 92
+   },
+   "agree": true,
+   "wall_s": 0.03171348571777344
+  },
+  {
+   "mesh": [
+    5
+   ],
+   "o": 1,
+   "v": 1,
+   "pool": 875,
+   "UCCSD_params_enum": 875,
+   "UCCSD_cnot_enum": 108800,
+   "k only": {
+    "n_params": 350,
+    "cnot_1L": 21760,
+    "n_generators": 175,
+    "n_zero_orbits": 0,
+    "n_real_orbits": 0
+   },
+   "k + spin": {
+    "n_params": 180,
+    "cnot_1L": 21760,
+    "n_generators": 175,
+    "n_zero_orbits": 0,
+    "n_real_orbits": 0
+   },
+   "k + TR": {
+    "n_params": 175,
+    "cnot_1L": 21760,
+    "n_generators": 175,
+    "n_zero_orbits": 0,
+    "n_real_orbits": 11
+   },
+   "GVA-k": {
+    "n_params": 90,
+    "cnot_1L": 21760,
+    "n_generators": 175,
+    "n_zero_orbits": 0,
+    "n_real_orbits": 18
+   },
+   "closed_form": {
+    "UCCSD_params": 875,
+    "UCCSD_cnot_1L": 108800,
+    "k_only_params": 350,
+    "k_spin_params": 180,
+    "k_TR_params": 175,
+    "GVA_k_params": 90,
+    "k_cnot_1L": 21760,
+    "k_generators": 175
+   },
+   "agree": true,
+   "wall_s": 0.05256175994873047
+  },
+  {
+   "mesh": [
+    6
+   ],
+   "o": 1,
+   "v": 1,
+   "pool": 1818,
+   "UCCSD_params_enum": 1818,
+   "UCCSD_cnot_enum": 266784,
+   "k only": {
+    "n_params": 612,
+    "cnot_1L": 44704,
+    "n_generators": 306,
+    "n_zero_orbits": 0,
+    "n_real_orbits": 0
+   },
+   "k + spin": {
+    "n_params": 318,
+    "cnot_1L": 44704,
+    "n_generators": 306,
+    "n_zero_orbits": 0,
+    "n_real_orbits": 0
+   },
+   "k + TR": {
+    "n_params": 306,
+    "cnot_1L": 44704,
+    "n_generators": 306,
+    "n_zero_orbits": 0,
+    "n_real_orbits": 22
+   },
+   "GVA-k": {
+    "n_params": 159,
+    "cnot_1L": 44704,
+    "n_generators": 306,
+    "n_zero_orbits": 0,
+    "n_real_orbits": 29
+   },
+   "closed_form": {
+    "UCCSD_params": 1818,
+    "UCCSD_cnot_1L": 266784,
+    "k_only_params": 612,
+    "k_spin_params": 318,
+    "k_TR_params": 306,
+    "GVA_k_params": 159,
+    "k_cnot_1L": 44704,
+    "k_generators": 306
+   },
+   "agree": true,
+   "wall_s": 0.08274102210998535
+  },
+  {
+   "mesh": [
+    3
+   ],
+   "o": 1,
+   "v": 2,
+   "pool": 450,
+   "UCCSD_params_enum": 450,
+   "UCCSD_cnot_enum": 50448,
+   "k only": {
+    "n_params": 300,
+    "cnot_1L": 16816,
+    "n_generators": 150,
+    "n_zero_orbits": 0,
+    "n_real_orbits": 0
+   },
+   "k + spin": {
+    "n_params": 156,
+    "cnot_1L": 16816,
+    "n_generators": 150,
+    "n_zero_orbits": 0,
+    "n_real_orbits": 0
+   },
+   "k + TR": {
+    "n_params": 150,
+    "cnot_1L": 16816,
+    "n_generators": 150,
+    "n_zero_orbits": 0,
+    "n_real_orbits": 14
+   },
+   "GVA-k": {
+    "n_params": 78,
+    "cnot_1L": 16816,
+    "n_generators": 150,
+    "n_zero_orbits": 0,
+    "n_real_orbits": 16
+   },
+   "closed_form": {
+    "UCCSD_params": 450,
+    "UCCSD_cnot_1L": 50448,
+    "k_only_params": 300,
+    "k_spin_params": 156,
+    "k_TR_params": 150,
+    "GVA_k_params": 78,
+    "k_cnot_1L": 16816,
+    "k_generators": 150
+   },
+   "agree": true,
+   "wall_s": 0.030756473541259766
+  },
+  {
+   "mesh": [
+    4
+   ],
+   "o": 2,
+   "v": 1,
+   "pool": 1424,
+   "UCCSD_params_enum": 1424,
+   "UCCSD_cnot_enum": 208128,
+   "k only": {
+    "n_params": 720,
+    "cnot_1L": 52608,
+    "n_generators": 360,
+    "n_zero_orbits": 0,
+    "n_real_orbits": 0
+   },
+   "k + spin": {
+    "n_params": 376,
+    "cnot_1L": 52608,
+    "n_generators": 360,
+    "n_zero_orbits": 0,
+    "n_real_orbits": 0
+   },
+   "k + TR": {
+    "n_params": 360,
+    "cnot_1L": 52608,
+    "n_generators": 360,
+    "n_zero_orbits": 0,
+    "n_real_orbits": 56
+   },
+   "GVA-k": {
+    "n_params": 188,
+    "cnot_1L": 52608,
+    "n_generators": 360,
+    "n_zero_orbits": 0,
+    "n_real_orbits": 44
+   },
+   "closed_form": {
+    "UCCSD_params": 1424,
+    "UCCSD_cnot_1L": 208128,
+    "k_only_params": 720,
+    "k_spin_params": 376,
+    "k_TR_params": 360,
+    "GVA_k_params": 188,
+    "k_cnot_1L": 52608,
+    "k_generators": 360
+   },
+   "agree": true,
+   "wall_s": 0.054061174392700195
+  },
+  {
+   "mesh": [
+    2,
+    2,
+    1
+   ],
+   "o": 1,
+   "v": 1,
+   "pool": 360,
+   "UCCSD_params_enum": 360,
+   "UCCSD_cnot_enum": 36480,
+   "k only": {
+    "n_params": 192,
+    "cnot_1L": 9856,
+    "n_generators": 96,
+    "n_zero_orbits": 0,
+    "n_real_orbits": 0
+   },
+   "k + spin": {
+    "n_params": 112,
+    "cnot_1L": 9856,
+    "n_generators": 96,
+    "n_zero_orbits": 0,
+    "n_real_orbits": 0
+   },
+   "k + TR": {
+    "n_params": 96,
+    "cnot_1L": 9856,
+    "n_generators": 96,
+    "n_zero_orbits": 0,
+    "n_real_orbits": 96
+   },
+   "GVA-k": {
+    "n_params": 56,
+    "cnot_1L": 9856,
+    "n_generators": 96,
+    "n_zero_orbits": 0,
+    "n_real_orbits": 56
+   },
+   "closed_form": {
+    "UCCSD_params": 360,
+    "UCCSD_cnot_1L": 36480,
+    "k_only_params": 192,
+    "k_spin_params": 112,
+    "k_TR_params": 96,
+    "GVA_k_params": 56,
+    "k_cnot_1L": 9856,
+    "k_generators": 96
+   },
+   "agree": true,
+   "wall_s": 0.011478900909423828
+  },
+  {
+   "mesh": [
+    3,
+    3,
+    1
+   ],
+   "o": 1,
+   "v": 1,
+   "pool": 9315,
+   "UCCSD_params_enum": 9315,
+   "UCCSD_cnot_enum": 1978560,
+   "k only": {
+    "n_params": 2070,
+    "cnot_1L": 219840,
+    "n_generators": 1035,
+    "n_zero_orbits": 0,
+    "n_real_orbits": 0
+   },
+   "k + spin": {
+    "n_params": 1044,
+    "cnot_1L": 219840,
+    "n_generators": 1035,
+    "n_zero_orbits": 0,
+    "n_real_orbits": 0
+   },
+   "k + TR": {
+    "n_params": 1035,
+    "cnot_1L": 219840,
+    "n_generators": 1035,
+    "n_zero_orbits": 0,
+    "n_real_orbits": 35
+   },
+   "GVA-k": {
+    "n_params": 522,
+    "cnot_1L": 219840,
+    "n_generators": 1035,
+    "n_zero_orbits": 0,
+    "n_real_orbits": 58
+   },
+   "closed_form": {
+    "UCCSD_params": 9315,
+    "UCCSD_cnot_1L": 1978560,
+    "k_only_params": 2070,
+    "k_spin_params": 1044,
+    "k_TR_params": 1035,
+    "GVA_k_params": 522,
+    "k_cnot_1L": 219840,
+    "k_generators": 1035
+   },
+   "agree": true,
+   "wall_s": 0.3368070125579834
+  },
+  {
+   "mesh": [
+    4,
+    2,
+    1
+   ],
+   "o": 1,
+   "v": 1,
+   "pool": 5792,
+   "UCCSD_params_enum": 5792,
+   "UCCSD_cnot_enum": 1104384,
+   "k only": {
+    "n_params": 1472,
+    "cnot_1L": 139520,
+    "n_generators": 736,
+    "n_zero_orbits": 0,
+    "n_real_orbits": 0
+   },
+   "k + spin": {
+    "n_params": 768,
+    "cnot_1L": 139520,
+    "n_generators": 736,
+    "n_zero_orbits": 0,
+    "n_real_orbits": 0
+   },
+   "k + TR": {
+    "n_params": 736,
+    "cnot_1L": 139520,
+    "n_generators": 736,
+    "n_zero_orbits": 0,
+    "n_real_orbits": 104
+   },
+   "GVA-k": {
+    "n_params": 384,
+    "cnot_1L": 139520,
+    "n_generators": 736,
+    "n_zero_orbits": 0,
+    "n_real_orbits": 84
+   },
+   "closed_form": {
+    "UCCSD_params": 5792,
+    "UCCSD_cnot_1L": 1104384,
+    "k_only_params": 1472,
+    "k_spin_params": 768,
+    "k_TR_params": 736,
+    "GVA_k_params": 384,
+    "k_cnot_1L": 139520,
+    "k_generators": 736
+   },
+   "agree": true,
+   "wall_s": 0.28963541984558105
+  },
+  {
+   "mesh": [
+    2,
+    2,
+    2
+   ],
+   "o": 1,
+   "v": 1,
+   "pool": 5792,
+   "UCCSD_params_enum": 5792,
+   "UCCSD_cnot_enum": 1104384,
+   "k only": {
+    "n_params": 1504,
+    "cnot_1L": 143872,
+    "n_generators": 752,
+    "n_zero_orbits": 0,
+    "n_real_orbits": 0
+   },
+   "k + spin": {
+    "n_params": 816,
+    "cnot_1L": 143872,
+    "n_generators": 752,
+    "n_zero_orbits": 0,
+    "n_real_orbits": 0
+   },
+   "k + TR": {
+    "n_params": 752,
+    "cnot_1L": 143872,
+    "n_generators": 752,
+    "n_zero_orbits": 0,
+    "n_real_orbits": 752
+   },
+   "GVA-k": {
+    "n_params": 408,
+    "cnot_1L": 143872,
+    "n_generators": 752,
+    "n_zero_orbits": 0,
+    "n_real_orbits": 408
+   },
+   "closed_form": {
+    "UCCSD_params": 5792,
+    "UCCSD_cnot_1L": 1104384,
+    "k_only_params": 1504,
+    "k_spin_params": 816,
+    "k_TR_params": 752,
+    "GVA_k_params": 408,
+    "k_cnot_1L": 143872,
+    "k_generators": 752
+   },
+   "agree": true,
+   "wall_s": 0.320328950881958
+  },
+  {
+   "mesh": [
+    4,
+    4,
+    1
+   ],
+   "o": 1,
+   "v": 1,
+   "pool": 94848,
+   "UCCSD_params_enum": 94848,
+   "UCCSD_cnot_enum": 34433024,
+   "k only": {
+    "n_params": 11904,
+    "cnot_1L": 2159104,
+    "n_generators": 5952,
+    "n_zero_orbits": 0,
+    "n_real_orbits": 0
+   },
+   "k + spin": {
+    "n_params": 6016,
+    "cnot_1L": 2159104,
+    "n_generators": 5952,
+    "n_zero_orbits": 0,
+    "n_real_orbits": 0
+   },
+   "k + TR": {
+    "n_params": 5952,
+    "cnot_1L": 2159104,
+    "n_generators": 5952,
+    "n_zero_orbits": 0,
+    "n_real_orbits": 168
+   },
+   "GVA-k": {
+    "n_params": 3008,
+    "cnot_1L": 2159104,
+    "n_generators": 5952,
+    "n_zero_orbits": 0,
+    "n_real_orbits": 212
+   },
+   "closed_form": {
+    "UCCSD_params": 94848,
+    "UCCSD_cnot_1L": 34433024,
+    "k_only_params": 11904,
+    "k_spin_params": 6016,
+    "k_TR_params": 5952,
+    "GVA_k_params": 3008,
+    "k_cnot_1L": 2159104,
+    "k_generators": 5952
+   },
+   "agree": true,
+   "wall_s": 4.385913610458374
+  }
+ ]
+}

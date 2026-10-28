@@ -1,0 +1,6 @@
+2026-10-24T04:47:57+09:00 start [(1.5, 1.5, 5), (1.0, 1.0, 3), (1.5, 1.5, 3), (2.0, 2.0, 3), (1.0, 1.0, 5)]
+overwrite output file: results/logs/pyscf_pbc/H2chain_r1.50_d1.50_Nk5__krhf.log
+overwrite output file: results/logs/pyscf_pbc/H2chain_r1.50_d1.50_Nk5__supercell.log
+overwrite output file: results/logs/pyscf/H2chain_r1.50_d1.50_Nk5__mol1.log
+2026-10-24T04:48:38+09:00 H2chain_r1.50_d1.50_Nk5 FCI -4.4028150872  Bloch-FCI diff 3.8e-13  supercell-FCI diff 1.5e-13  E_corr -361.232 mHa  c0^2 0.4596  K-sector weight outside K_HF 4.2e-14
+   counts {'UCCSD': (875, 108800), 'k only': (350, 21760), 'k + spin': (180, 21760), 'k + TR': (175, 21760), 'GVA-k': (90, 21760)}

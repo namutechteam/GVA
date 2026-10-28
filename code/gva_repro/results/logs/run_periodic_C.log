@@ -1,0 +1,91 @@
+2026-10-24T04:47:57+09:00 start [(0.74, 1.5, 2), (0.74, 1.5, 3), (0.74, 1.5, 4), (0.74, 1.5, 5)]
+output file: results/logs/pyscf_pbc/H2chain_r0.74_d1.50_Nk2__krhf.log
+output file: results/logs/pyscf_pbc/H2chain_r0.74_d1.50_Nk2__supercell.log
+output file: results/logs/pyscf/H2chain_r0.74_d1.50_Nk2__mol1.log
+2026-10-24T04:47:59+09:00 H2chain_r0.74_d1.50_Nk2 FCI -1.9310706406  Bloch-FCI diff 1.7e-14  supercell-FCI diff 2.7e-14  E_corr -41.539 mHa  c0^2 0.9751  K-sector weight outside K_HF -2.2e-16
+   counts {'UCCSD': (26, 1312), 'k only': (28, 736), 'k + spin': (18, 736), 'k + TR': (14, 736), 'GVA-k': (9, 736)}
+   UCCSD     1L s0: dE    0.0003 mHa  S2 6.0e-15  |<FCI|psi>|^2 1.00000  nit 9  0s
+      JW check |E_JW - E| = 8.9e-16 Ha, 97 Pauli terms
+   UCCSD     1L s1: dE    0.0003 mHa  S2 4.3e-14  |<FCI|psi>|^2 1.00000  nit 15  0s
+   UCCSD     1L s2: dE    0.0003 mHa  S2 2.0e-14  |<FCI|psi>|^2 1.00000  nit 16  0s
+   UCCSD     2L s0: dE    0.0003 mHa  S2 1.0e-14  |<FCI|psi>|^2 1.00000  nit 9  0s
+   UCCSD     2L s1: dE    0.0003 mHa  S2 1.8e-09  |<FCI|psi>|^2 1.00000  nit 59  0s
+   UCCSD     2L s2: dE    0.0003 mHa  S2 3.4e-09  |<FCI|psi>|^2 1.00000  nit 63  0s
+   k only    1L s0: dE    0.0003 mHa  S2 6.4e-15  |<FCI|psi>|^2 1.00000  nit 9  0s
+   k only    1L s1: dE    0.0003 mHa  S2 5.8e-16  |<FCI|psi>|^2 1.00000  nit 17  0s
+   k only    1L s2: dE    0.0003 mHa  S2 2.1e-14  |<FCI|psi>|^2 1.00000  nit 16  0s
+   k + spin  1L s0: dE    0.0003 mHa  S2 4.6e-19  |<FCI|psi>|^2 1.00000  nit 11  0s
+   k + TR    1L s0: dE    0.0003 mHa  S2 6.4e-15  |<FCI|psi>|^2 1.00000  nit 9  0s
+   GVA-k     1L s0: dE    0.0003 mHa  S2 4.6e-19  |<FCI|psi>|^2 1.00000  nit 11  0s
+      JW check |E_JW - E| = 2.4e-15 Ha, 581 Pauli terms
+   GVA-k     1L s1: dE    0.0003 mHa  S2 1.1e-16  |<FCI|psi>|^2 1.00000  nit 13  0s
+   GVA-k     1L s2: dE    0.0003 mHa  S2 2.0e-15  |<FCI|psi>|^2 1.00000  nit 13  0s
+   GVA-k     2L s0: dE    0.0003 mHa  S2 8.0e-20  |<FCI|psi>|^2 1.00000  nit 11  0s
+      max |dE/dt| over 12 momentum-violating excitations: 0.0e+00
+   GVA-k     2L s1: dE    0.0003 mHa  S2 4.8e-13  |<FCI|psi>|^2 1.00000  nit 26  0s
+   GVA-k     2L s2: dE    0.0003 mHa  S2 5.3e-14  |<FCI|psi>|^2 1.00000  nit 11  0s
+   ADAPT-VQE NoneL s0: dE    0.0003 mHa  S2 6.6e-16  |<FCI|psi>|^2 1.00000  nit None  0s
+2026-10-24T04:48:00+09:00 H2chain_r0.74_d1.50_Nk2 system done in 2s
+output file: results/logs/pyscf_pbc/H2chain_r0.74_d1.50_Nk3__krhf.log
+output file: results/logs/pyscf_pbc/H2chain_r0.74_d1.50_Nk3__supercell.log
+output file: results/logs/pyscf/H2chain_r0.74_d1.50_Nk3__mol1.log
+2026-10-24T04:48:02+09:00 H2chain_r0.74_d1.50_Nk3 FCI -2.9143153535  Bloch-FCI diff 1.2e-14  supercell-FCI diff 3.6e-14  E_corr -59.537 mHa  c0^2 0.9664  K-sector weight outside K_HF 3.3e-16
+   counts {'UCCSD': (117, 9024), 'k only': (78, 3008), 'k + spin': (42, 3008), 'k + TR': (39, 3008), 'GVA-k': (21, 3008)}
+   UCCSD     1L s0: dE    0.1042 mHa  S2 6.0e-10  |<FCI|psi>|^2 0.99996  nit 11  0s
+      JW check |E_JW - E| = 1.5e-14 Ha, 1383 Pauli terms
+   UCCSD     1L s1: dE    0.1042 mHa  S2 6.0e-10  |<FCI|psi>|^2 0.99996  nit 17  0s
+   UCCSD     1L s2: dE    0.1042 mHa  S2 6.0e-10  |<FCI|psi>|^2 0.99996  nit 16  0s
+   UCCSD     2L s0: dE    0.0015 mHa  S2 5.2e-07  |<FCI|psi>|^2 1.00000  nit 2761  20s
+   UCCSD     2L s1: dE    0.0042 mHa  S2 1.1e-06  |<FCI|psi>|^2 1.00000  nit 2733  19s
+   UCCSD     2L s2: dE    0.0061 mHa  S2 3.1e-06  |<FCI|psi>|^2 1.00000  nit 3000  21s
+   k only    1L s0: dE    0.1043 mHa  S2 1.0e-09  |<FCI|psi>|^2 0.99996  nit 11  0s
+   k only    1L s1: dE    0.1043 mHa  S2 1.1e-09  |<FCI|psi>|^2 0.99996  nit 15  0s
+   k only    1L s2: dE    0.1043 mHa  S2 1.1e-09  |<FCI|psi>|^2 0.99996  nit 15  0s
+   k + spin  1L s0: dE    0.1043 mHa  S2 1.3e-08  |<FCI|psi>|^2 0.99996  nit 11  0s
+   k + TR    1L s0: dE    0.1042 mHa  S2 7.4e-09  |<FCI|psi>|^2 0.99996  nit 12  0s
+   GVA-k     1L s0: dE    0.1043 mHa  S2 2.0e-08  |<FCI|psi>|^2 0.99996  nit 13  0s
+      JW check |E_JW - E| = 1.7e-14 Ha, 3395 Pauli terms
+   GVA-k     1L s1: dE    0.1043 mHa  S2 2.0e-08  |<FCI|psi>|^2 0.99996  nit 15  0s
+   GVA-k     1L s2: dE    0.1043 mHa  S2 2.0e-08  |<FCI|psi>|^2 0.99996  nit 15  0s
+   GVA-k     2L s0: dE    0.0022 mHa  S2 7.9e-08  |<FCI|psi>|^2 1.00000  nit 1145  5s
+      max |dE/dt| over 78 momentum-violating excitations: 0.0e+00
+   GVA-k     2L s1: dE    0.0023 mHa  S2 1.3e-07  |<FCI|psi>|^2 1.00000  nit 2194  10s
+   GVA-k     2L s2: dE    0.0022 mHa  S2 7.3e-08  |<FCI|psi>|^2 1.00000  nit 2590  11s
+   ADAPT-VQE NoneL s0: dE    0.1020 mHa  S2 3.7e-08  |<FCI|psi>|^2 0.99997  nit None  0s
+2026-10-24T04:49:30+09:00 H2chain_r0.74_d1.50_Nk3 system done in 90s
+output file: results/logs/pyscf_pbc/H2chain_r0.74_d1.50_Nk4__krhf.log
+output file: results/logs/pyscf_pbc/H2chain_r0.74_d1.50_Nk4__supercell.log
+output file: results/logs/pyscf/H2chain_r0.74_d1.50_Nk4__mol1.log
+2026-10-24T04:49:34+09:00 H2chain_r0.74_d1.50_Nk4 FCI -3.8927928933  Bloch-FCI diff 6.8e-14  supercell-FCI diff 5.0e-14  E_corr -81.710 mHa  c0^2 0.9532  K-sector weight outside K_HF 0.0e+00
+   counts {'UCCSD': (360, 36480), 'k only': (184, 9280), 'k + spin': (100, 9280), 'k + TR': (92, 9280), 'GVA-k': (50, 9280)}
+   UCCSD     1L s0: dE    0.1005 mHa  S2 9.9e-10  |<FCI|psi>|^2 0.99997  nit 11  0s
+      JW check |E_JW - E| = 9.8e-15 Ha, 2321 Pauli terms
+   UCCSD     1L s1: dE    0.1005 mHa  S2 1.0e-09  |<FCI|psi>|^2 0.99997  nit 18  0s
+   UCCSD     1L s2: dE    0.1005 mHa  S2 9.9e-10  |<FCI|psi>|^2 0.99997  nit 19  0s
+   UCCSD     2L s0: dE    0.0085 mHa  S2 3.1e-07  |<FCI|psi>|^2 1.00000  nit 1257  27s
+   UCCSD     2L s1: dE    0.0073 mHa  S2 2.0e-06  |<FCI|psi>|^2 1.00000  nit 3000  97s
+   UCCSD     2L s2: dE    0.0092 mHa  S2 1.9e-06  |<FCI|psi>|^2 1.00000  nit 3000  99s
+   k only    1L s0: dE    0.1005 mHa  S2 2.3e-09  |<FCI|psi>|^2 0.99997  nit 11  0s
+   k only    1L s1: dE    0.1005 mHa  S2 2.3e-09  |<FCI|psi>|^2 0.99997  nit 17  0s
+   k only    1L s2: dE    0.1005 mHa  S2 2.3e-09  |<FCI|psi>|^2 0.99997  nit 17  0s
+   k + spin  1L s0: dE    0.1005 mHa  S2 1.0e-08  |<FCI|psi>|^2 0.99997  nit 14  0s
+   k + TR    1L s0: dE    0.1006 mHa  S2 9.1e-09  |<FCI|psi>|^2 0.99997  nit 14  0s
+   GVA-k     1L s0: dE    0.1005 mHa  S2 1.2e-08  |<FCI|psi>|^2 0.99997  nit 17  0s
+      JW check |E_JW - E| = 1.9e-14 Ha, 7509 Pauli terms
+   GVA-k     1L s1: dE    0.1005 mHa  S2 1.2e-08  |<FCI|psi>|^2 0.99997  nit 22  1s
+   GVA-k     1L s2: dE    0.1005 mHa  S2 1.2e-08  |<FCI|psi>|^2 0.99997  nit 21  1s
+   GVA-k     2L s0: dE    0.0086 mHa  S2 5.9e-07  |<FCI|psi>|^2 1.00000  nit 1682  45s
+      max |dE/dt| over 268 momentum-violating excitations: 0.0e+00
+   GVA-k     2L s1: dE    0.0101 mHa  S2 1.2e-06  |<FCI|psi>|^2 1.00000  nit 2007  51s
+   GVA-k     2L s2: dE    0.0101 mHa  S2 1.2e-06  |<FCI|psi>|^2 1.00000  nit 1888  50s
+   ADAPT-VQE NoneL s0: dE    0.0992 mHa  S2 2.7e-08  |<FCI|psi>|^2 0.99997  nit None  8s
+2026-10-24T04:56:04+09:00 H2chain_r0.74_d1.50_Nk4 system done in 395s
+overwrite output file: results/logs/pyscf_pbc/H2chain_r0.74_d1.50_Nk5__krhf.log
+overwrite output file: results/logs/pyscf_pbc/H2chain_r0.74_d1.50_Nk5__supercell.log
+overwrite output file: results/logs/pyscf/H2chain_r0.74_d1.50_Nk5__mol1.log
+2026-10-24T04:56:31+09:00 H2chain_r0.74_d1.50_Nk5 FCI -4.9233299675  Bloch-FCI diff 5.3e-14  supercell-FCI diff 6.8e-14  E_corr -101.930 mHa  c0^2 0.9420  K-sector weight outside K_HF 6.6e-15
+   counts {'UCCSD': (875, 108800), 'k only': (350, 21760), 'k + spin': (180, 21760), 'k + TR': (175, 21760), 'GVA-k': (90, 21760)}
+   GVA-k     2L s2: dE    0.0639 mHa  S2 3.4e-07  |<FCI|psi>|^2 0.99998  nit 1663  962s
+   ADAPT-VQE NoneL s0: dE    0.1446 mHa  S2 2.5e-08  |<FCI|psi>|^2 0.99995  nit None  294s
+2026-10-24T05:17:27+09:00 H2chain_r0.74_d1.50_Nk5 system done in 1282s
+2026-10-24T05:17:27+09:00 all done

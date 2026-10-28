@@ -1,0 +1,18 @@
+built R=2.32 overlap=1.0000
+built R=2.50 overlap=0.8773
+built R=2.70 overlap=0.8437
+built R=2.90 overlap=0.8559
+built R=3.20 overlap=0.7626
+built R=3.50 overlap=0.7608
+built R=3.80 overlap=0.7596
+built R=2.20 overlap=0.9398
+built R=2.00 overlap=0.8659
+R=2.00 dCCSD=0.285 dGVA2=0.0349 c0^2=0.979 t=791s
+R=2.20 dCCSD=0.305 dGVA2=0.0445 c0^2=0.978 t=468s
+R=2.50 dCCSD=0.333 dGVA2=0.0420 c0^2=0.976 t=347s
+R=2.70 dCCSD=0.348 dGVA2=0.0352 c0^2=0.973 t=511s
+R=2.90 dCCSD=0.356 dGVA2=0.0333 c0^2=0.970 t=401s
+R=3.20 dCCSD=0.353 dGVA2=0.0287 c0^2=0.968 t=569s
+R=3.50 dCCSD=0.338 dGVA2=0.0304 c0^2=0.967 t=364s
+R=3.80 dCCSD=0.318 dGVA2=0.0262 c0^2=0.968 t=544s
+done

@@ -1,0 +1,212 @@
+#INFO: **** input file is /home/claude/gva_repro/run_cisplatin.py ****
+"""Cisplatin CAS(10e,10o) benchmark at the C2v reference geometry.
+
+Writes results/cisplatin_eq.json (incrementally) and the active-space
+Hamiltonian to results/cisplatin_cas10_10.npz.
+"""
+import json
+import time
+
+import numpy as np
+
+from datetime import datetime, timezone
+
+from gva.systems import (cisplatin_cas_hamiltonian, classical_references, cisplatin_atoms,
+                         set_pyscf_log)
+from gva.ansatz import (uccsd_pool, gva_groups, counts_summary, cnot_count_ladder,
+                        parameter_map, excitation_label)
+
+
+def now():
+    return datetime.now(timezone.utc).astimezone().isoformat(timespec="seconds")
+
+from gva.engine import DeterminantSpace, Ansatz, run_vqe, adapt_vqe
+
+OUT = "results/cisplatin_eq.json"
+t_all = time.time()
+set_pyscf_log("results/logs/pyscf", "cisplatin_C2v_eq")
+H = cisplatin_cas_hamiltonian()
+ref = classical_references(H)
+ef = ref["E_FCI"]
+np.savez("results/cisplatin_cas10_10.npz", h1=H.h1, eri=H.eri, ecore=H.ecore,
+         orbsym=H.orbsym, nelec=np.array(H.nelec), civec=ref["civec"],
+         C_act_ao=H.extra["C_act_ao"], no_occ=H.extra["act_no_occ"])
+space = DeterminantSpace(H.norb, H.nelec, H.h1, H.eri, H.ecore)
+pool = uccsd_pool(H.nocc, H.norb)
+cs = counts_summary(H.nocc, H.norb, H.orbsym)
+mol = H.extra["mol"]
+summary = {
+    "geometry_xyz_angstrom": [(a, list(map(float, c))) for a, c in cisplatin_atoms()],
+    "point_group": mol.groupname, "n_electrons_total": int(mol.nelectron),
+    "n_ao": int(mol.nao), "E_RHF": H.e_rhf_total,
+    "E_MP2_corr": H.extra["e_mp2_corr"], "n_core_orbitals": H.extra["n_core"],
+    "active_irreps": H.irrep_names, "active_NO_occupations": H.extra["act_no_occ"].tolist(),
+    "active_orbital_energies": H.extra["active_eps"].tolist(),
+    "E_ref": ref["E_ref"], "E_CISD": ref["E_CISD"], "E_CCSD": ref["E_CCSD"],
+    "E_CCSD(T)": ref["E_CCSD(T)"], "E_CASCI": ef, "c0_sq": ref["c0_ref_weight"],
+    "T1_diag": ref["t1_diag"], "counts": cs, "dim": space.dim,
+    "parameter_maps_1L": {v: parameter_map(gva_groups(pool, H.orbsym, *f)) for v, f in
+                          {"UCCSD": (False, False), "GVA": (True, True),
+                           "PG only": (True, False), "spin only": (False, True)}.items()},
+    "runs": []}
+
+
+def dump():
+    json.dump(summary, open(OUT, "w"), indent=1, default=float)
+
+
+import os
+done = set()
+if os.path.exists(OUT):
+    old = json.load(open(OUT))
+    summary["runs"] = [r for r in old.get("runs", []) if r["ansatz"] != "ADAPT-VQE"]
+    done = {(r["ansatz"], r["layers"], r["seed"]) for r in summary["runs"]}
+dump()
+plan = []
+SEEDS = {("GVA", 1): (0, 1, 2), ("GVA", 2): (0, 1, 2), ("GVA", 3): (0,),
+         ("UCCSD", 1): (0, 1, 2), ("UCCSD", 2): (0, 1), ("UCCSD", 3): (0,)}
+for var in ("GVA", "UCCSD"):
+    for L in (1, 2, 3):
+        plan += [(var, L, s) for s in SEEDS[(var, L)]]
+plan += [("PG only", 1, 0), ("spin only", 1, 0)]
+VAR = {"UCCSD": (False, False), "GVA": (True, True), "PG only": (True, False),
+       "spin only": (False, True)}
+for var, L, s in plan:
+    if (var, L, s) in done:
+        continue
+    groups = gva_groups(pool, H.orbsym, *VAR[var])
+    A = Ansatz(space, groups, layers=L)
+    th0 = np.zeros(A.n_params) if s == 0 else \
+        np.random.default_rng(2000 + s).normal(0, 0.05, A.n_params)
+    t_start = now()
+    r = run_vqe(A, th0, e_exact=ef, maxiter=2500)
+    summary["runs"].append({
+        "ansatz": var, "layers": L, "seed": s, "n_params": A.n_params,
+        "cnot": L * cs[var]["cnot_1L"], "E": r["E"], "dE": r["dE"],
+        "nit": r["nit"], "nfev": r["nfev"], "iter_to_chem_acc": r["iter_to_chem_acc"],
+        "S2": r["S2"], "wall_s": r["wall_s"], "grad_norm": r["grad_norm"],
+        "message": r["message"], "started": t_start, "finished": now(),
+        "theta": r["theta"].tolist(), "history": r["history"].tolist()})
+    dump()
+    print(var, L, s, f"dE={r['dE']*1e3:.4f} mHa nit={r['nit']} t={r['wall_s']:.0f}s",
+          flush=True)
+
+t_start = now()
+ad = adapt_vqe(space, gva_groups(pool, H.orbsym, True, True), e_exact=ef,
+               grad_tol=1e-3, max_ops=120, verbose=True)
+summary["runs"].append({"ansatz": "ADAPT-VQE", "layers": None, "seed": 0,
+                        "n_params": ad["n_ops"],
+                        "cnot": sum(cnot_count_ladder(e) for g in ad["chosen"] for e in g),
+                        "E": ad["E"], "dE": ad["dE"], "trace": ad["trace"], "stop_reason": ad["stop_reason"],
+                        "wall_s": ad["wall_s"], "started": t_start, "finished": now(),
+                        "operators": [[excitation_label(e) for e in g] for g in ad["chosen"]],
+                        "theta": np.asarray(ad["theta"]).tolist()})
+dump()
+print("total", time.time() - t_all)
+#INFO: ******************** input file end ********************
+
+
+System: uname_result(system='Linux', node='vm', release='6.18.44-fc-v153', version='#1 SMP PREEMPT_DYNAMIC @0', machine='x86_64')  Threads 1
+Python 3.13.17 (main, Oct 22 2026, 14:06:04) [GCC 13.3.0]
+numpy 2.5.3  scipy 1.18.1  h5py 3.16.0
+Date: Fri Oct 23 21:47:48 2026
+PySCF version 2.14.0
+PySCF path  /usr/local/lib/python3.13/dist-packages/pyscf
+
+[CONFIG] conf_file None
+[INPUT] verbose = 4
+[INPUT] num. atoms = 11
+[INPUT] num. electrons = 72
+[INPUT] charge = 0
+[INPUT] spin (= nelec alpha-beta = 2S) = 0
+[INPUT] symmetry True subgroup None
+[INPUT] Mole.unit = angstrom
+[INPUT] Symbol           X                Y                Z      unit          X                Y                Z       unit  Magmom
+[INPUT]  1 Pt     0.000000000000   0.000000000000   0.000000000000 AA    0.000000000000   0.000000000000   0.000000000000 Bohr   0.0
+[INPUT]  2 Cl     1.640487732353   1.640487732353   0.000000000000 AA    3.100072524856   3.100072524856   0.000000000000 Bohr   0.0
+[INPUT]  3 Cl     1.640487732353  -1.640487732353   0.000000000000 AA    3.100072524856  -3.100072524856   0.000000000000 Bohr   0.0
+[INPUT]  4 N     -1.449568901432   1.449568901432   0.000000000000 AA   -2.739288222394   2.739288222394   0.000000000000 Bohr   0.0
+[INPUT]  5 N     -1.449568901432  -1.449568901432   0.000000000000 AA   -2.739288222394  -2.739288222394   0.000000000000 Bohr   0.0
+[INPUT]  6 H     -2.370205891469   1.010447582688   0.000000000000 AA   -4.479039993708   1.909469194509   0.000000000000 Bohr   0.0
+[INPUT]  7 H     -1.350387159883   2.030266314274   0.832678507506 AA   -2.551861894309   3.836647293908   1.573534328998 Bohr   0.0
+[INPUT]  8 H     -1.350387159883   2.030266314274  -0.832678507506 AA   -2.551861894309   3.836647293908  -1.573534328998 Bohr   0.0
+[INPUT]  9 H     -2.370205891469  -1.010447582688   0.000000000000 AA   -4.479039993708  -1.909469194509   0.000000000000 Bohr   0.0
+[INPUT] 10 H     -1.350387159883  -2.030266314274   0.832678507506 AA   -2.551861894309  -3.836647293908   1.573534328998 Bohr   0.0
+[INPUT] 11 H     -1.350387159883  -2.030266314274  -0.832678507506 AA   -2.551861894309  -3.836647293908  -1.573534328998 Bohr   0.0
+
+nuclear repulsion = 411.098108491266
+point group symmetry = C2v
+symmetry origin: [3.62779569e-01 6.72862439e-18 1.00929366e-17]
+symmetry axis x: [ 0.00000000e+00 -1.00000000e+00  2.60907276e-16]
+symmetry axis y: [0.00000000e+00 1.11022302e-16 1.00000000e+00]
+symmetry axis z: [1. 0. 0.]
+num. orbitals of irrep A1 = 47
+num. orbitals of irrep A2 = 18
+num. orbitals of irrep B1 = 39
+num. orbitals of irrep B2 = 22
+number of shells = 58
+number of NR pGTOs = 219
+number of NR cGTOs = 126
+basis = {'Pt': 'def2-svp', 'Cl': 'def2-svp', 'N': 'def2-svp', 'H': 'def2-svp'}
+ecp = {'Pt': 'def2-svp'}
+CPU time:         0.65
+
+
+******** <class 'pyscf.scf.hf_symm.SymAdaptedRHF'> ********
+method = SymAdaptedRHF
+initial guess = minao
+damping factor = 0
+level_shift factor = 0
+DIIS = <class 'pyscf.scf.diis.CDIIS'>
+diis_start_cycle = 1
+diis_space = 8
+diis_damp = 0
+SCF conv_tol = 1e-10
+SCF conv_tol_grad = None
+SCF max_cycles = 300
+direct_scf = True
+direct_scf_tol = 1e-13
+chkfile to save SCF result = /tmp/tmpf5p50hrp
+max_memory 4000 MB (current use 103 MB)
+Freeze 0 electrons in irreps []
+    72 free electrons in irreps A1 A2 B1 B2
+Set gradient conv threshold to 1e-05
+Initial guess from minao.
+init E= -1137.50410105615
+HOMO (B1) = -0.685249176070702  LUMO (B1) = -0.494864017651  gap/eV = 5.18064
+cycle= 1 E= -1148.90597979465  delta_E= -11.4  |g|= 1.45  |ddm|= 8.61
+HOMO (A2) = -0.0138755680949902  LUMO (A1) = 0.0351712667485276  gap/eV = 1.33463
+cycle= 2 E= -1148.82731581168  delta_E= 0.0787  |g|= 1.82  |ddm|= 3.79
+HOMO (A2) = -0.307377335999139  LUMO (A1) = 0.0557520313708391  gap/eV = 9.88125
+cycle= 3 E= -1149.5242045485  delta_E= -0.697  |g|= 0.17  |ddm|= 2.45
+HOMO (A2) = -0.343637374291441  LUMO (A1) = 0.087275551613709  gap/eV = 11.72574
+cycle= 4 E= -1149.53902793306  delta_E= -0.0148  |g|= 0.0948  |ddm|= 0.324
+HOMO (A2) = -0.339938994826033  LUMO (A1) = 0.0822452218262104  gap/eV = 11.48822
+cycle= 5 E= -1149.5423766301  delta_E= -0.00335  |g|= 0.0301  |ddm|= 0.164
+HOMO (A2) = -0.3404514269187  LUMO (A1) = 0.083740535890224  gap/eV = 11.54285
+cycle= 6 E= -1149.54298308286  delta_E= -0.000606  |g|= 0.0074  |ddm|= 0.0878
+HOMO (A2) = -0.341430764711393  LUMO (A1) = 0.0831617727716693  gap/eV = 11.55375
+cycle= 7 E= -1149.5430116369  delta_E= -2.86e-05  |g|= 0.00163  |ddm|= 0.0192
+HOMO (A2) = -0.341240466342339  LUMO (A1) = 0.0831062432627058  gap/eV = 11.54706
+cycle= 8 E= -1149.54301355771  delta_E= -1.92e-06  |g|= 0.000343  |ddm|= 0.00523
+HOMO (A2) = -0.341219815172088  LUMO (A1) = 0.0830959228679999  gap/eV = 11.54622
+cycle= 9 E= -1149.54301367723  delta_E= -1.2e-07  |g|= 0.000107  |ddm|= 0.00127
+HOMO (A2) = -0.341215964820563  LUMO (A1) = 0.0830832423580947  gap/eV = 11.54577
+cycle= 10 E= -1149.54301368803  delta_E= -1.08e-08  |g|= 3.21e-05  |ddm|= 0.000375
+HOMO (A2) = -0.341209222638011  LUMO (A1) = 0.0830814028499  gap/eV = 11.54554
+cycle= 11 E= -1149.54301368907  delta_E= -1.04e-09  |g|= 1.14e-05  |ddm|= 0.000128
+HOMO (A2) = -0.341210059975925  LUMO (A1) = 0.0830810126111356  gap/eV = 11.54555
+cycle= 12 E= -1149.54301368915  delta_E= -8.32e-11  |g|= 2.6e-06  |ddm|= 3.25e-05
+HOMO (A2) = -0.341209656553989  LUMO (A1) = 0.0830809365052338  gap/eV = 11.54554
+Extra cycle  E= -1149.54301368916  delta_E= -7.28e-12  |g|= 1.31e-06  |ddm|= 6.32e-06
+converged SCF energy = -1149.54301368916
+rhf_internal: lowest eigs of H = [1.05420244 1.08971042 1.12991651]
+<class 'pyscf.scf.hf_symm.SymAdaptedRHF'> wavefunction is stable in the internal stability analysis
+
+******** <class 'pyscf.mp.mp2.RMP2'> ********
+nocc = 36, nmo = 126
+max_memory 4000 MB (current use 379 MB)
+E(RMP2) = -1150.57851362463  E_corr = -1.03549993547162
+E(SCS-RMP2) = -1150.52535370591  E_corr = -0.982340016744818
+E_corr(same-spin) = -0.300299891332061
+E_corr(oppo-spin) = -0.735200044139554

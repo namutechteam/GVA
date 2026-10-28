@@ -1,0 +1,67 @@
+output file: results/logs/reference/H2_x1.0__part1.log
+output file: results/logs/reference/H2_x1.0__part2.log
+H2_x1.0 ok
+output file: results/logs/reference/H2_x1.5__part1.log
+output file: results/logs/reference/H2_x1.5__part2.log
+H2_x1.5 ok
+output file: results/logs/reference/H2_x2.0__part1.log
+output file: results/logs/reference/H2_x2.0__part2.log
+H2_x2.0 ok
+output file: results/logs/reference/H4_x1.0__part1.log
+output file: results/logs/reference/H4_x1.0__part2.log
+H4_x1.0 ok
+output file: results/logs/reference/H4_x1.5__part1.log
+output file: results/logs/reference/H4_x1.5__part2.log
+H4_x1.5 ok
+output file: results/logs/reference/H4_x2.0__part1.log
+output file: results/logs/reference/H4_x2.0__part2.log
+H4_x2.0 ok
+output file: results/logs/reference/LiH_x1.0__part1.log
+output file: results/logs/reference/LiH_x1.0__part2.log
+LiH_x1.0 ok
+output file: results/logs/reference/LiH_x1.5__part1.log
+output file: results/logs/reference/LiH_x1.5__part2.log
+LiH_x1.5 ok
+output file: results/logs/reference/LiH_x2.0__part1.log
+output file: results/logs/reference/LiH_x2.0__part2.log
+LiH_x2.0 ok
+output file: results/logs/reference/BeH2_x1.0__part1.log
+output file: results/logs/reference/BeH2_x1.0__part2.log
+BeH2_x1.0 ok
+output file: results/logs/reference/BeH2_x1.5__part1.log
+output file: results/logs/reference/BeH2_x1.5__part2.log
+BeH2_x1.5 ok
+output file: results/logs/reference/BeH2_x2.0__part1.log
+output file: results/logs/reference/BeH2_x2.0__part2.log
+BeH2_x2.0 ok
+output file: results/logs/reference/cisplatin_C2v_eq__part1.log
+output file: results/logs/reference/cisplatin_C2v_eq__part2.log
+cisplatin eq ok
+output file: results/logs/reference/cisplatin_Cs_R2.32__part1.log
+output file: results/logs/reference/cisplatin_Cs_R2.32__part2.log
+cisplatin_Cs_R2.32 ok
+output file: results/logs/reference/cisplatin_Cs_R2.50__part1.log
+output file: results/logs/reference/cisplatin_Cs_R2.50__part2.log
+cisplatin_Cs_R2.50 ok
+output file: results/logs/reference/cisplatin_Cs_R2.70__part1.log
+output file: results/logs/reference/cisplatin_Cs_R2.70__part2.log
+cisplatin_Cs_R2.70 ok
+output file: results/logs/reference/cisplatin_Cs_R2.90__part1.log
+output file: results/logs/reference/cisplatin_Cs_R2.90__part2.log
+cisplatin_Cs_R2.90 ok
+output file: results/logs/reference/cisplatin_Cs_R3.20__part1.log
+output file: results/logs/reference/cisplatin_Cs_R3.20__part2.log
+cisplatin_Cs_R3.20 ok
+output file: results/logs/reference/cisplatin_Cs_R3.50__part1.log
+output file: results/logs/reference/cisplatin_Cs_R3.50__part2.log
+cisplatin_Cs_R3.50 ok
+output file: results/logs/reference/cisplatin_Cs_R3.80__part1.log
+output file: results/logs/reference/cisplatin_Cs_R3.80__part2.log
+cisplatin_Cs_R3.80 ok
+output file: results/logs/reference/cisplatin_Cs_R2.20__part1.log
+output file: results/logs/reference/cisplatin_Cs_R2.20__part2.log
+cisplatin_Cs_R2.20 ok
+output file: results/logs/reference/cisplatin_Cs_R2.00__part1.log
+output file: results/logs/reference/cisplatin_Cs_R2.00__part2.log
+cisplatin_Cs_R2.00 ok
+all reference energies reproduced

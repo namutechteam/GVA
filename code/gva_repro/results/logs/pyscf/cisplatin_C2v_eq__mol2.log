@@ -1,0 +1,193 @@
+#INFO: **** input file is /home/claude/gva_repro/run_cisplatin.py ****
+"""Cisplatin CAS(10e,10o) benchmark at the C2v reference geometry.
+
+Writes results/cisplatin_eq.json (incrementally) and the active-space
+Hamiltonian to results/cisplatin_cas10_10.npz.
+"""
+import json
+import time
+
+import numpy as np
+
+from datetime import datetime, timezone
+
+from gva.systems import (cisplatin_cas_hamiltonian, classical_references, cisplatin_atoms,
+                         set_pyscf_log)
+from gva.ansatz import (uccsd_pool, gva_groups, counts_summary, cnot_count_ladder,
+                        parameter_map, excitation_label)
+
+
+def now():
+    return datetime.now(timezone.utc).astimezone().isoformat(timespec="seconds")
+
+from gva.engine import DeterminantSpace, Ansatz, run_vqe, adapt_vqe
+
+OUT = "results/cisplatin_eq.json"
+t_all = time.time()
+set_pyscf_log("results/logs/pyscf", "cisplatin_C2v_eq")
+H = cisplatin_cas_hamiltonian()
+ref = classical_references(H)
+ef = ref["E_FCI"]
+np.savez("results/cisplatin_cas10_10.npz", h1=H.h1, eri=H.eri, ecore=H.ecore,
+         orbsym=H.orbsym, nelec=np.array(H.nelec), civec=ref["civec"],
+         C_act_ao=H.extra["C_act_ao"], no_occ=H.extra["act_no_occ"])
+space = DeterminantSpace(H.norb, H.nelec, H.h1, H.eri, H.ecore)
+pool = uccsd_pool(H.nocc, H.norb)
+cs = counts_summary(H.nocc, H.norb, H.orbsym)
+mol = H.extra["mol"]
+summary = {
+    "geometry_xyz_angstrom": [(a, list(map(float, c))) for a, c in cisplatin_atoms()],
+    "point_group": mol.groupname, "n_electrons_total": int(mol.nelectron),
+    "n_ao": int(mol.nao), "E_RHF": H.e_rhf_total,
+    "E_MP2_corr": H.extra["e_mp2_corr"], "n_core_orbitals": H.extra["n_core"],
+    "active_irreps": H.irrep_names, "active_NO_occupations": H.extra["act_no_occ"].tolist(),
+    "active_orbital_energies": H.extra["active_eps"].tolist(),
+    "E_ref": ref["E_ref"], "E_CISD": ref["E_CISD"], "E_CCSD": ref["E_CCSD"],
+    "E_CCSD(T)": ref["E_CCSD(T)"], "E_CASCI": ef, "c0_sq": ref["c0_ref_weight"],
+    "T1_diag": ref["t1_diag"], "counts": cs, "dim": space.dim,
+    "parameter_maps_1L": {v: parameter_map(gva_groups(pool, H.orbsym, *f)) for v, f in
+                          {"UCCSD": (False, False), "GVA": (True, True),
+                           "PG only": (True, False), "spin only": (False, True)}.items()},
+    "runs": []}
+
+
+def dump():
+    json.dump(summary, open(OUT, "w"), indent=1, default=float)
+
+
+import os
+done = set()
+if os.path.exists(OUT):
+    old = json.load(open(OUT))
+    summary["runs"] = [r for r in old.get("runs", []) if r["ansatz"] != "ADAPT-VQE"]
+    done = {(r["ansatz"], r["layers"], r["seed"]) for r in summary["runs"]}
+dump()
+plan = []
+SEEDS = {("GVA", 1): (0, 1, 2), ("GVA", 2): (0, 1, 2), ("GVA", 3): (0,),
+         ("UCCSD", 1): (0, 1, 2), ("UCCSD", 2): (0, 1), ("UCCSD", 3): (0,)}
+for var in ("GVA", "UCCSD"):
+    for L in (1, 2, 3):
+        plan += [(var, L, s) for s in SEEDS[(var, L)]]
+plan += [("PG only", 1, 0), ("spin only", 1, 0)]
+VAR = {"UCCSD": (False, False), "GVA": (True, True), "PG only": (True, False),
+       "spin only": (False, True)}
+for var, L, s in plan:
+    if (var, L, s) in done:
+        continue
+    groups = gva_groups(pool, H.orbsym, *VAR[var])
+    A = Ansatz(space, groups, layers=L)
+    th0 = np.zeros(A.n_params) if s == 0 else \
+        np.random.default_rng(2000 + s).normal(0, 0.05, A.n_params)
+    t_start = now()
+    r = run_vqe(A, th0, e_exact=ef, maxiter=2500)
+    summary["runs"].append({
+        "ansatz": var, "layers": L, "seed": s, "n_params": A.n_params,
+        "cnot": L * cs[var]["cnot_1L"], "E": r["E"], "dE": r["dE"],
+        "nit": r["nit"], "nfev": r["nfev"], "iter_to_chem_acc": r["iter_to_chem_acc"],
+        "S2": r["S2"], "wall_s": r["wall_s"], "grad_norm": r["grad_norm"],
+        "message": r["message"], "started": t_start, "finished": now(),
+        "theta": r["theta"].tolist(), "history": r["history"].tolist()})
+    dump()
+    print(var, L, s, f"dE={r['dE']*1e3:.4f} mHa nit={r['nit']} t={r['wall_s']:.0f}s",
+          flush=True)
+
+t_start = now()
+ad = adapt_vqe(space, gva_groups(pool, H.orbsym, True, True), e_exact=ef,
+               grad_tol=1e-3, max_ops=120, verbose=True)
+summary["runs"].append({"ansatz": "ADAPT-VQE", "layers": None, "seed": 0,
+                        "n_params": ad["n_ops"],
+                        "cnot": sum(cnot_count_ladder(e) for g in ad["chosen"] for e in g),
+                        "E": ad["E"], "dE": ad["dE"], "trace": ad["trace"], "stop_reason": ad["stop_reason"],
+                        "wall_s": ad["wall_s"], "started": t_start, "finished": now(),
+                        "operators": [[excitation_label(e) for e in g] for g in ad["chosen"]],
+                        "theta": np.asarray(ad["theta"]).tolist()})
+dump()
+print("total", time.time() - t_all)
+#INFO: ******************** input file end ********************
+
+
+System: uname_result(system='Linux', node='vm', release='6.18.44-fc-v153', version='#1 SMP PREEMPT_DYNAMIC @0', machine='x86_64')  Threads 1
+Python 3.13.17 (main, Oct 22 2026, 14:06:04) [GCC 13.3.0]
+numpy 2.5.3  scipy 1.18.1  h5py 3.16.0
+Date: Fri Oct 23 21:48:15 2026
+PySCF version 2.14.0
+PySCF path  /usr/local/lib/python3.13/dist-packages/pyscf
+
+[CONFIG] conf_file None
+[INPUT] verbose = 4
+[INPUT] num. atoms = 0
+[INPUT] num. electrons = 0
+[INPUT] charge = 0
+[INPUT] spin (= nelec alpha-beta = 2S) = 0
+[INPUT] symmetry False subgroup None
+[INPUT] Mole.unit = angstrom
+[INPUT] Symbol           X                Y                Z      unit          X                Y                Z       unit  Magmom
+
+nuclear repulsion = 0
+number of shells = 0
+number of NR pGTOs = 0
+number of NR cGTOs = 0
+basis = sto-3g
+ecp = {}
+CPU time:        25.79
+
+******** <class 'pyscf.ci.cisd.RCISD'> ********
+CISD nocc = 5, nmo = 10
+max_cycle = 50
+direct = 0
+conv_tol = 1e-10
+max_cycle = 50
+max_space = 12
+lindep = 0
+nroots = 1
+max_memory 4000 MB (current use 393 MB)
+Init t2, MP2 energy = -0.0195392086302824
+RCISD converged
+E(RCISD) = -1149.567755963986  E_corr = -0.02474227482686471
+
+******** <class 'pyscf.cc.ccsd.CCSD'> ********
+CC2 = 0
+CCSD nocc = 5, nmo = 10
+max_cycle = 500
+direct = 0
+conv_tol = 1e-11
+conv_tol_normt = 1e-05
+diis_space = 6
+diis_start_cycle = 0
+diis_start_energy_diff = 1e+09
+max_memory 4000 MB (current use 393 MB)
+Init t2, MP2 energy = -1149.56255289779  E_corr(MP2) -0.0195392086302824
+Init E_corr(CCSD) = -0.0195392086302826
+cycle = 1  E_corr(CCSD) = -0.023125523612524  dE = -0.00358631498  norm(t1,t2) = 0.0243913
+cycle = 2  E_corr(CCSD) = -0.0242392749472375  dE = -0.00111375133  norm(t1,t2) = 0.00978109
+cycle = 3  E_corr(CCSD) = -0.0249368593691699  dE = -0.000697584422  norm(t1,t2) = 0.00430761
+cycle = 4  E_corr(CCSD) = -0.0249301107310622  dE = 6.74863811e-06  norm(t1,t2) = 0.000561115
+cycle = 5  E_corr(CCSD) = -0.0249339834608809  dE = -3.87272982e-06  norm(t1,t2) = 7.89126e-05
+cycle = 6  E_corr(CCSD) = -0.0249337806648373  dE = 2.02796044e-07  norm(t1,t2) = 1.7851e-05
+cycle = 7  E_corr(CCSD) = -0.0249338022470248  dE = -2.15821875e-08  norm(t1,t2) = 4.87013e-06
+cycle = 8  E_corr(CCSD) = -0.0249338181236711  dE = -1.58766463e-08  norm(t1,t2) = 1.13654e-06
+cycle = 9  E_corr(CCSD) = -0.0249338228719922  dE = -4.74832109e-09  norm(t1,t2) = 3.03629e-07
+cycle = 10  E_corr(CCSD) = -0.0249338202885704  dE = 2.5834218e-09  norm(t1,t2) = 7.02864e-08
+cycle = 11  E_corr(CCSD) = -0.0249338184888479  dE = 1.7997225e-09  norm(t1,t2) = 4.14316e-08
+cycle = 12  E_corr(CCSD) = -0.0249338184200007  dE = 6.88471606e-11  norm(t1,t2) = 1.58144e-08
+cycle = 13  E_corr(CCSD) = -0.024933818157236  dE = 2.62764675e-10  norm(t1,t2) = 1.2612e-08
+cycle = 14  E_corr(CCSD) = -0.0249338181867623  dE = -2.95263258e-11  norm(t1,t2) = 9.71823e-09
+cycle = 15  E_corr(CCSD) = -0.0249338181346048  dE = 5.21575005e-11  norm(t1,t2) = 1.02833e-08
+cycle = 16  E_corr(CCSD) = -0.0249338178342024  dE = 3.00402443e-10  norm(t1,t2) = 1.22391e-08
+cycle = 17  E_corr(CCSD) = -0.0249338176570383  dE = 1.77164075e-10  norm(t1,t2) = 7.97099e-09
+cycle = 18  E_corr(CCSD) = -0.0249338175916701  dE = 6.536819e-11  norm(t1,t2) = 5.49899e-09
+cycle = 19  E_corr(CCSD) = -0.0249338175313954  dE = 6.02747297e-11  norm(t1,t2) = 4.67844e-09
+cycle = 20  E_corr(CCSD) = -0.0249338174852471  dE = 4.61483143e-11  norm(t1,t2) = 4.0672e-09
+cycle = 21  E_corr(CCSD) = -0.0249338174335871  dE = 5.16599472e-11  norm(t1,t2) = 3.65653e-09
+cycle = 22  E_corr(CCSD) = -0.0249338173814347  dE = 5.21524213e-11  norm(t1,t2) = 3.18347e-09
+cycle = 23  E_corr(CCSD) = -0.0249338173460459  dE = 3.53887718e-11  norm(t1,t2) = 2.45008e-09
+cycle = 24  E_corr(CCSD) = -0.0249338173211542  dE = 2.48917206e-11  norm(t1,t2) = 1.99282e-09
+cycle = 25  E_corr(CCSD) = -0.0249338172998294  dE = 2.1324862e-11  norm(t1,t2) = 1.69946e-09
+cycle = 26  E_corr(CCSD) = -0.0249338172815052  dE = 1.83241373e-11  norm(t1,t2) = 1.45107e-09
+cycle = 27  E_corr(CCSD) = -0.024933817265359  dE = 1.6146199e-11  norm(t1,t2) = 1.23202e-09
+cycle = 28  E_corr(CCSD) = -0.0249338172519255  dE = 1.34335182e-11  norm(t1,t2) = 1.0289e-09
+cycle = 29  E_corr(CCSD) = -0.0249338172414583  dE = 1.04671723e-11  norm(t1,t2) = 8.46899e-10
+cycle = 30  E_corr(CCSD) = -0.0249338172329751  dE = 8.48324189e-12  norm(t1,t2) = 7.10719e-10
+CCSD converged
+E(CCSD) = -1149.567947506392  E_corr = -0.0249338172329751
+CCSD(T) correction = -0.000244221593899137

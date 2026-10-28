@@ -1,0 +1,603 @@
+#INFO: **** input file is /home/claude/gva_repro/run_orbital_sensitivity.py ****
+"""Dependence of the cisplatin CAS(10e,10o) results on the choice of active orbitals.
+
+Three choices at the same C2v geometry, basis and ECP:
+  A  symmetry-adapted MP2 natural orbitals (as in the main text): the five
+     strongly occupied NOs with the lowest occupations and the five weakly
+     occupied NOs with the highest occupations;
+  B  canonical RHF orbitals: HOMO-4 ... HOMO and LUMO ... LUMO+4;
+  C  CASSCF(10e,10o) orbitals optimized from guess A (state-specific ground
+     state), expressed as active natural orbitals.
+For each: correlation energy in the active space, reference weight, classical
+references, parameter/CNOT counts and VQE errors (GVA 1L, 2L; UCCSD 1L; HF start).
+Writes results/orbital_sensitivity.json and PySCF logs.
+"""
+import json
+import time
+from datetime import datetime, timezone
+
+import numpy as np
+from pyscf import mcscf, symm
+
+from gva.systems import (build_cisplatin_mol, run_rhf, mp2_natural_orbitals,
+                         select_active_by_occupation, cas_hamiltonian_from_orbitals,
+                         classical_references, set_pyscf_log)
+from gva.ansatz import uccsd_pool, gva_groups, counts_summary
+from gva.engine import DeterminantSpace, Ansatz, run_vqe
+
+OUT = "results/orbital_sensitivity.json"
+
+
+def now():
+    return datetime.now(timezone.utc).astimezone().isoformat(timespec="seconds")
+
+
+def composition(mol, C):
+    S = mol.intor("int1e_ovlp")
+    lab = mol.ao_labels(fmt=False)
+    out = []
+    for k in range(C.shape[1]):
+        c = C[:, k]
+        pop = c * (S @ c)
+        agg = {}
+        for i, (ia, el, nl, m) in enumerate(lab):
+            key = f"{el} {nl[-1]}"
+            agg[key] = agg.get(key, 0.0) + pop[i]
+        top = sorted(agg.items(), key=lambda x: -abs(x[1]))[:3]
+        out.append(", ".join(f"{a} {v:.2f}" for a, v in top))
+    return out
+
+
+def evaluate(label, H, mol, extra):
+    t0 = time.time()
+    ref = classical_references(H)
+    ef = ref["E_FCI"]
+    space = DeterminantSpace(H.norb, H.nelec, H.h1, H.eri, H.ecore)
+    pool = uccsd_pool(H.nocc, H.norb)
+    cs = counts_summary(H.nocc, H.norb, H.orbsym)
+    rec = {"choice": label, "E_ref": ref["E_ref"], "E_CASCI": ef,
+           "E_corr_active_mHa": (ef - ref["E_ref"]) * 1e3, "c0_sq": ref["c0_ref_weight"],
+           "CISD_err_mHa": (ref["E_CISD"] - ef) * 1e3, "CCSD_err_mHa": (ref["E_CCSD"] - ef) * 1e3,
+           "CCSD(T)_err_mHa": (ref["E_CCSD(T)"] - ef) * 1e3,
+           "active_irreps": H.irrep_names,
+           "active_composition": composition(mol, H.extra["C_act_ao"]),
+           "counts": cs, "started": now()}
+    rec.update(extra)
+    for key, var, L in (("GVA_1L", (True, True), 1), ("UCCSD_1L", (False, False), 1),
+                        ("GVA_2L", (True, True), 2)):
+        A = Ansatz(space, gva_groups(pool, H.orbsym, *var), layers=L)
+        rv = run_vqe(A, e_exact=ef, maxiter=2500, record=False)
+        rec[key] = {"E": rv["E"], "dE_mHa": rv["dE"] * 1e3, "n_params": A.n_params,
+                    "nit": rv["nit"], "S2": rv["S2"], "wall_s": rv["wall_s"],
+                    "theta": rv["theta"].tolist()}
+        print(label, key, f"{rv['dE'] * 1e3:.4f} mHa", flush=True)
+    rec["finished"] = now()
+    rec["wall_s"] = time.time() - t0
+    return rec
+
+
+set_pyscf_log("results/logs/pyscf", "orbital_sensitivity")
+mol = build_cisplatin_mol()
+mf = run_rhf(mol)
+irr = np.array(symm.label_orb_symm(mol, mol.irrep_id, mol.symm_orb, mf.mo_coeff))
+nocc = mol.nelectron // 2
+rows = []
+
+# ---- A: MP2 natural orbitals
+nos, occs, syms, e_mp2 = mp2_natural_orbitals(mol, mf)
+actA = select_active_by_occupation(occs, 5, 5)
+HA = cas_hamiltonian_from_orbitals(mol, mf, nos, occs, syms, actA, "A")
+rows.append(evaluate("A: MP2 natural orbitals", HA, mol,
+                     {"selected": f"NOs ranked {actA.min() + 1}-{actA.max() + 1} by occupation "
+                                  f"(of {len(occs)}); occupations "
+                                  + ", ".join(f"{o:.4f}" for o in occs[actA])}))
+json.dump(rows, open(OUT, "w"), indent=1, default=float)
+
+# ---- B: canonical RHF frontier orbitals
+actB = np.arange(nocc - 5, nocc + 5)
+occB = mf.mo_occ.copy()
+HB = cas_hamiltonian_from_orbitals(mol, mf, mf.mo_coeff, occB, irr, actB, "B")
+rows.append(evaluate("B: canonical RHF (HOMO-4 to LUMO+4)", HB, mol,
+                     {"selected": f"canonical MOs {nocc - 4}-{nocc + 5} (HOMO = {nocc}); "
+                                  "orbital energies (Ha) "
+                                  + ", ".join(f"{e:.3f}" for e in mf.mo_energy[actB])}))
+json.dump(rows, open(OUT, "w"), indent=1, default=float)
+
+# ---- C: CASSCF(10e,10o) from guess A
+ncore = HA.extra["n_core"]
+core = np.array([k for k in np.where(occs > 1.0)[0] if k not in set(actA)])
+virt = np.array([k for k in range(len(occs)) if k not in set(core) | set(actA)])
+order = np.concatenate([core, actA, virt])
+mc = mcscf.CASSCF(mf, 10, 10)
+mc.natorb = True
+mc.conv_tol = 1e-9
+mc.max_cycle_macro = 100
+t = time.time()
+mc.kernel(nos[:, order])
+mo = mc.mo_coeff
+irrC = np.array(symm.label_orb_symm(mol, mol.irrep_id, mol.symm_orb, mo))
+occC = np.zeros(mo.shape[1])
+occC[:ncore] = 2.0
+nat = np.asarray(mc.mo_occ)[ncore:ncore + 10] if mc.mo_occ is not None else None
+occC[ncore:ncore + 10] = nat if nat is not None else np.r_[np.full(5, 1.99), np.full(5, 0.01)]
+actC = np.arange(ncore, ncore + 10)
+HC = cas_hamiltonian_from_orbitals(mol, mf, mo, occC, irrC, actC, "C")
+rows.append(evaluate("C: CASSCF(10e,10o) natural orbitals", HC, mol,
+                     {"selected": f"CASSCF converged={bool(mc.converged)}, "
+                                  f"E_CASSCF = {mc.e_tot:.8f} Ha, {time.time() - t:.0f} s; "
+                                  "natural occupations "
+                                  + ", ".join(f"{o:.4f}" for o in occC[actC]),
+                      "E_CASSCF": float(mc.e_tot)}))
+json.dump(rows, open(OUT, "w"), indent=1, default=float)
+print("done", flush=True)
+#INFO: ******************** input file end ********************
+
+
+System: uname_result(system='Linux', node='vm', release='6.18.44-fc-v153', version='#1 SMP PREEMPT_DYNAMIC @0', machine='x86_64')  Threads 1
+Python 3.13.17 (main, Oct 22 2026, 14:06:04) [GCC 13.3.0]
+numpy 2.5.3  scipy 1.18.1  h5py 3.16.0
+Date: Fri Oct 23 22:39:55 2026
+PySCF version 2.14.0
+PySCF path  /usr/local/lib/python3.13/dist-packages/pyscf
+
+[CONFIG] conf_file None
+[INPUT] verbose = 4
+[INPUT] num. atoms = 11
+[INPUT] num. electrons = 72
+[INPUT] charge = 0
+[INPUT] spin (= nelec alpha-beta = 2S) = 0
+[INPUT] symmetry True subgroup None
+[INPUT] Mole.unit = angstrom
+[INPUT] Symbol           X                Y                Z      unit          X                Y                Z       unit  Magmom
+[INPUT]  1 Pt     0.000000000000   0.000000000000   0.000000000000 AA    0.000000000000   0.000000000000   0.000000000000 Bohr   0.0
+[INPUT]  2 Cl     1.640487732353   1.640487732353   0.000000000000 AA    3.100072524856   3.100072524856   0.000000000000 Bohr   0.0
+[INPUT]  3 Cl     1.640487732353  -1.640487732353   0.000000000000 AA    3.100072524856  -3.100072524856   0.000000000000 Bohr   0.0
+[INPUT]  4 N     -1.449568901432   1.449568901432   0.000000000000 AA   -2.739288222394   2.739288222394   0.000000000000 Bohr   0.0
+[INPUT]  5 N     -1.449568901432  -1.449568901432   0.000000000000 AA   -2.739288222394  -2.739288222394   0.000000000000 Bohr   0.0
+[INPUT]  6 H     -2.370205891469   1.010447582688   0.000000000000 AA   -4.479039993708   1.909469194509   0.000000000000 Bohr   0.0
+[INPUT]  7 H     -1.350387159883   2.030266314274   0.832678507506 AA   -2.551861894309   3.836647293908   1.573534328998 Bohr   0.0
+[INPUT]  8 H     -1.350387159883   2.030266314274  -0.832678507506 AA   -2.551861894309   3.836647293908  -1.573534328998 Bohr   0.0
+[INPUT]  9 H     -2.370205891469  -1.010447582688   0.000000000000 AA   -4.479039993708  -1.909469194509   0.000000000000 Bohr   0.0
+[INPUT] 10 H     -1.350387159883  -2.030266314274   0.832678507506 AA   -2.551861894309  -3.836647293908   1.573534328998 Bohr   0.0
+[INPUT] 11 H     -1.350387159883  -2.030266314274  -0.832678507506 AA   -2.551861894309  -3.836647293908  -1.573534328998 Bohr   0.0
+
+nuclear repulsion = 411.098108491266
+point group symmetry = C2v
+symmetry origin: [3.62779569e-01 6.72862439e-18 1.00929366e-17]
+symmetry axis x: [ 0.00000000e+00 -1.00000000e+00  2.60907276e-16]
+symmetry axis y: [0.00000000e+00 1.11022302e-16 1.00000000e+00]
+symmetry axis z: [1. 0. 0.]
+num. orbitals of irrep A1 = 47
+num. orbitals of irrep A2 = 18
+num. orbitals of irrep B1 = 39
+num. orbitals of irrep B2 = 22
+number of shells = 58
+number of NR pGTOs = 219
+number of NR cGTOs = 126
+basis = {'Pt': 'def2-svp', 'Cl': 'def2-svp', 'N': 'def2-svp', 'H': 'def2-svp'}
+ecp = {'Pt': 'def2-svp'}
+CPU time:         0.84
+
+
+******** <class 'pyscf.scf.hf_symm.SymAdaptedRHF'> ********
+method = SymAdaptedRHF
+initial guess = minao
+damping factor = 0
+level_shift factor = 0
+DIIS = <class 'pyscf.scf.diis.CDIIS'>
+diis_start_cycle = 1
+diis_space = 8
+diis_damp = 0
+SCF conv_tol = 1e-10
+SCF conv_tol_grad = None
+SCF max_cycles = 300
+direct_scf = True
+direct_scf_tol = 1e-13
+chkfile to save SCF result = /tmp/tmp3lxq6408
+max_memory 4000 MB (current use 104 MB)
+Freeze 0 electrons in irreps []
+    72 free electrons in irreps A1 A2 B1 B2
+Set gradient conv threshold to 1e-05
+Initial guess from minao.
+init E= -1137.50410105615
+HOMO (B1) = -0.685249176070702  LUMO (B1) = -0.494864017651  gap/eV = 5.18064
+cycle= 1 E= -1148.90597979465  delta_E= -11.4  |g|= 1.45  |ddm|= 8.61
+HOMO (A2) = -0.0138755680949902  LUMO (A1) = 0.0351712667485276  gap/eV = 1.33463
+cycle= 2 E= -1148.82731581168  delta_E= 0.0787  |g|= 1.82  |ddm|= 3.79
+HOMO (A2) = -0.307377335999139  LUMO (A1) = 0.0557520313708391  gap/eV = 9.88125
+cycle= 3 E= -1149.5242045485  delta_E= -0.697  |g|= 0.17  |ddm|= 2.45
+HOMO (A2) = -0.343637374291441  LUMO (A1) = 0.087275551613709  gap/eV = 11.72574
+cycle= 4 E= -1149.53902793306  delta_E= -0.0148  |g|= 0.0948  |ddm|= 0.324
+HOMO (A2) = -0.339938994826033  LUMO (A1) = 0.0822452218262104  gap/eV = 11.48822
+cycle= 5 E= -1149.5423766301  delta_E= -0.00335  |g|= 0.0301  |ddm|= 0.164
+HOMO (A2) = -0.3404514269187  LUMO (A1) = 0.083740535890224  gap/eV = 11.54285
+cycle= 6 E= -1149.54298308286  delta_E= -0.000606  |g|= 0.0074  |ddm|= 0.0878
+HOMO (A2) = -0.341430764711393  LUMO (A1) = 0.0831617727716693  gap/eV = 11.55375
+cycle= 7 E= -1149.5430116369  delta_E= -2.86e-05  |g|= 0.00163  |ddm|= 0.0192
+HOMO (A2) = -0.341240466342339  LUMO (A1) = 0.0831062432627058  gap/eV = 11.54706
+cycle= 8 E= -1149.54301355771  delta_E= -1.92e-06  |g|= 0.000343  |ddm|= 0.00523
+HOMO (A2) = -0.341219815172088  LUMO (A1) = 0.0830959228679999  gap/eV = 11.54622
+cycle= 9 E= -1149.54301367723  delta_E= -1.2e-07  |g|= 0.000107  |ddm|= 0.00127
+HOMO (A2) = -0.341215964820563  LUMO (A1) = 0.0830832423580947  gap/eV = 11.54577
+cycle= 10 E= -1149.54301368803  delta_E= -1.08e-08  |g|= 3.21e-05  |ddm|= 0.000375
+HOMO (A2) = -0.341209222638011  LUMO (A1) = 0.0830814028499  gap/eV = 11.54554
+cycle= 11 E= -1149.54301368907  delta_E= -1.04e-09  |g|= 1.14e-05  |ddm|= 0.000128
+HOMO (A2) = -0.341210059975925  LUMO (A1) = 0.0830810126111356  gap/eV = 11.54555
+cycle= 12 E= -1149.54301368915  delta_E= -8.32e-11  |g|= 2.6e-06  |ddm|= 3.25e-05
+HOMO (A2) = -0.341209656553989  LUMO (A1) = 0.0830809365052338  gap/eV = 11.54554
+Extra cycle  E= -1149.54301368916  delta_E= -7.28e-12  |g|= 1.31e-06  |ddm|= 6.32e-06
+converged SCF energy = -1149.54301368916
+rhf_internal: lowest eigs of H = [1.05420244 1.08971042 1.12991651]
+<class 'pyscf.scf.hf_symm.SymAdaptedRHF'> wavefunction is stable in the internal stability analysis
+
+******** <class 'pyscf.mp.mp2.RMP2'> ********
+nocc = 36, nmo = 126
+max_memory 4000 MB (current use 379 MB)
+E(RMP2) = -1150.57851362463  E_corr = -1.03549993547162
+E(SCS-RMP2) = -1150.52535370591  E_corr = -0.982340016744818
+E_corr(same-spin) = -0.300299891332061
+E_corr(oppo-spin) = -0.735200044139554
+
+******** <class 'pyscf.mcscf.mc1step_symm.SymAdaptedCASSCF'> ********
+CAS (5e+5e, 10o), ncore = 31, nvir = 85
+max_cycle_macro = 100
+max_cycle_micro = 4
+conv_tol = 1e-09
+conv_tol_grad = None
+orbital rotation max_stepsize = 0.02
+orbital rotation threshold for CI restart = 0.01
+augmented hessian ah_max_cycle = 30
+augmented hessian ah_conv_tol = 1e-12
+augmented hessian ah_linear dependence = 1e-14
+augmented hessian ah_level shift = 1e-08
+augmented hessian ah_start_tol = 2.5
+augmented hessian ah_start_cycle = 3
+augmented hessian ah_grad_trust_region = 3
+kf_trust_region = 3
+kf_interval = 4
+ci_response_space = 4
+ci_grad_trust_region = 3
+with_dep4 0
+natorb = True
+canonicalization = True
+sorting_mo_energy = False
+ao2mo_level = 2
+chkfile = /tmp/tmp3lxq6408
+max_memory 4000 MB (current use 418 MB)
+internal_rotation = False
+******** <class 'pyscf.fci.direct_spin1_symm.FCISolver'> ********
+max. cycles = 50
+conv_tol = 1e-08
+davidson only = False
+linear dependence = 1e-12
+level shift = 0.001
+max iter space = 12
+max_memory 4000 MB
+nroots = 1
+pspace_size = 400
+spin = None
+CI wfn symmetry = None
+Symmetries of active orbitals: A1 A1 B1 A1 B1 B1 A1 A1 B2 A1
+CASCI E = -1149.56826451292  S^2 = 0.0000000
+Set conv_tol_grad to 3.16228e-05
+macro iter   1 ( 21 JK    4 micro), CASSCF E = -1149.57512837971  dE = -6.86386679e-03  S^2 = 0.0000000
+               |grad[o]|=0.0381  |grad[c]|=0.0199  |ddm|=0.0137  |maxRot[o]|= 0.31
+macro iter   2 ( 21 JK    4 micro), CASSCF E = -1149.58431099563  dE = -9.18261592e-03  S^2 = 0.0000000
+               |grad[o]|=0.0281  |grad[c]|=0.0224  |ddm|=0.0124  |maxRot[o]|=0.303
+macro iter   3 ( 21 JK    4 micro), CASSCF E = -1149.58932811097  dE = -5.01711534e-03  S^2 = 0.0000000
+               |grad[o]|=0.016  |grad[c]|=0.0159  |ddm|=0.0132  |maxRot[o]|=0.299
+macro iter   4 ( 21 JK    4 micro), CASSCF E = -1149.59428142416  dE = -4.95331319e-03  S^2 = 0.0000000
+               |grad[o]|=0.0112  |grad[c]|=0.0123  |ddm|=0.016  |maxRot[o]|=0.301
+macro iter   5 ( 20 JK    4 micro), CASSCF E = -1149.59510877210  dE = -8.27347936e-04  S^2 = 0.0000000
+               |grad[o]|=0.00811  |grad[c]|=0.0326  |ddm|=0.0101  |maxRot[o]|=0.237
+macro iter   6 ( 20 JK    4 micro), CASSCF E = -1149.59519009417  dE = -8.13220770e-05  S^2 = 0.0000000
+               |grad[o]|=0.0071  |grad[c]|=0.00929  |ddm|=0.00256  |maxRot[o]|=0.0309
+macro iter   7 (  6 JK    2 micro), CASSCF E = -1149.59552303915  dE = -3.32944975e-04  S^2 = 0.0000000
+               |grad[o]|=0.00347  |grad[c]|=0.0063  |ddm|=0.00149  |maxRot[o]|=0.0499
+macro iter   8 ( 15 JK    4 micro), CASSCF E = -1149.59526937352  dE =  2.53665626e-04  S^2 = 0.0000000
+               |grad[o]|=0.00152  |grad[c]|=0.00989  |ddm|=0.00298  |maxRot[o]|=0.0772
+macro iter   9 ( 21 JK    4 micro), CASSCF E = -1149.59541222988  dE = -1.42856356e-04  S^2 = 0.0000000
+               |grad[o]|=0.00373  |grad[c]|=0.00202  |ddm|=0.00107  |maxRot[o]|=0.0297
+macro iter  10 ( 21 JK    4 micro), CASSCF E = -1149.59544051843  dE = -2.82885512e-05  S^2 = 0.0000000
+               |grad[o]|=0.00187  |grad[c]|=0.00336  |ddm|=0.000947  |maxRot[o]|=0.0142
+macro iter  11 (  7 JK    2 micro), CASSCF E = -1149.59556394769  dE = -1.23429257e-04  S^2 = 0.0000000
+               |grad[o]|=0.00157  |grad[c]|=0.00321  |ddm|=0.00181  |maxRot[o]|=0.0518
+macro iter  12 ( 15 JK    4 micro), CASSCF E = -1149.59532241334  dE =  2.41534345e-04  S^2 = 0.0000000
+               |grad[o]|=0.000768  |grad[c]|=0.015  |ddm|=0.00627  |maxRot[o]|=0.094
+macro iter  13 ( 21 JK    4 micro), CASSCF E = -1149.59544415099  dE = -1.21737648e-04  S^2 = 0.0000000
+               |grad[o]|=0.00227  |grad[c]|=0.00125  |ddm|=0.000487  |maxRot[o]|=0.0235
+macro iter  14 ( 21 JK    4 micro), CASSCF E = -1149.59544714072  dE = -2.98973123e-06  S^2 = 0.0000000
+               |grad[o]|=0.00122  |grad[c]|=0.00378  |ddm|=0.00176  |maxRot[o]|=0.00561
+macro iter  15 (  7 JK    2 micro), CASSCF E = -1149.59556344824  dE = -1.16307516e-04  S^2 = 0.0000000
+               |grad[o]|=0.00137  |grad[c]|=0.0037  |ddm|=0.00279  |maxRot[o]|=0.0498
+macro iter  16 (  5 JK    2 micro), CASSCF E = -1149.59559269146  dE = -2.92432180e-05  S^2 = 0.0000000
+               |grad[o]|=0.000736  |grad[c]|=0.00113  |ddm|=0.000898  |maxRot[o]|=0.0253
+macro iter  17 ( 14 JK    4 micro), CASSCF E = -1149.59560097778  dE = -8.28632551e-06  S^2 = 0.0000000
+               |grad[o]|=0.000466  |grad[c]|=0.000586  |ddm|=0.000323  |maxRot[o]|=0.0157
+macro iter  18 ( 13 JK    4 micro), CASSCF E = -1149.59560170322  dE = -7.25441168e-07  S^2 = 0.0000000
+               |grad[o]|=0.000185  |grad[c]|=0.000175  |ddm|=0.000218  |maxRot[o]|=0.00403
+macro iter  19 ( 12 JK    4 micro), CASSCF E = -1149.59560195413  dE = -2.50910489e-07  S^2 = 0.0000000
+               |grad[o]|=8.56e-05  |grad[c]|=4.04e-05  |ddm|=0.000104  |maxRot[o]|=0.00287
+macro iter  20 (  8 JK    2 micro), CASSCF E = -1149.59560197274  dE = -1.86059879e-08  S^2 = 0.0000000
+               |grad[o]|=2.37e-05  |grad[c]|=2.28e-05  |ddm|=2.28e-05  |maxRot[o]|=0.000975
+macro iter  21 (  5 JK    1 micro), CASSCF E = -1149.59560197313  dE = -3.93583832e-10  S^2 = 0.0000000
+               |grad[o]|=1.22e-05  |grad[c]|=1.07e-05  |ddm|=4.26e-06  |maxRot[o]|=9.24e-05
+1-step CASSCF converged in  21 macro (315 JK  71 micro) steps
+CASSCF canonicalization
+Natural occ [1.99197328 1.98693862 1.98871683 1.97791441 1.97616348 0.03497345
+ 0.02115429 0.00764978 0.00803772 0.00647815]
+Natural orbital (expansion on meta-Lowdin AOs) in CAS space
+               #1        #2        #3        #4        #5       
+0 Pt 5s          0.01076   0.00860   0.00000  -0.01091  -0.00000
+0 Pt 6s         -0.47739  -0.17393  -0.00000  -0.36851   0.00000
+0 Pt 7s          0.03343   0.02267   0.00000  -0.10888  -0.00000
+0 Pt 8s         -0.05425  -0.00499   0.00000   0.08863  -0.00000
+0 Pt 9s         -0.03637  -0.01430   0.00000   0.00291  -0.00000
+0 Pt 10s         0.07274   0.01908  -0.00000   0.01815   0.00000
+0 Pt 5px         0.05867  -0.17955   0.00000   0.03128  -0.00000
+0 Pt 5py        -0.00000  -0.00000  -0.21174  -0.00000  -0.09111
+0 Pt 5pz        -0.00000   0.00000  -0.00000  -0.00000  -0.00000
+0 Pt 6px         0.04266  -0.14726   0.00000   0.05547  -0.00000
+0 Pt 6py         0.00000  -0.00000  -0.12291  -0.00000  -0.03381
+0 Pt 6pz        -0.00000   0.00000   0.00000  -0.00000  -0.00000
+0 Pt 7px        -0.00638   0.10267   0.00000   0.04527  -0.00000
+0 Pt 7py         0.00000  -0.00000   0.08018  -0.00000   0.02749
+0 Pt 7pz        -0.00000  -0.00000   0.00000  -0.00000  -0.00000
+0 Pt 5dxy       -0.04444   0.07086   0.00000   0.81340  -0.00000
+0 Pt 5dyz       -0.00000   0.00000   0.00000   0.00000  -0.00000
+0 Pt 5dz^2      -0.00159   0.04292  -0.00000  -0.00036  -0.00000
+0 Pt 5dxz        0.00000  -0.00000   0.11941   0.00000  -0.48898
+0 Pt 5dx2-y2    -0.00000  -0.00000  -0.00000   0.00000   0.00000
+0 Pt 6dxy       -0.00672   0.01124  -0.00000   0.16242   0.00000
+0 Pt 6dyz        0.00000  -0.00000  -0.00000  -0.00000   0.00000
+0 Pt 6dz^2      -0.00066  -0.00533  -0.00000   0.00173  -0.00000
+0 Pt 6dxz       -0.00000  -0.00000   0.00753   0.00000  -0.06415
+0 Pt 6dx2-y2    -0.00000  -0.00000  -0.00000   0.00000   0.00000
+0 Pt 5f-3        0.00000   0.00000  -0.00000   0.00000   0.00000
+0 Pt 5f-2       -0.00000   0.00000   0.01615   0.00000   0.00646
+0 Pt 5f-1        0.00000  -0.00000  -0.00000  -0.00000  -0.00000
+0 Pt 5f+0       -0.00160   0.01743  -0.00000   0.00462  -0.00000
+0 Pt 5f+1        0.00000  -0.00000  -0.00000  -0.00000   0.00000
+0 Pt 5f+2       -0.00443   0.02395  -0.00000  -0.00533   0.00000
+0 Pt 5f+3        0.00000  -0.00000   0.02525   0.00000   0.00748
+1 Cl 1s         -0.00006  -0.00024  -0.00023  -0.00003  -0.00005
+1 Cl 2s          0.00105  -0.00132  -0.00160  -0.00020  -0.00010
+1 Cl 3s          0.01785  -0.05193  -0.03294   0.06891  -0.04973
+1 Cl 4s          0.02593   0.00541  -0.00453   0.14354  -0.03480
+1 Cl 2px         0.00228   0.00331   0.00194  -0.00087   0.00258
+1 Cl 2py         0.00252   0.00358   0.00223  -0.00085   0.00285
+1 Cl 2pz         0.00000   0.00000  -0.00000  -0.00000  -0.00000
+1 Cl 3px         0.19585   0.38111   0.16530  -0.10335   0.36490
+1 Cl 3py         0.24080   0.38875   0.24122  -0.09972   0.41724
+1 Cl 3pz         0.00000   0.00000  -0.00000   0.00000   0.00000
+1 Cl 4px        -0.00505   0.00703   0.01007  -0.04564   0.01843
+1 Cl 4py        -0.00839   0.01102   0.00847  -0.05401   0.01684
+1 Cl 4pz        -0.00000   0.00000  -0.00000   0.00000   0.00000
+1 Cl 3dxy       -0.01269  -0.02892  -0.01703   0.03033  -0.04054
+1 Cl 3dyz        0.00000  -0.00000  -0.00000  -0.00000   0.00000
+1 Cl 3dz^2       0.00728   0.01493   0.00929  -0.03877   0.01676
+1 Cl 3dxz        0.00000  -0.00000   0.00000  -0.00000  -0.00000
+1 Cl 3dx2-y2    -0.00210   0.00642  -0.00652  -0.00194  -0.00528
+2 Cl 1s         -0.00006  -0.00024   0.00023  -0.00003   0.00005
+2 Cl 2s          0.00105  -0.00132   0.00160  -0.00020   0.00010
+2 Cl 3s          0.01785  -0.05193   0.03294   0.06891   0.04973
+2 Cl 4s          0.02593   0.00541   0.00453   0.14354   0.03480
+2 Cl 2px         0.00228   0.00331  -0.00194  -0.00087  -0.00258
+2 Cl 2py        -0.00252  -0.00358   0.00223   0.00085   0.00285
+2 Cl 2pz         0.00000   0.00000  -0.00000  -0.00000  -0.00000
+2 Cl 3px         0.19585   0.38111  -0.16530  -0.10335  -0.36490
+2 Cl 3py        -0.24080  -0.38875   0.24122   0.09972   0.41724
+2 Cl 3pz         0.00000   0.00000   0.00000  -0.00000  -0.00000
+2 Cl 4px        -0.00505   0.00703  -0.01007  -0.04564  -0.01843
+2 Cl 4py         0.00839  -0.01102   0.00847   0.05401   0.01684
+2 Cl 4pz         0.00000   0.00000   0.00000   0.00000  -0.00000
+2 Cl 3dxy        0.01269   0.02892  -0.01703  -0.03033  -0.04054
+2 Cl 3dyz        0.00000   0.00000   0.00000   0.00000  -0.00000
+2 Cl 3dz^2       0.00728   0.01493  -0.00929  -0.03877  -0.01676
+2 Cl 3dxz       -0.00000  -0.00000  -0.00000  -0.00000   0.00000
+2 Cl 3dx2-y2    -0.00210   0.00642   0.00652  -0.00194   0.00528
+3 N 1s           0.00419  -0.00310   0.00507  -0.00010  -0.00074
+3 N 2s          -0.20938   0.18951  -0.27973   0.06212   0.09717
+3 N 3s          -0.01238   0.03349  -0.03138   0.08106   0.02309
+3 N 2px          0.33647  -0.22776   0.35962  -0.03051  -0.15401
+3 N 2py         -0.34763   0.23621  -0.39970   0.00810   0.15780
+3 N 2pz          0.00000  -0.00000   0.00000   0.00000  -0.00000
+3 N 3px         -0.01303   0.03383  -0.04167   0.07305   0.00944
+3 N 3py          0.02299  -0.04010   0.03342  -0.03564  -0.02170
+3 N 3pz         -0.00000  -0.00000  -0.00000   0.00000   0.00000
+3 N 3dxy         0.00316  -0.00557   0.00513  -0.01590  -0.00865
+3 N 3dyz        -0.00000  -0.00000  -0.00000   0.00000   0.00000
+3 N 3dz^2        0.00173  -0.00384   0.00387  -0.01707  -0.00202
+3 N 3dxz        -0.00000  -0.00000  -0.00000   0.00000   0.00000
+3 N 3dx2-y2      0.00215  -0.00356  -0.00290  -0.00107  -0.00166
+4 N 1s           0.00419  -0.00310  -0.00507  -0.00010   0.00074
+4 N 2s          -0.20938   0.18951   0.27973   0.06212  -0.09717
+4 N 3s          -0.01238   0.03349   0.03138   0.08106  -0.02309
+4 N 2px          0.33647  -0.22776  -0.35962  -0.03051   0.15401
+4 N 2py          0.34763  -0.23621  -0.39970  -0.00810   0.15780
+4 N 2pz          0.00000  -0.00000  -0.00000   0.00000   0.00000
+4 N 3px         -0.01303   0.03383   0.04167   0.07305  -0.00944
+4 N 3py         -0.02299   0.04010   0.03342   0.03564  -0.02170
+4 N 3pz          0.00000  -0.00000  -0.00000   0.00000  -0.00000
+4 N 3dxy        -0.00316   0.00557   0.00513   0.01590  -0.00865
+4 N 3dyz        -0.00000   0.00000   0.00000  -0.00000   0.00000
+4 N 3dz^2        0.00173  -0.00384  -0.00387  -0.01707   0.00202
+4 N 3dxz         0.00000  -0.00000  -0.00000  -0.00000  -0.00000
+4 N 3dx2-y2      0.00215  -0.00356   0.00290  -0.00107   0.00166
+5 H 1s           0.00611  -0.00163  -0.01210   0.02149  -0.01653
+5 H 2s           0.00254   0.00162   0.00710   0.02499   0.00673
+5 H 2px         -0.00350   0.00500  -0.00652   0.00788  -0.00096
+5 H 2py          0.01012  -0.00824   0.00801  -0.00232  -0.00250
+5 H 2pz          0.00000   0.00000   0.00000  -0.00000  -0.00000
+6 H 1s           0.00760   0.00041   0.00896  -0.00697  -0.00513
+6 H 2s           0.00787   0.00278  -0.00135   0.02640   0.00581
+6 H 2px         -0.00686   0.00499  -0.00847  -0.00267   0.00224
+6 H 2py          0.00368  -0.00307   0.00686   0.01149  -0.00419
+6 H 2pz         -0.00297  -0.00013  -0.00452  -0.00375   0.00157
+7 H 1s           0.00760   0.00041   0.00896  -0.00697  -0.00513
+7 H 2s           0.00787   0.00278  -0.00135   0.02640   0.00581
+7 H 2px         -0.00686   0.00499  -0.00847  -0.00267   0.00224
+7 H 2py          0.00368  -0.00307   0.00686   0.01149  -0.00419
+7 H 2pz          0.00297   0.00013   0.00452   0.00375  -0.00157
+8 H 1s           0.00611  -0.00163   0.01210   0.02149   0.01653
+8 H 2s           0.00254   0.00162  -0.00710   0.02499  -0.00673
+8 H 2px         -0.00350   0.00500   0.00652   0.00788   0.00096
+8 H 2py         -0.01012   0.00824   0.00801   0.00232  -0.00250
+8 H 2pz         -0.00000   0.00000   0.00000   0.00000   0.00000
+9 H 1s           0.00760   0.00041  -0.00896  -0.00697   0.00513
+9 H 2s           0.00787   0.00278   0.00135   0.02640  -0.00581
+9 H 2px         -0.00686   0.00499   0.00847  -0.00267  -0.00224
+9 H 2py         -0.00368   0.00307   0.00686  -0.01149  -0.00419
+9 H 2pz         -0.00297  -0.00013   0.00452  -0.00375  -0.00157
+10 H 1s          0.00760   0.00041  -0.00896  -0.00697   0.00513
+10 H 2s          0.00787   0.00278   0.00135   0.02640  -0.00581
+10 H 2px        -0.00686   0.00499   0.00847  -0.00267  -0.00224
+10 H 2py        -0.00368   0.00307   0.00686  -0.01149  -0.00419
+10 H 2pz         0.00297   0.00013  -0.00452   0.00375   0.00157
+               #6        #7        #8        #9        #10      
+0 Pt 5s         -0.00000  -0.01052  -0.02080  -0.00000  -0.00078
+0 Pt 6s          0.00000  -0.69588  -0.08531   0.00000   0.04758
+0 Pt 7s         -0.00000   0.05571   0.53530  -0.00000   0.00238
+0 Pt 8s         -0.00000   0.01586  -0.29881  -0.00000  -0.02025
+0 Pt 9s         -0.00000  -0.06765  -0.11633  -0.00000  -0.04277
+0 Pt 10s         0.00000   0.07116   0.05653   0.00000   0.04161
+0 Pt 5px         0.00000  -0.02020  -0.09674   0.00000   0.31639
+0 Pt 5py        -0.01200  -0.00000  -0.00000  -0.00000   0.00000
+0 Pt 5pz         0.00000  -0.00000  -0.00000  -0.35880   0.00000
+0 Pt 6px        -0.00000   0.01434  -0.20242  -0.00000   0.41397
+0 Pt 6py        -0.00640  -0.00000   0.00000  -0.00000   0.00000
+0 Pt 6pz         0.00000  -0.00000   0.00000  -0.68511   0.00000
+0 Pt 7px        -0.00000   0.04984  -0.01206  -0.00000  -0.22036
+0 Pt 7py         0.01038  -0.00000   0.00000  -0.00000   0.00000
+0 Pt 7pz         0.00000  -0.00000   0.00000  -0.03268  -0.00000
+0 Pt 5dxy       -0.00000  -0.46911   0.29509   0.00000   0.09238
+0 Pt 5dyz        0.00000  -0.00000   0.00000  -0.04184   0.00000
+0 Pt 5dz^2      -0.00000  -0.01737   0.01219  -0.00000  -0.02656
+0 Pt 5dxz       -0.81277  -0.00000   0.00000   0.00000  -0.00000
+0 Pt 5dx2-y2    -0.00000   0.00000   0.00000   0.00000  -0.00000
+0 Pt 6dxy        0.00000   0.04531  -0.29648   0.00000  -0.02122
+0 Pt 6dyz       -0.00000  -0.00000   0.00000   0.01409   0.00000
+0 Pt 6dz^2      -0.00000  -0.00610  -0.01090  -0.00000  -0.00785
+0 Pt 6dxz       -0.11249   0.00000  -0.00000  -0.00000   0.00000
+0 Pt 6dx2-y2    -0.00000   0.00000   0.00000   0.00000   0.00000
+0 Pt 5f-3       -0.00000   0.00000  -0.00000  -0.00000   0.00000
+0 Pt 5f-2        0.01346  -0.00000   0.00000   0.00000  -0.00000
+0 Pt 5f-1       -0.00000  -0.00000   0.00000  -0.59329   0.00000
+0 Pt 5f+0        0.00000   0.02723   0.01471   0.00000  -0.07920
+0 Pt 5f+1       -0.00000  -0.00000   0.00000   0.00621   0.00000
+0 Pt 5f+2       -0.00000   0.01551   0.05079   0.00000  -0.09446
+0 Pt 5f+3        0.01904  -0.00000  -0.00000  -0.00000  -0.00000
+1 Cl 1s          0.00002  -0.00010  -0.00003   0.00000   0.00028
+1 Cl 2s          0.00036   0.00004  -0.00074  -0.00000   0.00226
+1 Cl 3s          0.01354   0.11461   0.03311   0.00000  -0.02111
+1 Cl 4s         -0.05124   0.07132  -0.16329   0.00000   0.07418
+1 Cl 2px        -0.00057  -0.00016  -0.00001   0.00000  -0.00029
+1 Cl 2py        -0.00054  -0.00019  -0.00006  -0.00000  -0.00015
+1 Cl 2pz         0.00000  -0.00000   0.00000   0.00020  -0.00000
+1 Cl 3px        -0.19114  -0.16836  -0.05036  -0.00000   0.07731
+1 Cl 3py        -0.20943  -0.15702  -0.06433  -0.00000   0.08871
+1 Cl 3pz        -0.00000  -0.00000  -0.00000   0.04418   0.00000
+1 Cl 4px         0.04470   0.01890   0.11861   0.00000  -0.06487
+1 Cl 4py         0.05312   0.01638   0.14973  -0.00000  -0.12338
+1 Cl 4pz        -0.00000   0.00000  -0.00000  -0.05581  -0.00000
+1 Cl 3dxy       -0.04290  -0.01329  -0.15117  -0.00000   0.08979
+1 Cl 3dyz        0.00000  -0.00000   0.00000   0.00904   0.00000
+1 Cl 3dz^2       0.01745  -0.00048   0.12682  -0.00000  -0.04121
+1 Cl 3dxz        0.00000  -0.00000   0.00000   0.00542   0.00000
+1 Cl 3dx2-y2     0.00866   0.00098   0.01294   0.00000  -0.02596
+2 Cl 1s         -0.00002  -0.00010  -0.00003  -0.00000   0.00028
+2 Cl 2s         -0.00036   0.00004  -0.00074   0.00000   0.00226
+2 Cl 3s         -0.01354   0.11461   0.03311   0.00000  -0.02111
+2 Cl 4s          0.05124   0.07132  -0.16329  -0.00000   0.07418
+2 Cl 2px         0.00057  -0.00016  -0.00001  -0.00000  -0.00029
+2 Cl 2py        -0.00054   0.00019   0.00006  -0.00000   0.00015
+2 Cl 2pz        -0.00000  -0.00000   0.00000   0.00020  -0.00000
+2 Cl 3px         0.19114  -0.16836  -0.05036   0.00000   0.07731
+2 Cl 3py        -0.20943   0.15702   0.06433  -0.00000  -0.08871
+2 Cl 3pz         0.00000  -0.00000  -0.00000   0.04418   0.00000
+2 Cl 4px        -0.04470   0.01890   0.11861  -0.00000  -0.06487
+2 Cl 4py         0.05312  -0.01638  -0.14973  -0.00000   0.12338
+2 Cl 4pz         0.00000   0.00000  -0.00000  -0.05581  -0.00000
+2 Cl 3dxy       -0.04290   0.01329   0.15117  -0.00000  -0.08979
+2 Cl 3dyz        0.00000   0.00000  -0.00000  -0.00904  -0.00000
+2 Cl 3dz^2      -0.01745  -0.00048   0.12682   0.00000  -0.04121
+2 Cl 3dxz       -0.00000  -0.00000   0.00000   0.00542   0.00000
+2 Cl 3dx2-y2    -0.00866   0.00098   0.01294  -0.00000  -0.02596
+3 N 1s           0.00013  -0.00024   0.00009  -0.00000   0.00105
+3 N 2s          -0.06988   0.14594  -0.04025  -0.00000   0.04672
+3 N 3s           0.07311  -0.01832  -0.15205  -0.00000  -0.24167
+3 N 2px          0.15394  -0.13010   0.00126   0.00000  -0.07599
+3 N 2py         -0.15156   0.11956   0.04915  -0.00000   0.07578
+3 N 2pz          0.00000  -0.00000  -0.00000  -0.01216  -0.00000
+3 N 3px          0.07437  -0.03912  -0.15193  -0.00000  -0.24787
+3 N 3py         -0.08212   0.06947   0.09936   0.00000   0.35086
+3 N 3pz         -0.00000  -0.00000   0.00000  -0.04328  -0.00000
+3 N 3dxy         0.01227  -0.03876   0.01123   0.00000  -0.05359
+3 N 3dyz        -0.00000  -0.00000   0.00000   0.00230  -0.00000
+3 N 3dz^2        0.01001  -0.02739   0.01992  -0.00000  -0.02885
+3 N 3dxz        -0.00000   0.00000  -0.00000   0.00186  -0.00000
+3 N 3dx2-y2      0.00193   0.00203   0.00298  -0.00000   0.01880
+4 N 1s          -0.00013  -0.00024   0.00009   0.00000   0.00105
+4 N 2s           0.06988   0.14594  -0.04025  -0.00000   0.04672
+4 N 3s          -0.07311  -0.01832  -0.15205  -0.00000  -0.24167
+4 N 2px         -0.15394  -0.13010   0.00126  -0.00000  -0.07599
+4 N 2py         -0.15156  -0.11956  -0.04915  -0.00000  -0.07578
+4 N 2pz          0.00000   0.00000  -0.00000  -0.01216  -0.00000
+4 N 3px         -0.07437  -0.03912  -0.15193  -0.00000  -0.24787
+4 N 3py         -0.08212  -0.06947  -0.09936  -0.00000  -0.35086
+4 N 3pz         -0.00000  -0.00000   0.00000  -0.04328   0.00000
+4 N 3dxy         0.01227   0.03876  -0.01123   0.00000   0.05359
+4 N 3dyz         0.00000   0.00000  -0.00000  -0.00230  -0.00000
+4 N 3dz^2       -0.01001  -0.02739   0.01992   0.00000  -0.02885
+4 N 3dxz         0.00000  -0.00000   0.00000   0.00186   0.00000
+4 N 3dx2-y2     -0.00193   0.00203   0.00298   0.00000   0.01880
+5 H 1s           0.02760  -0.01453   0.01854  -0.00000  -0.02854
+5 H 2s          -0.00178   0.01064   0.01220   0.00000  -0.04694
+5 H 2px          0.00746  -0.01295  -0.00712   0.00000  -0.04614
+5 H 2py         -0.00621   0.01880   0.00205   0.00000   0.05952
+5 H 2pz          0.00000  -0.00000  -0.00000   0.00980  -0.00000
+6 H 1s           0.02932  -0.02573   0.07803  -0.01641  -0.01666
+6 H 2s           0.00309   0.02708   0.02017  -0.08756   0.00037
+6 H 2px          0.01066  -0.01386   0.00764  -0.00929  -0.03687
+6 H 2py         -0.01520   0.01619  -0.02503   0.00581   0.03092
+6 H 2pz          0.00135  -0.00233   0.00373   0.00109   0.00844
+7 H 1s           0.02932  -0.02573   0.07803   0.01641  -0.01666
+7 H 2s           0.00309   0.02708   0.02017   0.08756   0.00037
+7 H 2px          0.01066  -0.01386   0.00764   0.00929  -0.03687
+7 H 2py         -0.01520   0.01619  -0.02503  -0.00581   0.03092
+7 H 2pz         -0.00135   0.00233  -0.00373   0.00109  -0.00844
+8 H 1s          -0.02760  -0.01453   0.01854  -0.00000  -0.02854
+8 H 2s           0.00178   0.01064   0.01220  -0.00000  -0.04694
+8 H 2px         -0.00746  -0.01295  -0.00712  -0.00000  -0.04614
+8 H 2py         -0.00621  -0.01880  -0.00205   0.00000  -0.05952
+8 H 2pz         -0.00000   0.00000  -0.00000   0.00980   0.00000
+9 H 1s          -0.02932  -0.02573   0.07803  -0.01641  -0.01666
+9 H 2s          -0.00309   0.02708   0.02017  -0.08756   0.00037
+9 H 2px         -0.01066  -0.01386   0.00764  -0.00929  -0.03687
+9 H 2py         -0.01520  -0.01619   0.02503  -0.00581  -0.03092
+9 H 2pz         -0.00135  -0.00233   0.00373   0.00109   0.00844
+10 H 1s         -0.02932  -0.02573   0.07803   0.01641  -0.01666
+10 H 2s         -0.00309   0.02708   0.02017   0.08756   0.00037
+10 H 2px        -0.01066  -0.01386   0.00764   0.00929  -0.03687
+10 H 2py        -0.01520  -0.01619   0.02503   0.00581  -0.03092
+10 H 2pz         0.00135   0.00233  -0.00373   0.00109  -0.00844
+<CAS-nat-orb|mo-hf>  32     25       0.86505168
+<CAS-nat-orb|mo-hf>  33     30       0.76545929
+<CAS-nat-orb|mo-hf>  33     32      -0.45745626
+<CAS-nat-orb|mo-hf>  34     26       0.74670625
+<CAS-nat-orb|mo-hf>  34     31       0.55730253
+<CAS-nat-orb|mo-hf>  35     30      -0.56029878
+<CAS-nat-orb|mo-hf>  35     32      -0.78604284
+<CAS-nat-orb|mo-hf>  36     26      -0.60944814
+<CAS-nat-orb|mo-hf>  36     31       0.74152597
+<CAS-nat-orb|mo-hf>  37     39      -0.60053654
+<CAS-nat-orb|mo-hf>  37     40      -0.73518076
+<CAS-nat-orb|mo-hf>  38     48      -0.70028828
+<CAS-nat-orb|mo-hf>  39     48      -0.44085404
+<CAS-nat-orb|mo-hf>  39     52      -0.63990585
+<CAS-nat-orb|mo-hf>  40     38      -0.50157798
+<CAS-nat-orb|mo-hf>  40     99      -0.46401646
+<CAS-nat-orb|mo-hf>  41     56      -0.40488669
+<CAS-nat-orb|mo-hf>  41     60      -0.61348742
+CASSCF energy = -1149.59560197313
+CASCI E = -1149.59560197313  E(CI) = -17.7142549187013  S^2 = 0.0000000

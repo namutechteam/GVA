@@ -1,0 +1,160 @@
+#INFO: **** input file is /home/claude/gva_repro/run_small.py ****
+"""Small-molecule benchmark: H2, H4, LiH, BeH2 (STO-3G), three geometries each.
+
+Ansaetze: UCCSD and GVA, 1 and 2 layers, 5 initialisations each
+(seed 0 = Hartree-Fock start, theta = 0; seeds 1-4 = N(0, 0.05^2) start).
+Ablation (1 layer, HF start): PG screening only, spin tying only.
+ADAPT-VQE with the spin-complemented, symmetry-screened pool.
+"""
+import json
+import pickle
+import time
+
+import numpy as np
+
+from datetime import datetime, timezone
+
+from gva.systems import small_molecule_hamiltonian, classical_references, set_pyscf_log
+from gva.ansatz import (uccsd_pool, gva_groups, counts_summary, cnot_count_ladder,
+                        parameter_map, excitation_label)
+
+
+def now():
+    return datetime.now(timezone.utc).astimezone().isoformat(timespec="seconds")
+
+from gva.engine import DeterminantSpace, Ansatz, run_vqe, adapt_vqe
+
+MOLS = ["H2", "H4", "LiH", "BeH2"]
+SCALES = [1.0, 1.5, 2.0]
+SEEDS = range(5)
+VARIANTS = {"UCCSD": (False, False), "GVA": (True, True),
+            "PG only": (True, False), "spin only": (False, True)}
+
+records, systems = [], []
+t_all = time.time()
+for name in MOLS:
+    for sc in SCALES:
+        set_pyscf_log("results/logs/pyscf", f"{name}_x{sc:.1f}")
+        H = small_molecule_hamiltonian(name, sc)
+        ref = classical_references(H)
+        space = DeterminantSpace(H.norb, H.nelec, H.h1, H.eri, H.ecore)
+        pool = uccsd_pool(H.nocc, H.norb)
+        cs = counts_summary(H.nocc, H.norb, H.orbsym)
+        ef = ref["E_FCI"]
+        systems.append({
+            "system": name, "scale": sc, "n_qubits": 2 * H.norb,
+            "n_electrons": sum(H.nelec), "irreps": H.irrep_names,
+            "E_RHF": ref["E_ref"], "E_CISD": ref["E_CISD"],
+            "E_CCSD": ref["E_CCSD"], "E_CCSD(T)": ref["E_CCSD(T)"],
+            "E_FCI": ef, "E_corr": ef - ref["E_ref"],
+            "c0_sq": ref["c0_ref_weight"], "counts": cs,
+            "parameter_maps_1L": {v: parameter_map(gva_groups(pool, H.orbsym, *f))
+                                  for v, f in VARIANTS.items()}})
+        for var, (pg, spn) in VARIANTS.items():
+            groups = gva_groups(pool, H.orbsym, pg, spn)
+            layer_list = [1, 2] if var in ("UCCSD", "GVA") else [1]
+            for L in layer_list:
+                seeds = SEEDS if var in ("UCCSD", "GVA") else [0]
+                for s in seeds:
+                    A = Ansatz(space, groups, layers=L)
+                    th0 = np.zeros(A.n_params) if s == 0 else \
+                        np.random.default_rng(1000 + s).normal(0, 0.05, A.n_params)
+                    t_start = now()
+                    r = run_vqe(A, th0, e_exact=ef)
+                    records.append({
+                        "system": name, "scale": sc, "ansatz": var, "layers": L,
+                        "seed": s, "n_params": A.n_params,
+                        "cnot": L * cs[var]["cnot_1L"], "E": r["E"],
+                        "dE": r["dE"], "nit": r["nit"], "nfev": r["nfev"],
+                        "iter_to_chem_acc": r["iter_to_chem_acc"],
+                        "S2": r["S2"], "wall_s": r["wall_s"],
+                        "grad_norm": r["grad_norm"], "message": r["message"],
+                        "started": t_start, "finished": now(),
+                        "theta": r["theta"].tolist(),
+                        "history": r["history"].tolist()})
+        t_start = now()
+        ad = adapt_vqe(space, gva_groups(pool, H.orbsym, True, True), e_exact=ef,
+                       grad_tol=1e-3, max_ops=120)
+        records.append({"system": name, "scale": sc, "ansatz": "ADAPT-VQE",
+                        "layers": None, "seed": 0, "n_params": ad["n_ops"],
+                        "cnot": sum(cnot_count_ladder(e) for g in ad["chosen"] for e in g),
+                        "E": ad["E"], "dE": ad["dE"], "trace": ad["trace"], "stop_reason": ad["stop_reason"],
+                        "wall_s": ad["wall_s"], "started": t_start, "finished": now(),
+                        "operators": [[excitation_label(e) for e in g] for g in ad["chosen"]],
+                        "theta": np.asarray(ad["theta"]).tolist()})
+        print(f"{name} {sc}: done ({time.time()-t_all:.0f}s)", flush=True)
+
+json.dump({"systems": systems, "runs": records},
+          open("results/small_molecules.json", "w"), indent=1, default=float)
+print("total", time.time() - t_all)
+#INFO: ******************** input file end ********************
+
+
+System: uname_result(system='Linux', node='vm', release='6.18.44-fc-v153', version='#1 SMP PREEMPT_DYNAMIC @0', machine='x86_64')  Threads 1
+Python 3.13.17 (main, Oct 22 2026, 14:06:04) [GCC 13.3.0]
+numpy 2.5.3  scipy 1.18.1  h5py 3.16.0
+Date: Fri Oct 23 21:47:49 2026
+PySCF version 2.14.0
+PySCF path  /usr/local/lib/python3.13/dist-packages/pyscf
+
+[CONFIG] conf_file None
+[INPUT] verbose = 4
+[INPUT] num. atoms = 0
+[INPUT] num. electrons = 0
+[INPUT] charge = 0
+[INPUT] spin (= nelec alpha-beta = 2S) = 0
+[INPUT] symmetry False subgroup None
+[INPUT] Mole.unit = angstrom
+[INPUT] Symbol           X                Y                Z      unit          X                Y                Z       unit  Magmom
+
+nuclear repulsion = 0
+number of shells = 0
+number of NR pGTOs = 0
+number of NR cGTOs = 0
+basis = sto-3g
+ecp = {}
+CPU time:         1.28
+
+******** <class 'pyscf.ci.cisd.RCISD'> ********
+CISD nocc = 1, nmo = 2
+max_cycle = 50
+direct = 0
+conv_tol = 1e-10
+max_cycle = 50
+max_space = 12
+lindep = 0
+nroots = 1
+max_memory 4000 MB (current use 109 MB)
+Init t2, MP2 energy = -0.0442794777603363
+RCISD converged
+E(RCISD) = -1.000943192701586  E_corr = -0.08489961095123251
+
+******** <class 'pyscf.cc.ccsd.CCSD'> ********
+CC2 = 0
+CCSD nocc = 1, nmo = 2
+max_cycle = 500
+direct = 0
+conv_tol = 1e-11
+conv_tol_normt = 1e-05
+diis_space = 6
+diis_start_cycle = 0
+diis_start_energy_diff = 1e+09
+max_memory 4000 MB (current use 109 MB)
+Init t2, MP2 energy = -0.96032305951069  E_corr(MP2) -0.0442794777603363
+Init E_corr(CCSD) = -0.0442794777603363
+cycle = 1  E_corr(CCSD) = -0.0669913207775868  dE = -0.022711843  norm(t1,t2) = 0.0994281
+cycle = 2  E_corr(CCSD) = -0.0773495044442154  dE = -0.0103581837  norm(t1,t2) = 0.0453462
+cycle = 3  E_corr(CCSD) = -0.0851002113869476  dE = -0.00775070694  norm(t1,t2) = 0.0194084
+cycle = 4  E_corr(CCSD) = -0.0849383665397302  dE = 0.000161844847  norm(t1,t2) = 0.000521443
+cycle = 5  E_corr(CCSD) = -0.0849210946626805  dE = 1.7271877e-05  norm(t1,t2) = 0.000100718
+cycle = 6  E_corr(CCSD) = -0.0849144347672262  dE = 6.65989545e-06  norm(t1,t2) = 5.58307e-05
+cycle = 7  E_corr(CCSD) = -0.0849109098531967  dE = 3.52491403e-06  norm(t1,t2) = 3.85229e-05
+cycle = 8  E_corr(CCSD) = -0.0848989699089522  dE = 1.19399442e-05  norm(t1,t2) = 2.93625e-05
+cycle = 9  E_corr(CCSD) = -0.0848996152509901  dE = -6.45342038e-07  norm(t1,t2) = 1.66585e-06
+cycle = 10  E_corr(CCSD) = -0.0848996111490138  dE = 4.10197633e-09  norm(t1,t2) = 1.11736e-08
+cycle = 11  E_corr(CCSD) = -0.0848996109687545  dE = 1.80259321e-10  norm(t1,t2) = 5.13967e-10
+cycle = 12  E_corr(CCSD) = -0.0848996109504072  dE = 1.83473098e-11  norm(t1,t2) = 4.55336e-11
+cycle = 13  E_corr(CCSD) = -0.0848996109496068  dE = 8.00401412e-13  norm(t1,t2) = 2.1449e-12
+CCSD converged
+E(CCSD) = -1.000943192699961  E_corr = -0.08489961094960675
+CCSD(T) correction = -1.67053478285378e-48

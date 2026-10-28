@@ -1,0 +1,209 @@
+#INFO: **** input file is /home/claude/gva_repro/run_pes.py ****
+"""Pt-Cl bond-stretching scan of cisplatin, CAS(10e,10o).
+
+One Pt-Cl distance is varied (the other ligands fixed), lowering the point
+group to Cs. The whole scan, including 2.32 A, is run in Cs so that the ansatz
+is defined identically at every geometry. Active orbitals are chosen by
+occupation at 2.32 A and then tracked by maximum overlap with the previous
+geometry, outward and inward. Phase 1 builds all active-space Hamiltonians
+(with tracking); phase 2 runs the classical references and VQE, resuming from
+results/pes.json if present.
+"""
+import json
+import os
+import time
+
+import numpy as np
+from pyscf import gto
+
+from datetime import datetime, timezone
+
+from gva.systems import cisplatin_cas_hamiltonian, classical_references, set_pyscf_log
+from gva.ansatz import uccsd_pool, gva_groups, counts_summary
+
+
+def now():
+    return datetime.now(timezone.utc).astimezone().isoformat(timespec="seconds")
+
+from gva.engine import DeterminantSpace, Ansatz, run_vqe
+
+R_EQ = 2.32
+OUTWARD = [2.32, 2.5, 2.7, 2.9, 3.2, 3.5, 3.8]
+INWARD = [2.2, 2.0]
+OUT = "results/pes.json"
+
+rows = json.load(open(OUT)) if os.path.exists(OUT) else []
+done = {round(r["R_PtCl"], 3) for r in rows}
+
+
+def tracking_overlap(prev, H):
+    """Smallest singular value of the overlap between successive active spaces."""
+    S = gto.intor_cross("int1e_ovlp", prev["mol"], H.extra["mol"])
+    O = prev["C_act_ao"].T @ S @ H.extra["C_act_ao"]
+    return float(np.linalg.svd(O, compute_uv=False).min())
+
+
+# ---------------------------------------------------------------- phase 1
+hams = {}
+prev = None
+for path in (OUTWARD, INWARD):
+    prev = hams[R_EQ]["state"] if path is INWARD else None
+    for r in path:
+        if r in hams:
+            continue
+        set_pyscf_log("results/logs/pyscf", f"cisplatin_Cs_R{r:.2f}_build")
+        H = cisplatin_cas_hamiltonian(r1=r, r2=R_EQ, prev=prev,
+                                      label=f"cisplatin_R{r:.2f}", symmetry="Cs")
+        ov = tracking_overlap(prev, H) if prev is not None else 1.0
+        state = {"mol": H.extra["mol"], "mf": H.extra["mf"], "C_act_ao": H.extra["C_act_ao"]}
+        hams[r] = {"H": H, "state": state, "overlap": ov}
+        prev = state
+        print(f"built R={r:.2f} overlap={ov:.4f}", flush=True)
+
+# ---------------------------------------------------------------- phase 2
+for r in sorted(hams):
+    H = hams[r]["H"]
+    set_pyscf_log("results/logs/pyscf", f"cisplatin_Cs_R{r:.2f}_refs")
+    ref = classical_references(H)
+    ef = ref["E_FCI"]
+    if round(r, 3) in done:
+        for row in rows:          # refresh tracking metadata of resumed points
+            if round(row["R_PtCl"], 3) == round(r, 3):
+                row["tracking_min_singular_value"] = hams[r]["overlap"]
+                assert abs(row["E_CASCI"] - ef) < 1e-8, (r, row["E_CASCI"], ef)
+        continue
+    t = time.time()
+    t_start = now()
+    space = DeterminantSpace(H.norb, H.nelec, H.h1, H.eri, H.ecore)
+    pool = uccsd_pool(H.nocc, H.norb)
+    cs = counts_summary(H.nocc, H.norb, H.orbsym)
+    rec = {"R_PtCl": r, "point_group": H.extra["point_group"],
+           "E_RHF": H.e_rhf_total, "E_ref": ref["E_ref"], "E_CISD": ref["E_CISD"],
+           "E_CCSD": ref["E_CCSD"], "CCSD_converged": ref["CCSD_converged"],
+           "E_CCSD(T)": ref["E_CCSD(T)"], "E_CASCI": ef,
+           "c0_sq": ref["c0_ref_weight"], "T1_diag": ref["t1_diag"],
+           "active_NO_occupations": H.extra["act_no_occ"].tolist(),
+           "active_irreps": H.irrep_names, "counts": cs,
+           "tracking_min_singular_value": hams[r]["overlap"]}
+    for L in (1, 2):
+        A = Ansatz(space, gva_groups(pool, H.orbsym, True, True), layers=L)
+        rv = run_vqe(A, e_exact=ef, maxiter=2500, record=False)
+        rec[f"GVA_{L}L"] = {"E": rv["E"], "dE": rv["dE"], "n_params": A.n_params,
+                            "nit": rv["nit"], "S2": rv["S2"], "wall_s": rv["wall_s"],
+                            "message": rv["message"], "theta": rv["theta"].tolist()}
+    A = Ansatz(space, gva_groups(pool, H.orbsym, False, False), layers=1)
+    rv = run_vqe(A, e_exact=ef, maxiter=2500, record=False)
+    rec["UCCSD_1L"] = {"E": rv["E"], "dE": rv["dE"], "n_params": A.n_params,
+                       "nit": rv["nit"], "S2": rv["S2"], "wall_s": rv["wall_s"],
+                       "message": rv["message"], "theta": rv["theta"].tolist()}
+    rec["wall_s"] = time.time() - t
+    rec["started"], rec["finished"] = t_start, now()
+    rows.append(rec)
+    rows.sort(key=lambda x: x["R_PtCl"])
+    json.dump(rows, open(OUT, "w"), indent=1, default=float)
+    print(f"R={r:.2f} dCCSD={1e3*(ref['E_CCSD']-ef):.3f} dGVA2={1e3*rec['GVA_2L']['dE']:.4f} "
+          f"c0^2={ref['c0_ref_weight']:.3f} t={rec['wall_s']:.0f}s", flush=True)
+json.dump(rows, open(OUT, "w"), indent=1, default=float)
+print("done")
+#INFO: ******************** input file end ********************
+
+
+System: uname_result(system='Linux', node='vm', release='6.18.44-fc-v153', version='#1 SMP PREEMPT_DYNAMIC @0', machine='x86_64')  Threads 1
+Python 3.13.17 (main, Oct 22 2026, 14:06:04) [GCC 13.3.0]
+numpy 2.5.3  scipy 1.18.1  h5py 3.16.0
+Date: Fri Oct 23 22:43:24 2026
+PySCF version 2.14.0
+PySCF path  /usr/local/lib/python3.13/dist-packages/pyscf
+
+[CONFIG] conf_file None
+[INPUT] verbose = 4
+[INPUT] num. atoms = 11
+[INPUT] num. electrons = 72
+[INPUT] charge = 0
+[INPUT] spin (= nelec alpha-beta = 2S) = 0
+[INPUT] symmetry Cs subgroup None
+[INPUT] Mole.unit = angstrom
+[INPUT] Symbol           X                Y                Z      unit          X                Y                Z       unit  Magmom
+[INPUT]  1 Pt     0.000000000000   0.000000000000   0.000000000000 AA    0.000000000000   0.000000000000   0.000000000000 Bohr   0.0
+[INPUT]  2 Cl     1.555634918610   1.555634918610   0.000000000000 AA    2.939723945984   2.939723945984   0.000000000000 Bohr   0.0
+[INPUT]  3 Cl     1.640487732353  -1.640487732353   0.000000000000 AA    3.100072524856  -3.100072524856   0.000000000000 Bohr   0.0
+[INPUT]  4 N     -1.449568901432   1.449568901432   0.000000000000 AA   -2.739288222394   2.739288222394   0.000000000000 Bohr   0.0
+[INPUT]  5 N     -1.449568901432  -1.449568901432   0.000000000000 AA   -2.739288222394  -2.739288222394   0.000000000000 Bohr   0.0
+[INPUT]  6 H     -2.370205891469   1.010447582688   0.000000000000 AA   -4.479039993708   1.909469194509   0.000000000000 Bohr   0.0
+[INPUT]  7 H     -1.350387159883   2.030266314274   0.832678507506 AA   -2.551861894309   3.836647293908   1.573534328998 Bohr   0.0
+[INPUT]  8 H     -1.350387159883   2.030266314274  -0.832678507506 AA   -2.551861894309   3.836647293908  -1.573534328998 Bohr   0.0
+[INPUT]  9 H     -2.370205891469  -1.010447582688   0.000000000000 AA   -4.479039993708  -1.909469194509   0.000000000000 Bohr   0.0
+[INPUT] 10 H     -1.350387159883  -2.030266314274   0.832678507506 AA   -2.551861894309  -3.836647293908   1.573534328998 Bohr   0.0
+[INPUT] 11 H     -1.350387159883  -2.030266314274  -0.832678507506 AA   -2.551861894309  -3.836647293908  -1.573534328998 Bohr   0.0
+
+nuclear repulsion = 417.45803091423
+point group symmetry = Cs
+symmetry origin: [ 3.42128616e-01 -2.06509533e-02  1.00929366e-17]
+symmetry axis x: [ 8.49721388e-01  5.27231982e-01 -1.16605872e-17]
+symmetry axis y: [ 5.27231982e-01 -8.49721388e-01 -4.21900488e-18]
+symmetry axis z: [1.21326447e-17 2.56285583e-18 1.00000000e+00]
+num. orbitals of irrep A' = 86
+num. orbitals of irrep A" = 40
+number of shells = 58
+number of NR pGTOs = 219
+number of NR cGTOs = 126
+basis = {'Pt': 'def2-svp', 'Cl': 'def2-svp', 'N': 'def2-svp', 'H': 'def2-svp'}
+ecp = {'Pt': 'def2-svp'}
+CPU time:       179.75
+
+
+******** <class 'pyscf.scf.hf_symm.SymAdaptedRHF'> ********
+method = SymAdaptedRHF
+initial guess = minao
+damping factor = 0
+level_shift factor = 0
+DIIS = <class 'pyscf.scf.diis.CDIIS'>
+diis_start_cycle = 1
+diis_space = 8
+diis_damp = 0
+SCF conv_tol = 1e-10
+SCF conv_tol_grad = None
+SCF max_cycles = 300
+direct_scf = True
+direct_scf_tol = 1e-13
+chkfile to save SCF result = /tmp/tmp1xedx7oa
+max_memory 4000 MB (current use 1923 MB)
+Freeze 0 electrons in irreps []
+    72 free electrons in irreps A' A"
+Set gradient conv threshold to 1e-05
+init E= -1149.56671912985
+HOMO (A") = -0.32994271464576  LUMO (A') = 0.0862173799406724  gap/eV = 11.32429
+cycle= 1 E= -1149.5371572116  delta_E= 0.0296  |g|= 0.027  |ddm|= 0.186
+HOMO (A") = -0.338132677780587  LUMO (A') = 0.0862903320350093  gap/eV = 11.54914
+cycle= 2 E= -1149.53733998709  delta_E= -0.000183  |g|= 0.0139  |ddm|= 0.0415
+HOMO (A") = -0.337589980988377  LUMO (A') = 0.0857032431679834  gap/eV = 11.51840
+cycle= 3 E= -1149.53738415009  delta_E= -4.42e-05  |g|= 0.00349  |ddm|= 0.0134
+HOMO (A") = -0.33766144724854  LUMO (A') = 0.0859492030338503  gap/eV = 11.52703
+cycle= 4 E= -1149.53739319802  delta_E= -9.05e-06  |g|= 0.00131  |ddm|= 0.00877
+HOMO (A") = -0.337828182438793  LUMO (A') = 0.0859183369532406  gap/eV = 11.53073
+cycle= 5 E= -1149.53739483938  delta_E= -1.64e-06  |g|= 0.000672  |ddm|= 0.00383
+HOMO (A") = -0.337812172964179  LUMO (A') = 0.0859482849872302  gap/eV = 11.53111
+cycle= 6 E= -1149.53739531993  delta_E= -4.81e-07  |g|= 0.000331  |ddm|= 0.00215
+HOMO (A") = -0.337833452912021  LUMO (A') = 0.0859575016595078  gap/eV = 11.53194
+cycle= 7 E= -1149.53739548293  delta_E= -1.63e-07  |g|= 0.000172  |ddm|= 0.00132
+HOMO (A") = -0.33782849416546  LUMO (A') = 0.0859566148776505  gap/eV = 11.53178
+cycle= 8 E= -1149.53739553629  delta_E= -5.34e-08  |g|= 8.01e-05  |ddm|= 0.000833
+HOMO (A") = -0.337828453664917  LUMO (A') = 0.0859541256524866  gap/eV = 11.53171
+cycle= 9 E= -1149.53739554855  delta_E= -1.23e-08  |g|= 1.99e-05  |ddm|= 0.000493
+HOMO (A") = -0.337828019388574  LUMO (A') = 0.0859538868812845  gap/eV = 11.53169
+cycle= 10 E= -1149.53739554922  delta_E= -6.69e-10  |g|= 4.89e-06  |ddm|= 0.00012
+HOMO (A") = -0.337828056476805  LUMO (A') = 0.0859536689169558  gap/eV = 11.53169
+cycle= 11 E= -1149.53739554924  delta_E= -2.41e-11  |g|= 1.3e-06  |ddm|= 2.37e-05
+HOMO (A") = -0.337827995982922  LUMO (A') = 0.0859536560759749  gap/eV = 11.53169
+Extra cycle  E= -1149.53739554925  delta_E= -7.73e-12  |g|= 7.51e-07  |ddm|= 3.22e-06
+converged SCF energy = -1149.53739554925
+rhf_internal: lowest eigs of H = [0.60498008 0.65493754 1.07171919]
+<class 'pyscf.scf.hf_symm.SymAdaptedRHF'> wavefunction is stable in the internal stability analysis
+
+******** <class 'pyscf.mp.mp2.RMP2'> ********
+nocc = 36, nmo = 126
+max_memory 4000 MB (current use 2186 MB)
+E(RMP2) = -1150.57737748256  E_corr = -1.03998193331317
+E(SCS-RMP2) = -1150.5230539412  E_corr = -0.98565839194683
+E_corr(same-spin) = -0.302676840033434
+E_corr(oppo-spin) = -0.737305093279738

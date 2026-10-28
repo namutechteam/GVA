@@ -1,0 +1,16 @@
+2026-10-24T06:49:16+09:00 start [(1.5, 1.5, 5), (2.0, 2.0, 5)]
+overwrite output file: results/logs/pyscf_pbc/H2chain_r1.50_d1.50_Nk5__krhf.log
+overwrite output file: results/logs/pyscf_pbc/H2chain_r1.50_d1.50_Nk5__supercell.log
+overwrite output file: results/logs/pyscf/H2chain_r1.50_d1.50_Nk5__mol1.log
+2026-10-24T06:49:55+09:00 H2chain_r1.50_d1.50_Nk5 FCI -4.4028150872  Bloch-FCI diff 3.8e-13  supercell-FCI diff 1.5e-13  E_corr -361.232 mHa  c0^2 0.4596  K-sector weight outside K_HF 4.2e-14
+   counts {'UCCSD': (875, 108800), 'k only': (350, 21760), 'k + spin': (180, 21760), 'k + TR': (175, 21760), 'GVA-k': (90, 21760)}
+   ADAPT-VQE NoneL s0: dE   21.3290 mHa  S2 9.3e-03  |<FCI|psi>|^2 0.95115  nit None  1890s
+2026-10-24T07:21:25+09:00 H2chain_r1.50_d1.50_Nk5 system done in 1929s
+overwrite output file: results/logs/pyscf_pbc/H2chain_r2.00_d2.00_Nk5__krhf.log
+overwrite output file: results/logs/pyscf_pbc/H2chain_r2.00_d2.00_Nk5__supercell.log
+overwrite output file: results/logs/pyscf/H2chain_r2.00_d2.00_Nk5__mol1.log
+2026-10-24T07:22:28+09:00 H2chain_r2.00_d2.00_Nk5 FCI -4.2751045526  Bloch-FCI diff 3.1e-12  supercell-FCI diff 1.3e-13  E_corr -784.340 mHa  c0^2 0.0999  K-sector weight outside K_HF 7.0e-15
+   counts {'UCCSD': (875, 108800), 'k only': (350, 21760), 'k + spin': (180, 21760), 'k + TR': (175, 21760), 'GVA-k': (90, 21760)}
+   ADAPT-VQE NoneL s0: dE   22.2649 mHa  S2 1.5e-02  |<FCI|psi>|^2 0.78456  nit None  1810s
+2026-10-24T07:52:39+09:00 H2chain_r2.00_d2.00_Nk5 system done in 1873s
+2026-10-24T07:52:39+09:00 all done

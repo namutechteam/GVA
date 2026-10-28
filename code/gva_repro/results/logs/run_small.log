@@ -1,0 +1,37 @@
+output file: results/logs/pyscf/H2_x1.0__mol1.log
+output file: results/logs/pyscf/H2_x1.0__mol2.log
+H2 1.0: done (0s)
+output file: results/logs/pyscf/H2_x1.5__mol1.log
+output file: results/logs/pyscf/H2_x1.5__mol2.log
+H2 1.5: done (1s)
+output file: results/logs/pyscf/H2_x2.0__mol1.log
+output file: results/logs/pyscf/H2_x2.0__mol2.log
+H2 2.0: done (1s)
+output file: results/logs/pyscf/H4_x1.0__mol1.log
+output file: results/logs/pyscf/H4_x1.0__mol2.log
+H4 1.0: done (9s)
+output file: results/logs/pyscf/H4_x1.5__mol1.log
+output file: results/logs/pyscf/H4_x1.5__mol2.log
+H4 1.5: done (15s)
+output file: results/logs/pyscf/H4_x2.0__mol1.log
+output file: results/logs/pyscf/H4_x2.0__mol2.log
+H4 2.0: done (21s)
+output file: results/logs/pyscf/LiH_x1.0__mol1.log
+output file: results/logs/pyscf/LiH_x1.0__mol2.log
+LiH 1.0: done (136s)
+output file: results/logs/pyscf/LiH_x1.5__mol1.log
+output file: results/logs/pyscf/LiH_x1.5__mol2.log
+LiH 1.5: done (290s)
+output file: results/logs/pyscf/LiH_x2.0__mol1.log
+output file: results/logs/pyscf/LiH_x2.0__mol2.log
+LiH 2.0: done (489s)
+output file: results/logs/pyscf/BeH2_x1.0__mol1.log
+output file: results/logs/pyscf/BeH2_x1.0__mol2.log
+BeH2 1.0: done (1358s)
+output file: results/logs/pyscf/BeH2_x1.5__mol1.log
+output file: results/logs/pyscf/BeH2_x1.5__mol2.log
+BeH2 1.5: done (2225s)
+output file: results/logs/pyscf/BeH2_x2.0__mol1.log
+output file: results/logs/pyscf/BeH2_x2.0__mol2.log
+BeH2 2.0: done (3048s)
+total 3048.0773787498474

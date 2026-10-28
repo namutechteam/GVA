@@ -1,0 +1,388 @@
+#INFO: **** input file is /home/claude/gva_repro/run_periodic.py ****
+"""Periodic benchmark: chains of H2 units (STO-3G), crystal-momentum screening.
+
+Systems (r = intra-unit H-H distance, d = inter-unit distance, in Angstrom):
+  dimerized chain r = 0.74, d = 1.50, N_k = 2, 3, 4, 5
+  uniform chains  r = d = 1.0, 1.5, 2.0, N_k = 3, 5 (odd N_k keeps the RHF
+  reference closed-shell; for even N_k the folded bands touch at the zone edge)
+
+Ansaetze
+  UCCSD (real supercell basis, no screening, real amplitudes)   1L and 2L
+  k only   (Bloch basis, momentum screening, complex amplitudes) 1L
+  k + spin, k + TR                                               1L, HF start
+  GVA-k    (momentum screening + spin-flip and time-reversal tying) 1L and 2L
+  ADAPT-VQE with the GVA-k orbits as pool
+Starts: seed 0 = Hartree-Fock (all parameters zero); seeds 1, 2 =
+N(0, 0.05^2) with numpy seed 3000 + seed. Settings as in the molecular runs
+(L-BFGS-B, gtol 1e-7, ftol 1e-12, maxiter 3000).
+
+Writes results/periodic.json (resumable) and PySCF logs under
+results/logs/pyscf_pbc and results/logs/pyscf.
+"""
+import json
+import os
+import sys
+import time
+from datetime import datetime, timezone
+
+import numpy as np
+
+from gva.systems import ActiveHamiltonian, classical_references, set_pyscf_log
+from gva.ansatz import uccsd_pool, excitation_label, cnot_count_ladder
+from gva.engine import DeterminantSpace, Ansatz
+from gva.qubit import qubit_hamiltonian, civec_to_statevector, expectation
+from gva.periodic import (set_pbc_log, periodic_hamiltonian, supercell_gamma_check,
+                          CDeterminantSpace, CAnsatz, run_vqe_c, adapt_vqe_c,
+                          variant_orbits, orbit_counts, periodic_counts, VARIANTS_K,
+                          exc_momentum, pool_gradients, qubit_hamiltonian_c,
+                          civec_to_statevector_c, momentum_sector_weights)
+
+OUT = "results/periodic.json"
+SYSTEMS = [(0.74, 1.50, nk) for nk in (2, 3, 4, 5)] + \
+          [(R, R, nk) for R in (1.0, 1.5, 2.0) for nk in (3, 5)]
+if len(sys.argv) > 1:                       # optional subset, e.g. "0,2,4"
+    SYSTEMS = [SYSTEMS[int(i)] for i in sys.argv[1].split(",")]
+    OUT = f"results/periodic_part{sys.argv[1].replace(',', '_')}" + \
+        (f"_{sys.argv[2]}" if len(sys.argv) > 2 else "") + ".json"
+
+
+def now():
+    return datetime.now(timezone.utc).astimezone().isoformat(timespec="seconds")
+
+
+def stem(r, d, nk):
+    return f"H2chain_r{r:.2f}_d{d:.2f}_Nk{nk}"
+
+
+def orbit_labels(orbits, layers):
+    out = []
+    for L in range(layers):
+        for o in orbits:
+            out.append({"layer": L + 1, "mode": o.mode,
+                        "members": [[excitation_label(e), int(s), bool(c)]
+                                    for e, s, c in o.members]})
+    return out
+
+
+import glob
+data = json.load(open(OUT)) if os.path.exists(OUT) else {"systems": [], "runs": []}
+done, done_sys = set(), set()
+for f in glob.glob("results/periodic_part*.json"):     # resume across all part files
+    d_ = json.load(open(f))
+    done |= {(r["system"], r["ansatz"], r["layers"], r["seed"]) for r in d_["runs"]}
+    done_sys |= {s["system"] for s in d_["systems"]}
+# Cost reduction decided after the first two 20-qubit systems (see PROVENANCE):
+# two-layer supercell UCCSD from random starts took 25-33 min each (3,000-iteration
+# cap); for the remaining 20-qubit uniform chains it is run from the HF start only.
+UCCSD2_HF_ONLY = {"H2chain_r1.00_d1.00_Nk5", "H2chain_r2.00_d2.00_Nk5"}
+
+
+def save():
+    json.dump(data, open(OUT, "w"), indent=1, default=float)
+
+
+print(now(), "start", SYSTEMS, flush=True)
+for (r, d, nk) in SYSTEMS:
+    tag = stem(r, d, nk)
+    t_sys = time.time()
+    set_pbc_log("results/logs/pyscf_pbc", tag)
+    H = periodic_hamiltonian(r, d, nk, log_stem=tag)
+    chk = supercell_gamma_check(r, d, nk, log_stem=tag)
+    set_pyscf_log("results/logs/pyscf", tag)
+    AH = ActiveHamiltonian(label=tag, norb=H.norb, nelec=H.nelec, ecore=H.ecore,
+                           h1=H.h1_real, eri=H.eri_real, orbsym=np.zeros(H.norb, int),
+                           irrep_names=[], e_rhf_total=H.extra["E_KRHF_supercell"])
+    ref = classical_references(AH)
+    ef = ref["E_FCI"]
+    csp = CDeterminantSpace(H.norb, H.nelec, H.h1, H.eri, H.ecore)
+    rsp = DeterminantSpace(H.norb, H.nelec, H.h1_real, H.eri_real, H.ecore)
+    wfc, Vfc = csp.ground_state(k=1)
+    gs_c = Vfc[:, 0]
+    gs_r = np.asarray(ref["civec"]).ravel()
+    ksec, k_hf = momentum_sector_weights(H, gs_c)
+    pc = periodic_counts((nk,), 1, 1)
+    counts = {"UCCSD": {"n_params": pc["UCCSD_params"], "n_generators": pc["UCCSD_params"],
+                        "cnot_1L": pc["UCCSD_cnot_1L"]}}
+    orbs = {}
+    for v in VARIANTS_K:
+        orbs[v], nzero = variant_orbits(H, v)
+        counts[v] = orbit_counts(orbs[v])
+        counts[v]["n_zero_orbits"] = nzero
+    # closed forms agree with enumeration
+    pool = uccsd_pool(H.nocc, H.norb)
+    assert counts["UCCSD"]["cnot_1L"] == sum(cnot_count_ladder(e) for e in pool)
+    assert counts["UCCSD"]["n_params"] == len(pool)
+    assert counts["k only"]["n_params"] == pc["k_only_params"]
+    assert counts["k + spin"]["n_params"] == pc["k_spin_params"]
+    assert counts["k + TR"]["n_params"] == pc["k_TR_params"]
+    assert counts["GVA-k"]["n_params"] == pc["GVA_k_params"]
+    assert counts["GVA-k"]["cnot_1L"] == pc["k_cnot_1L"]
+    if tag not in done_sys:
+        data["systems"].append({
+            "system": tag, "r": r, "d": d, "a": r + d, "n_k": nk, "norb": H.norb,
+            "n_qubits": 2 * H.norb, "n_electrons": sum(H.nelec),
+            "E_KRHF_cell": H.e_krhf_cell, "E_KRHF_supercell": H.extra["E_KRHF_supercell"],
+            "E_HF_from_integrals": H.extra["E_HF_from_integrals"],
+            "E_HF_from_real_integrals": H.extra["E_HF_from_real_integrals"],
+            "E_RHF_supercell_gamma": chk["E_RHF_supercell"],
+            "E_FCI_supercell_gamma": chk["E_FCI_supercell"],
+            "E_FCI": ef, "E_FCI_bloch": float(wfc[0]), "S2_FCI_bloch": csp.s2(gs_c),
+            "E_ref": ref["E_ref"], "E_CISD": ref["E_CISD"], "E_CCSD": ref["E_CCSD"],
+            "E_CCSD(T)": ref["E_CCSD(T)"], "CCSD_converged": ref["CCSD_converged"],
+            "E_corr": ef - ref["E_ref"], "c0_sq": ref["c0_ref_weight"],
+            "t1_diag": ref["t1_diag"], "homo": H.extra["homo"], "lumo": H.extra["lumo"],
+            "mo_energy": H.mo_energy.tolist(), "kidx": H.kidx.tolist(),
+            "band": H.band.tolist(), "partner": H.partner.tolist(),
+            "momentum_violation_max": H.extra["momentum_violation_max"],
+            "hermiticity_max": H.extra["hermiticity_max"],
+            "time_reversal_max": H.extra["time_reversal_max"],
+            "imag_max_real_basis": H.extra["imag_max_real_basis"],
+            "FCI_momentum_sector_weights": ksec.tolist(), "K_HF": k_hf,
+            "counts": counts, "closed_form": pc,
+            "parameter_maps_1L": {v: orbit_labels(orbs[v], 1) for v in VARIANTS_K}})
+        np.savez(f"results/periodic_integrals_{tag}.npz", h1=H.h1, eri=H.eri,
+                 h1_real=H.h1_real, eri_real=H.eri_real, ecore=H.ecore,
+                 nelec=np.array(H.nelec), kidx=H.kidx, band=H.band, partner=H.partner,
+                 U=H.U, mo_energy=H.mo_energy)
+        save()
+    print(now(), tag, f"FCI {ef:.10f}  Bloch-FCI diff {abs(wfc[0]-ef):.1e}  "
+          f"supercell-FCI diff {abs(chk['E_FCI_supercell']-ef):.1e}  "
+          f"E_corr {1e3*(ef-ref['E_ref']):.3f} mHa  c0^2 {ref['c0_ref_weight']:.4f}  "
+          f"K-sector weight outside K_HF {1-ksec[k_hf]:.1e}", flush=True)
+    print("   counts", {k: (v["n_params"], v["cnot_1L"]) for k, v in counts.items()}, flush=True)
+
+    def record(ans, L, seed, res, n_params, cnot, labels, extra=None):
+        psi = res["psi"]
+        ov = abs(np.vdot(gs_c if ans != "UCCSD" else gs_r, psi)) ** 2
+        rec = {"system": tag, "r": r, "d": d, "n_k": nk, "ansatz": ans, "layers": L,
+               "seed": seed, "E": res["E"], "dE": res["dE"], "S2": res["S2"],
+               "nit": res.get("nit"), "nfev": res.get("nfev"), "wall_s": res["wall_s"],
+               "success": res.get("success"), "message": res.get("message"),
+               "grad_norm": res.get("grad_norm"), "iter_to_chem_acc": res.get("iter_to_chem_acc"),
+               "n_params": n_params, "cnot": cnot, "overlap_sq_FCI": float(ov),
+               "theta": np.asarray(res["theta"]).tolist(),
+               "history": np.asarray(res.get("history", [])).tolist(),
+               "finished": now()}
+        if labels is not None:
+            rec["parameter_labels"] = labels
+        if extra:
+            rec.update(extra)
+        data["runs"].append(rec)
+        done.add((tag, ans, L, seed))
+        save()
+        print(f"   {ans:9s} {L}L s{seed}: dE {1e3*res['dE']:9.4f} mHa  S2 {res['S2']:.1e}  "
+              f"|<FCI|psi>|^2 {ov:.5f}  nit {res.get('nit')}  {res['wall_s']:.0f}s", flush=True)
+
+    plan = [("UCCSD", 1, s) for s in (0, 1, 2)] + [("UCCSD", 2, s) for s in (0, 1, 2)] + \
+           [("k only", 1, s) for s in (0, 1, 2)] + [("k + spin", 1, 0), ("k + TR", 1, 0)] + \
+           [("GVA-k", 1, s) for s in (0, 1, 2)] + [("GVA-k", 2, s) for s in (0, 1, 2)]
+    for ans, L, s in plan:
+        if (tag, ans, L, s) in done:
+            continue
+        if ans == "UCCSD" and L == 2 and s > 0 and tag in UCCSD2_HF_ONLY:
+            continue
+        if ans == "UCCSD":
+            A = Ansatz(rsp, [(e,) for e in pool], layers=L)
+            labels = None
+        else:
+            A = CAnsatz(csp, orbs[ans], layers=L)
+            labels = orbit_labels(orbs[ans], L) if L > 1 else None
+        th0 = np.zeros(A.n_params) if s == 0 else \
+            np.random.default_rng(3000 + s).normal(0, 0.05, A.n_params)
+        res = run_vqe_c(A, theta0=th0, e_exact=ef)
+        cn = counts[ans]["cnot_1L"] * L
+        extra = {}
+        if ans == "GVA-k" and L == 2 and s == 0:
+            forb = [e for e in pool if exc_momentum(e, H.kidx, nk) != 0]
+            g = pool_gradients(csp, res["psi"], forb) if forb else np.zeros(1)
+            extra["max_grad_forbidden"] = float(g.max())
+            extra["n_forbidden"] = len(forb)
+        if ans in ("GVA-k", "UCCSD") and L == 1 and s == 0 and H.norb <= 10:
+            if ans == "GVA-k":
+                qh = qubit_hamiltonian_c(H.h1, H.eri, H.ecore)
+                sv = civec_to_statevector_c(res["psi"], H.norb, H.nelec)
+            else:
+                qh = qubit_hamiltonian(AH)
+                sv = civec_to_statevector(np.asarray(res["psi"]).reshape(rsp.sa, rsp.sb),
+                                          H.norb, H.nelec)
+            ejw, _ = expectation(qh, sv)
+            extra["E_jordan_wigner"] = float(ejw)
+            extra["jw_abs_diff"] = float(abs(ejw - res["E"]))
+            extra["n_pauli_terms"] = int(len(qh["coef"])) + 1
+        record(ans, L, s, res, A.n_params, cn, labels, extra)
+        if extra.get("jw_abs_diff") is not None:
+            print(f"      JW check |E_JW - E| = {extra['jw_abs_diff']:.1e} Ha, "
+                  f"{extra['n_pauli_terms']} Pauli terms", flush=True)
+        if "max_grad_forbidden" in extra:
+            print(f"      max |dE/dt| over {extra['n_forbidden']} momentum-violating "
+                  f"excitations: {extra['max_grad_forbidden']:.1e}", flush=True)
+    if (tag, "ADAPT-VQE", None, 0) not in done:
+        # 30-min wall cap added after ADAPT-VQE on the 20-qubit uniform chains exceeded
+        # the 2-h job limit (PROVENANCE); systems run earlier finished well within it
+        ad = adapt_vqe_c(csp, orbs["GVA-k"], e_exact=ef, max_ops=120, max_wall=1800)
+        A = CAnsatz(csp, ad["chosen"], 1)
+        psi = A.state(ad["theta"])
+        res = {"E": ad["E"], "dE": ad["dE"], "S2": csp.s2(psi), "wall_s": ad["wall_s"],
+               "theta": ad["theta"], "psi": psi}
+        cn = sum(cnot_count_ladder(m[0]) for o in ad["chosen"] for m in o.members)
+        record("ADAPT-VQE", None, 0, res, A.n_params, cn, orbit_labels(ad["chosen"], 1),
+               {"n_ops": ad["n_ops"], "stop_reason": ad["stop_reason"],
+                "trace": ad["trace"]})
+    print(now(), tag, f"system done in {time.time()-t_sys:.0f}s", flush=True)
+print(now(), "all done", flush=True)
+#INFO: ******************** input file end ********************
+
+
+System: uname_result(system='Linux', node='vm', release='6.18.44-fc-v153', version='#1 SMP PREEMPT_DYNAMIC @0', machine='x86_64')  Threads 1
+Python 3.13.17 (main, Oct 22 2026, 14:06:04) [GCC 13.3.0]
+numpy 2.5.3  scipy 1.18.1  h5py 3.16.0
+Date: Sat Oct 24 06:49:24 2026
+PySCF version 2.14.0
+PySCF path  /usr/local/lib/python3.13/dist-packages/pyscf
+
+[CONFIG] conf_file None
+[INPUT] verbose = 4
+[INPUT] num. atoms = 0
+[INPUT] num. electrons = 0
+[INPUT] charge = 0
+[INPUT] spin (= nelec alpha-beta = 2S) = 0
+[INPUT] symmetry False subgroup None
+[INPUT] Mole.unit = angstrom
+[INPUT] Symbol           X                Y                Z      unit          X                Y                Z       unit  Magmom
+
+nuclear repulsion = 0
+number of shells = 0
+number of NR pGTOs = 0
+number of NR cGTOs = 0
+basis = sto-3g
+ecp = {}
+CPU time:         8.64
+
+******** <class 'pyscf.ci.cisd.RCISD'> ********
+CISD nocc = 5, nmo = 10
+max_cycle = 50
+direct = 0
+conv_tol = 1e-10
+max_cycle = 50
+max_space = 12
+lindep = 0
+nroots = 1
+max_memory 4000 MB (current use 263 MB)
+Init t2, MP2 energy = -0.254155524159504
+RCISD converged
+E(RCISD) = -4.299504936331572  E_corr = -0.257921422669338
+
+******** <class 'pyscf.cc.ccsd.CCSD'> ********
+CC2 = 0
+CCSD nocc = 5, nmo = 10
+max_cycle = 500
+direct = 0
+conv_tol = 1e-11
+conv_tol_normt = 1e-05
+diis_space = 6
+diis_start_cycle = 0
+diis_start_energy_diff = 1e+09
+max_memory 4000 MB (current use 263 MB)
+Init t2, MP2 energy = -4.29573903782174  E_corr(MP2) -0.254155524159504
+Init E_corr(CCSD) = -0.25415552415964
+cycle = 1  E_corr(CCSD) = -0.232639576185039  dE = 0.021515948  norm(t1,t2) = 0.326926
+cycle = 2  E_corr(CCSD) = -0.360655851684035  dE = -0.128016275  norm(t1,t2) = 0.345151
+cycle = 3  E_corr(CCSD) = -0.320416074078462  dE = 0.0402397776  norm(t1,t2) = 0.339707
+cycle = 4  E_corr(CCSD) = -0.378863934486946  dE = -0.0584478604  norm(t1,t2) = 0.0851927
+cycle = 5  E_corr(CCSD) = -0.392632500818701  dE = -0.0137685663  norm(t1,t2) = 0.0236131
+cycle = 6  E_corr(CCSD) = -0.397538041701745  dE = -0.00490554088  norm(t1,t2) = 0.00935462
+cycle = 7  E_corr(CCSD) = -0.401674677242539  dE = -0.00413663554  norm(t1,t2) = 0.00500839
+cycle = 8  E_corr(CCSD) = -0.402324784450872  dE = -0.000650107208  norm(t1,t2) = 0.000850728
+cycle = 9  E_corr(CCSD) = -0.402388886455275  dE = -6.41020044e-05  norm(t1,t2) = 0.000265783
+cycle = 10  E_corr(CCSD) = -0.402359114605395  dE = 2.97718499e-05  norm(t1,t2) = 0.000132263
+cycle = 11  E_corr(CCSD) = -0.402374991479937  dE = -1.58768745e-05  norm(t1,t2) = 3.57315e-05
+cycle = 12  E_corr(CCSD) = -0.402365391247478  dE = 9.60023246e-06  norm(t1,t2) = 2.59404e-05
+cycle = 13  E_corr(CCSD) = -0.402364627637205  dE = 7.63610273e-07  norm(t1,t2) = 4.17937e-06
+cycle = 14  E_corr(CCSD) = -0.402364540732652  dE = 8.69045528e-08  norm(t1,t2) = 2.10355e-06
+cycle = 15  E_corr(CCSD) = -0.402364099203222  dE = 4.4152943e-07  norm(t1,t2) = 6.88497e-07
+cycle = 16  E_corr(CCSD) = -0.402364009864209  dE = 8.9339013e-08  norm(t1,t2) = 1.72836e-07
+cycle = 17  E_corr(CCSD) = -0.402363980531344  dE = 2.93328656e-08  norm(t1,t2) = 9.33156e-08
+cycle = 18  E_corr(CCSD) = -0.402363964799767  dE = 1.57315768e-08  norm(t1,t2) = 5.03937e-08
+cycle = 19  E_corr(CCSD) = -0.402363951895207  dE = 1.29045601e-08  norm(t1,t2) = 3.68471e-08
+cycle = 20  E_corr(CCSD) = -0.402363946221874  dE = 5.67333291e-09  norm(t1,t2) = 2.48089e-08
+cycle = 21  E_corr(CCSD) = -0.402363949726992  dE = -3.50511836e-09  norm(t1,t2) = 2.36498e-08
+cycle = 22  E_corr(CCSD) = -0.402363957537116  dE = -7.81012349e-09  norm(t1,t2) = 2.41027e-08
+cycle = 23  E_corr(CCSD) = -0.402363954517115  dE = 3.02000075e-09  norm(t1,t2) = 2.21058e-08
+cycle = 24  E_corr(CCSD) = -0.402363951492754  dE = 3.02436109e-09  norm(t1,t2) = 2.14388e-08
+cycle = 25  E_corr(CCSD) = -0.402363949601871  dE = 1.89088289e-09  norm(t1,t2) = 2.0462e-08
+cycle = 26  E_corr(CCSD) = -0.402363948152615  dE = 1.44925544e-09  norm(t1,t2) = 1.95763e-08
+cycle = 27  E_corr(CCSD) = -0.402363947092959  dE = 1.05965675e-09  norm(t1,t2) = 1.68016e-08
+cycle = 28  E_corr(CCSD) = -0.402363945587305  dE = 1.50565393e-09  norm(t1,t2) = 1.4544e-08
+cycle = 29  E_corr(CCSD) = -0.402363943728394  dE = 1.85891091e-09  norm(t1,t2) = 1.30734e-08
+cycle = 30  E_corr(CCSD) = -0.402363942826335  dE = 9.0205865e-10  norm(t1,t2) = 1.17548e-08
+cycle = 31  E_corr(CCSD) = -0.402363942208462  dE = 6.17872975e-10  norm(t1,t2) = 1.07524e-08
+cycle = 32  E_corr(CCSD) = -0.40236394168133  dE = 5.27131783e-10  norm(t1,t2) = 1.04211e-08
+cycle = 33  E_corr(CCSD) = -0.402363940989893  dE = 6.9143774e-10  norm(t1,t2) = 1.0513e-08
+cycle = 34  E_corr(CCSD) = -0.402363940068239  dE = 9.21653975e-10  norm(t1,t2) = 1.02751e-08
+cycle = 35  E_corr(CCSD) = -0.402363939036532  dE = 1.03170655e-09  norm(t1,t2) = 9.40219e-09
+cycle = 36  E_corr(CCSD) = -0.402363938132195  dE = 9.04336883e-10  norm(t1,t2) = 8.23931e-09
+cycle = 37  E_corr(CCSD) = -0.402363937406099  dE = 7.26096627e-10  norm(t1,t2) = 7.33438e-09
+cycle = 38  E_corr(CCSD) = -0.402363936808426  dE = 5.97672412e-10  norm(t1,t2) = 6.75262e-09
+cycle = 39  E_corr(CCSD) = -0.402363936297932  dE = 5.10494425e-10  norm(t1,t2) = 6.3153e-09
+cycle = 40  E_corr(CCSD) = -0.402363935823563  dE = 4.74368766e-10  norm(t1,t2) = 5.99177e-09
+cycle = 41  E_corr(CCSD) = -0.402363935353981  dE = 4.69582317e-10  norm(t1,t2) = 5.75252e-09
+cycle = 42  E_corr(CCSD) = -0.402363934875864  dE = 4.7811699e-10  norm(t1,t2) = 5.49581e-09
+cycle = 43  E_corr(CCSD) = -0.402363934393281  dE = 4.82582863e-10  norm(t1,t2) = 5.13624e-09
+cycle = 44  E_corr(CCSD) = -0.402363933932766  dE = 4.60515126e-10  norm(t1,t2) = 4.69831e-09
+cycle = 45  E_corr(CCSD) = -0.402363933512349  dE = 4.20416257e-10  norm(t1,t2) = 4.28184e-09
+cycle = 46  E_corr(CCSD) = -0.402363933141289  dE = 3.71059961e-10  norm(t1,t2) = 3.93157e-09
+cycle = 47  E_corr(CCSD) = -0.402363932815516  dE = 3.25773741e-10  norm(t1,t2) = 3.65018e-09
+cycle = 48  E_corr(CCSD) = -0.40236393252156  dE = 2.93955471e-10  norm(t1,t2) = 3.42382e-09
+cycle = 49  E_corr(CCSD) = -0.402363932244169  dE = 2.77390888e-10  norm(t1,t2) = 3.23449e-09
+cycle = 50  E_corr(CCSD) = -0.402363931974749  dE = 2.69420375e-10  norm(t1,t2) = 3.05534e-09
+cycle = 51  E_corr(CCSD) = -0.402363931713374  dE = 2.61374755e-10  norm(t1,t2) = 2.86322e-09
+cycle = 52  E_corr(CCSD) = -0.402363931464222  dE = 2.49152199e-10  norm(t1,t2) = 2.65761e-09
+cycle = 53  E_corr(CCSD) = -0.402363931232333  dE = 2.31889341e-10  norm(t1,t2) = 2.45307e-09
+cycle = 54  E_corr(CCSD) = -0.40236393102057  dE = 2.11762996e-10  norm(t1,t2) = 2.26543e-09
+cycle = 55  E_corr(CCSD) = -0.40236393082848  dE = 1.92089677e-10  norm(t1,t2) = 2.10172e-09
+cycle = 56  E_corr(CCSD) = -0.402363930652908  dE = 1.75572501e-10  norm(t1,t2) = 1.96071e-09
+cycle = 57  E_corr(CCSD) = -0.402363930489752  dE = 1.63155656e-10  norm(t1,t2) = 1.83692e-09
+cycle = 58  E_corr(CCSD) = -0.402363930335916  dE = 1.53836111e-10  norm(t1,t2) = 1.723e-09
+cycle = 59  E_corr(CCSD) = -0.402363930189947  dE = 1.45968626e-10  norm(t1,t2) = 1.61273e-09
+cycle = 60  E_corr(CCSD) = -0.402363930051907  dE = 1.38040357e-10  norm(t1,t2) = 1.50343e-09
+cycle = 61  E_corr(CCSD) = -0.402363929922617  dE = 1.29290245e-10  norm(t1,t2) = 1.39662e-09
+cycle = 62  E_corr(CCSD) = -0.402363929802772  dE = 1.19844745e-10  norm(t1,t2) = 1.29581e-09
+cycle = 63  E_corr(CCSD) = -0.402363929692347  dE = 1.10425225e-10  norm(t1,t2) = 1.20372e-09
+cycle = 64  E_corr(CCSD) = -0.402363929590531  dE = 1.01815334e-10  norm(t1,t2) = 1.12093e-09
+cycle = 65  E_corr(CCSD) = -0.402363929496117  dE = 9.44143652e-11  norm(t1,t2) = 1.04631e-09
+cycle = 66  E_corr(CCSD) = -0.402363929407937  dE = 8.81803519e-11  norm(t1,t2) = 9.77887e-10
+cycle = 67  E_corr(CCSD) = -0.402363929325176  dE = 8.27601321e-11  norm(t1,t2) = 9.13671e-10
+cycle = 68  E_corr(CCSD) = -0.40236392924746  dE = 7.77168885e-11  norm(t1,t2) = 8.52394e-10
+cycle = 69  E_corr(CCSD) = -0.40236392917471  dE = 7.27499172e-11  norm(t1,t2) = 7.93821e-10
+cycle = 70  E_corr(CCSD) = -0.402363929106931  dE = 6.7778283e-11  norm(t1,t2) = 7.38469e-10
+cycle = 71  E_corr(CCSD) = -0.402363929044016  dE = 6.29153951e-11  norm(t1,t2) = 6.86984e-10
+cycle = 72  E_corr(CCSD) = -0.402363928985681  dE = 5.83348925e-11  norm(t1,t2) = 6.39641e-10
+cycle = 73  E_corr(CCSD) = -0.402363928931511  dE = 5.41701128e-11  norm(t1,t2) = 5.96247e-10
+cycle = 74  E_corr(CCSD) = -0.402363928881055  dE = 5.04561393e-11  norm(t1,t2) = 5.56271e-10
+cycle = 75  E_corr(CCSD) = -0.402363928833928  dE = 4.71263029e-11  norm(t1,t2) = 5.19083e-10
+cycle = 76  E_corr(CCSD) = -0.402363928789858  dE = 4.40709136e-11  norm(t1,t2) = 4.84166e-10
+cycle = 77  E_corr(CCSD) = -0.402363928748672  dE = 4.11853329e-11  norm(t1,t2) = 4.5125e-10
+cycle = 78  E_corr(CCSD) = -0.402363928710254  dE = 3.84182131e-11  norm(t1,t2) = 4.20296e-10
+cycle = 79  E_corr(CCSD) = -0.402363928674488  dE = 3.57658902e-11  norm(t1,t2) = 3.91368e-10
+cycle = 80  E_corr(CCSD) = -0.402363928641227  dE = 3.32610051e-11  norm(t1,t2) = 3.64508e-10
+cycle = 81  E_corr(CCSD) = -0.402363928610292  dE = 3.09355319e-11  norm(t1,t2) = 3.39654e-10
+cycle = 82  E_corr(CCSD) = -0.402363928581487  dE = 2.88047364e-11  norm(t1,t2) = 3.16644e-10
+cycle = 83  E_corr(CCSD) = -0.402363928554632  dE = 2.68552958e-11  norm(t1,t2) = 2.95264e-10
+cycle = 84  E_corr(CCSD) = -0.402363928529569  dE = 2.50620635e-11  norm(t1,t2) = 2.7531e-10
+cycle = 85  E_corr(CCSD) = -0.40236392850618  dE = 2.33897901e-11  norm(t1,t2) = 2.5663e-10
+cycle = 86  E_corr(CCSD) = -0.402363928484363  dE = 2.18166596e-11  norm(t1,t2) = 2.39138e-10
+cycle = 87  E_corr(CCSD) = -0.402363928464031  dE = 2.03319583e-11  norm(t1,t2) = 2.22793e-10
+cycle = 88  E_corr(CCSD) = -0.402363928445098  dE = 1.89329663e-11  norm(t1,t2) = 2.07563e-10
+cycle = 89  E_corr(CCSD) = -0.402363928427469  dE = 1.76287318e-11  norm(t1,t2) = 1.93407e-10
+cycle = 90  E_corr(CCSD) = -0.402363928411052  dE = 1.64175895e-11  norm(t1,t2) = 1.80255e-10
+cycle = 91  E_corr(CCSD) = -0.402363928395752  dE = 1.52994284e-11  norm(t1,t2) = 1.68026e-10
+cycle = 92  E_corr(CCSD) = -0.402363928381488  dE = 1.42645895e-11  norm(t1,t2) = 1.56633e-10
+cycle = 93  E_corr(CCSD) = -0.402363928368185  dE = 1.33026368e-11  norm(t1,t2) = 1.46e-10
+cycle = 94  E_corr(CCSD) = -0.402363928355781  dE = 1.24041333e-11  norm(t1,t2) = 1.36068e-10
+cycle = 95  E_corr(CCSD) = -0.402363928344219  dE = 1.15619736e-11  norm(t1,t2) = 1.26797e-10
+cycle = 96  E_corr(CCSD) = -0.402363928333446  dE = 1.07732157e-11  norm(t1,t2) = 1.18151e-10
+cycle = 97  E_corr(CCSD) = -0.402363928323409  dE = 1.00363606e-11  norm(t1,t2) = 1.101e-10
+cycle = 98  E_corr(CCSD) = -0.40236392831406  dE = 9.34935462e-12  norm(t1,t2) = 1.02606e-10
+CCSD converged
+E(CCSD) = -4.443947441976293  E_corr = -0.4023639283140601
+CCSD(T) correction = -0.0228531582542481

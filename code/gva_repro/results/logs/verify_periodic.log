@@ -1,0 +1,177 @@
+H2chain_r0.74_d1.50_Nk2      UCCSD     1    s0 n_par=  26 |dE|=0.0e+00 |dS2|=0.0e+00 |E_JW-E|=8.9e-16 (373 terms)  OK
+H2chain_r0.74_d1.50_Nk2      UCCSD     1    s1 n_par=  26 |dE|=0.0e+00 |dS2|=0.0e+00  OK
+H2chain_r0.74_d1.50_Nk2      UCCSD     1    s2 n_par=  26 |dE|=0.0e+00 |dS2|=0.0e+00  OK
+H2chain_r0.74_d1.50_Nk2      UCCSD     2    s0 n_par=  52 |dE|=0.0e+00 |dS2|=0.0e+00  OK
+H2chain_r0.74_d1.50_Nk2      UCCSD     2    s1 n_par=  52 |dE|=0.0e+00 |dS2|=0.0e+00  OK
+H2chain_r0.74_d1.50_Nk2      UCCSD     2    s2 n_par=  52 |dE|=0.0e+00 |dS2|=0.0e+00  OK
+H2chain_r0.74_d1.50_Nk2      k only    1    s0 n_par=  28 |dE|=0.0e+00 |dS2|=0.0e+00  OK
+H2chain_r0.74_d1.50_Nk2      k only    1    s1 n_par=  28 |dE|=0.0e+00 |dS2|=0.0e+00  OK
+H2chain_r0.74_d1.50_Nk2      k only    1    s2 n_par=  28 |dE|=0.0e+00 |dS2|=0.0e+00  OK
+H2chain_r0.74_d1.50_Nk2      k + spin  1    s0 n_par=  18 |dE|=0.0e+00 |dS2|=0.0e+00  OK
+H2chain_r0.74_d1.50_Nk2      k + TR    1    s0 n_par=  14 |dE|=0.0e+00 |dS2|=0.0e+00  OK
+H2chain_r0.74_d1.50_Nk2      GVA-k     1    s0 n_par=   9 |dE|=0.0e+00 |dS2|=0.0e+00 |E_JW-E|=2.4e-15 (581 terms)  OK
+H2chain_r0.74_d1.50_Nk2      GVA-k     1    s1 n_par=   9 |dE|=0.0e+00 |dS2|=0.0e+00  OK
+H2chain_r0.74_d1.50_Nk2      GVA-k     1    s2 n_par=   9 |dE|=0.0e+00 |dS2|=0.0e+00  OK
+H2chain_r0.74_d1.50_Nk2      GVA-k     2    s0 n_par=  18 |dE|=0.0e+00 |dS2|=0.0e+00  OK
+H2chain_r0.74_d1.50_Nk2      GVA-k     2    s1 n_par=  18 |dE|=0.0e+00 |dS2|=0.0e+00  OK
+H2chain_r0.74_d1.50_Nk2      GVA-k     2    s2 n_par=  18 |dE|=0.0e+00 |dS2|=0.0e+00  OK
+H2chain_r0.74_d1.50_Nk2      ADAPT-VQE None s0 n_par=   7 |dE|=0.0e+00 |dS2|=0.0e+00  OK
+H2chain_r0.74_d1.50_Nk3      UCCSD     1    s0 n_par= 117 |dE|=0.0e+00 |dS2|=0.0e+00 |E_JW-E|=1.5e-14 (2639 terms)  OK
+H2chain_r0.74_d1.50_Nk3      UCCSD     1    s1 n_par= 117 |dE|=0.0e+00 |dS2|=0.0e+00  OK
+H2chain_r0.74_d1.50_Nk3      UCCSD     1    s2 n_par= 117 |dE|=0.0e+00 |dS2|=0.0e+00  OK
+H2chain_r0.74_d1.50_Nk3      UCCSD     2    s0 n_par= 234 |dE|=0.0e+00 |dS2|=0.0e+00  OK
+H2chain_r0.74_d1.50_Nk3      UCCSD     2    s1 n_par= 234 |dE|=0.0e+00 |dS2|=0.0e+00  OK
+H2chain_r0.74_d1.50_Nk3      UCCSD     2    s2 n_par= 234 |dE|=0.0e+00 |dS2|=0.0e+00  OK
+H2chain_r0.74_d1.50_Nk3      k only    1    s0 n_par=  78 |dE|=0.0e+00 |dS2|=0.0e+00  OK
+H2chain_r0.74_d1.50_Nk3      k only    1    s1 n_par=  78 |dE|=0.0e+00 |dS2|=0.0e+00  OK
+H2chain_r0.74_d1.50_Nk3      k only    1    s2 n_par=  78 |dE|=0.0e+00 |dS2|=0.0e+00  OK
+H2chain_r0.74_d1.50_Nk3      k + spin  1    s0 n_par=  42 |dE|=0.0e+00 |dS2|=0.0e+00  OK
+H2chain_r0.74_d1.50_Nk3      k + TR    1    s0 n_par=  39 |dE|=0.0e+00 |dS2|=0.0e+00  OK
+H2chain_r0.74_d1.50_Nk3      GVA-k     1    s0 n_par=  21 |dE|=0.0e+00 |dS2|=0.0e+00 |E_JW-E|=1.7e-14 (3395 terms)  OK
+H2chain_r0.74_d1.50_Nk3      GVA-k     1    s1 n_par=  21 |dE|=0.0e+00 |dS2|=0.0e+00  OK
+H2chain_r0.74_d1.50_Nk3      GVA-k     1    s2 n_par=  21 |dE|=0.0e+00 |dS2|=0.0e+00  OK
+H2chain_r0.74_d1.50_Nk3      GVA-k     2    s0 n_par=  42 |dE|=0.0e+00 |dS2|=0.0e+00  OK
+H2chain_r0.74_d1.50_Nk3      GVA-k     2    s1 n_par=  42 |dE|=0.0e+00 |dS2|=0.0e+00  OK
+H2chain_r0.74_d1.50_Nk3      GVA-k     2    s2 n_par=  42 |dE|=0.0e+00 |dS2|=0.0e+00  OK
+H2chain_r0.74_d1.50_Nk3      ADAPT-VQE None s0 n_par=  20 |dE|=0.0e+00 |dS2|=0.0e+00  OK
+H2chain_r0.74_d1.50_Nk4      UCCSD     1    s0 n_par= 360 |dE|=0.0e+00 |dS2|=0.0e+00 |E_JW-E|=9.8e-15 (4681 terms)  OK
+H2chain_r0.74_d1.50_Nk4      UCCSD     1    s1 n_par= 360 |dE|=0.0e+00 |dS2|=0.0e+00  OK
+H2chain_r0.74_d1.50_Nk4      UCCSD     1    s2 n_par= 360 |dE|=0.0e+00 |dS2|=0.0e+00  OK
+H2chain_r0.74_d1.50_Nk4      UCCSD     2    s0 n_par= 720 |dE|=0.0e+00 |dS2|=0.0e+00  OK
+H2chain_r0.74_d1.50_Nk4      UCCSD     2    s1 n_par= 720 |dE|=0.0e+00 |dS2|=0.0e+00  OK
+H2chain_r0.74_d1.50_Nk4      UCCSD     2    s2 n_par= 720 |dE|=0.0e+00 |dS2|=0.0e+00  OK
+H2chain_r0.74_d1.50_Nk4      k only    1    s0 n_par= 184 |dE|=0.0e+00 |dS2|=0.0e+00  OK
+H2chain_r0.74_d1.50_Nk4      k only    1    s1 n_par= 184 |dE|=0.0e+00 |dS2|=0.0e+00  OK
+H2chain_r0.74_d1.50_Nk4      k only    1    s2 n_par= 184 |dE|=0.0e+00 |dS2|=0.0e+00  OK
+H2chain_r0.74_d1.50_Nk4      k + spin  1    s0 n_par= 100 |dE|=0.0e+00 |dS2|=0.0e+00  OK
+H2chain_r0.74_d1.50_Nk4      k + TR    1    s0 n_par=  92 |dE|=0.0e+00 |dS2|=0.0e+00  OK
+H2chain_r0.74_d1.50_Nk4      GVA-k     1    s0 n_par=  50 |dE|=0.0e+00 |dS2|=0.0e+00 |E_JW-E|=1.9e-14 (7509 terms)  OK
+H2chain_r0.74_d1.50_Nk4      GVA-k     1    s1 n_par=  50 |dE|=0.0e+00 |dS2|=0.0e+00  OK
+H2chain_r0.74_d1.50_Nk4      GVA-k     1    s2 n_par=  50 |dE|=0.0e+00 |dS2|=0.0e+00  OK
+H2chain_r0.74_d1.50_Nk4      GVA-k     2    s0 n_par= 100 |dE|=0.0e+00 |dS2|=0.0e+00  OK
+H2chain_r0.74_d1.50_Nk4      GVA-k     2    s1 n_par= 100 |dE|=0.0e+00 |dS2|=0.0e+00  OK
+H2chain_r0.74_d1.50_Nk4      GVA-k     2    s2 n_par= 100 |dE|=0.0e+00 |dS2|=0.0e+00  OK
+H2chain_r0.74_d1.50_Nk4      ADAPT-VQE None s0 n_par=  48 |dE|=0.0e+00 |dS2|=0.0e+00  OK
+H2chain_r0.74_d1.50_Nk5      UCCSD     1    s0 n_par= 875 |dE|=0.0e+00 |dS2|=0.0e+00  OK
+H2chain_r0.74_d1.50_Nk5      UCCSD     1    s1 n_par= 875 |dE|=0.0e+00 |dS2|=0.0e+00  OK
+H2chain_r0.74_d1.50_Nk5      UCCSD     1    s2 n_par= 875 |dE|=0.0e+00 |dS2|=0.0e+00  OK
+H2chain_r0.74_d1.50_Nk5      UCCSD     2    s0 n_par=1750 |dE|=0.0e+00 |dS2|=0.0e+00  OK
+H2chain_r0.74_d1.50_Nk5      UCCSD     2    s1 n_par=1750 |dE|=0.0e+00 |dS2|=0.0e+00  OK
+H2chain_r0.74_d1.50_Nk5      UCCSD     2    s2 n_par=1750 |dE|=0.0e+00 |dS2|=0.0e+00  OK
+H2chain_r0.74_d1.50_Nk5      k only    1    s0 n_par= 350 |dE|=0.0e+00 |dS2|=0.0e+00  OK
+H2chain_r0.74_d1.50_Nk5      k only    1    s1 n_par= 350 |dE|=0.0e+00 |dS2|=0.0e+00  OK
+H2chain_r0.74_d1.50_Nk5      k only    1    s2 n_par= 350 |dE|=0.0e+00 |dS2|=0.0e+00  OK
+H2chain_r0.74_d1.50_Nk5      k + spin  1    s0 n_par= 180 |dE|=0.0e+00 |dS2|=0.0e+00  OK
+H2chain_r0.74_d1.50_Nk5      k + TR    1    s0 n_par= 175 |dE|=0.0e+00 |dS2|=0.0e+00  OK
+H2chain_r0.74_d1.50_Nk5      GVA-k     1    s0 n_par=  90 |dE|=0.0e+00 |dS2|=0.0e+00  OK
+H2chain_r0.74_d1.50_Nk5      GVA-k     1    s1 n_par=  90 |dE|=0.0e+00 |dS2|=0.0e+00  OK
+H2chain_r0.74_d1.50_Nk5      GVA-k     1    s2 n_par=  90 |dE|=0.0e+00 |dS2|=0.0e+00  OK
+H2chain_r0.74_d1.50_Nk5      GVA-k     2    s0 n_par= 180 |dE|=0.0e+00 |dS2|=0.0e+00  OK
+H2chain_r0.74_d1.50_Nk5      GVA-k     2    s1 n_par= 180 |dE|=0.0e+00 |dS2|=0.0e+00  OK
+H2chain_r0.74_d1.50_Nk5      GVA-k     2    s2 n_par= 180 |dE|=0.0e+00 |dS2|=0.0e+00  OK
+H2chain_r0.74_d1.50_Nk5      ADAPT-VQE None s0 n_par=  89 |dE|=0.0e+00 |dS2|=0.0e+00  OK
+H2chain_r1.00_d1.00_Nk3      UCCSD     1    s0 n_par= 117 |dE|=0.0e+00 |dS2|=0.0e+00 |E_JW-E|=4.0e-15 (2611 terms)  OK
+H2chain_r1.00_d1.00_Nk3      UCCSD     1    s1 n_par= 117 |dE|=0.0e+00 |dS2|=0.0e+00  OK
+H2chain_r1.00_d1.00_Nk3      UCCSD     1    s2 n_par= 117 |dE|=0.0e+00 |dS2|=0.0e+00  OK
+H2chain_r1.00_d1.00_Nk3      UCCSD     2    s0 n_par= 234 |dE|=0.0e+00 |dS2|=0.0e+00  OK
+H2chain_r1.00_d1.00_Nk3      UCCSD     2    s1 n_par= 234 |dE|=0.0e+00 |dS2|=0.0e+00  OK
+H2chain_r1.00_d1.00_Nk3      UCCSD     2    s2 n_par= 234 |dE|=0.0e+00 |dS2|=0.0e+00  OK
+H2chain_r1.00_d1.00_Nk3      k only    1    s0 n_par=  78 |dE|=0.0e+00 |dS2|=0.0e+00  OK
+H2chain_r1.00_d1.00_Nk3      k only    1    s1 n_par=  78 |dE|=0.0e+00 |dS2|=0.0e+00  OK
+H2chain_r1.00_d1.00_Nk3      k only    1    s2 n_par=  78 |dE|=0.0e+00 |dS2|=0.0e+00  OK
+H2chain_r1.00_d1.00_Nk3      k + spin  1    s0 n_par=  42 |dE|=0.0e+00 |dS2|=0.0e+00  OK
+H2chain_r1.00_d1.00_Nk3      k + TR    1    s0 n_par=  39 |dE|=0.0e+00 |dS2|=0.0e+00  OK
+H2chain_r1.00_d1.00_Nk3      GVA-k     1    s0 n_par=  21 |dE|=0.0e+00 |dS2|=0.0e+00 |E_JW-E|=7.1e-15 (3391 terms)  OK
+H2chain_r1.00_d1.00_Nk3      GVA-k     1    s1 n_par=  21 |dE|=0.0e+00 |dS2|=0.0e+00  OK
+H2chain_r1.00_d1.00_Nk3      GVA-k     1    s2 n_par=  21 |dE|=0.0e+00 |dS2|=0.0e+00  OK
+H2chain_r1.00_d1.00_Nk3      GVA-k     2    s0 n_par=  42 |dE|=0.0e+00 |dS2|=0.0e+00  OK
+H2chain_r1.00_d1.00_Nk3      GVA-k     2    s1 n_par=  42 |dE|=0.0e+00 |dS2|=0.0e+00  OK
+H2chain_r1.00_d1.00_Nk3      GVA-k     2    s2 n_par=  42 |dE|=0.0e+00 |dS2|=0.0e+00  OK
+H2chain_r1.00_d1.00_Nk3      ADAPT-VQE None s0 n_par=  14 |dE|=0.0e+00 |dS2|=0.0e+00  OK
+H2chain_r1.00_d1.00_Nk5      UCCSD     1    s0 n_par= 875 |dE|=0.0e+00 |dS2|=0.0e+00  OK
+H2chain_r1.00_d1.00_Nk5      UCCSD     1    s1 n_par= 875 |dE|=0.0e+00 |dS2|=0.0e+00  OK
+H2chain_r1.00_d1.00_Nk5      UCCSD     1    s2 n_par= 875 |dE|=0.0e+00 |dS2|=0.0e+00  OK
+H2chain_r1.00_d1.00_Nk5      UCCSD     2    s0 n_par=1750 |dE|=0.0e+00 |dS2|=0.0e+00  OK
+H2chain_r1.00_d1.00_Nk5      k only    1    s0 n_par= 350 |dE|=0.0e+00 |dS2|=0.0e+00  OK
+H2chain_r1.00_d1.00_Nk5      k only    1    s1 n_par= 350 |dE|=0.0e+00 |dS2|=0.0e+00  OK
+H2chain_r1.00_d1.00_Nk5      k only    1    s2 n_par= 350 |dE|=0.0e+00 |dS2|=0.0e+00  OK
+H2chain_r1.00_d1.00_Nk5      k + spin  1    s0 n_par= 180 |dE|=0.0e+00 |dS2|=0.0e+00  OK
+H2chain_r1.00_d1.00_Nk5      k + TR    1    s0 n_par= 175 |dE|=0.0e+00 |dS2|=0.0e+00  OK
+H2chain_r1.00_d1.00_Nk5      GVA-k     1    s0 n_par=  90 |dE|=0.0e+00 |dS2|=0.0e+00  OK
+H2chain_r1.00_d1.00_Nk5      GVA-k     1    s1 n_par=  90 |dE|=0.0e+00 |dS2|=0.0e+00  OK
+H2chain_r1.00_d1.00_Nk5      GVA-k     1    s2 n_par=  90 |dE|=0.0e+00 |dS2|=0.0e+00  OK
+H2chain_r1.00_d1.00_Nk5      GVA-k     2    s0 n_par= 180 |dE|=0.0e+00 |dS2|=0.0e+00  OK
+H2chain_r1.00_d1.00_Nk5      GVA-k     2    s1 n_par= 180 |dE|=0.0e+00 |dS2|=0.0e+00  OK
+H2chain_r1.00_d1.00_Nk5      GVA-k     2    s2 n_par= 180 |dE|=0.0e+00 |dS2|=0.0e+00  OK
+H2chain_r1.00_d1.00_Nk5      ADAPT-VQE None s0 n_par=  61 |dE|=0.0e+00 |dS2|=0.0e+00  OK
+H2chain_r1.50_d1.50_Nk3      UCCSD     1    s0 n_par= 117 |dE|=0.0e+00 |dS2|=0.0e+00 |E_JW-E|=6.2e-15 (2619 terms)  OK
+H2chain_r1.50_d1.50_Nk3      UCCSD     1    s1 n_par= 117 |dE|=0.0e+00 |dS2|=0.0e+00  OK
+H2chain_r1.50_d1.50_Nk3      UCCSD     1    s2 n_par= 117 |dE|=0.0e+00 |dS2|=0.0e+00  OK
+H2chain_r1.50_d1.50_Nk3      UCCSD     2    s0 n_par= 234 |dE|=0.0e+00 |dS2|=0.0e+00  OK
+H2chain_r1.50_d1.50_Nk3      UCCSD     2    s1 n_par= 234 |dE|=0.0e+00 |dS2|=0.0e+00  OK
+H2chain_r1.50_d1.50_Nk3      UCCSD     2    s2 n_par= 234 |dE|=0.0e+00 |dS2|=0.0e+00  OK
+H2chain_r1.50_d1.50_Nk3      k only    1    s0 n_par=  78 |dE|=0.0e+00 |dS2|=0.0e+00  OK
+H2chain_r1.50_d1.50_Nk3      k only    1    s1 n_par=  78 |dE|=0.0e+00 |dS2|=0.0e+00  OK
+H2chain_r1.50_d1.50_Nk3      k only    1    s2 n_par=  78 |dE|=0.0e+00 |dS2|=0.0e+00  OK
+H2chain_r1.50_d1.50_Nk3      k + spin  1    s0 n_par=  42 |dE|=0.0e+00 |dS2|=0.0e+00  OK
+H2chain_r1.50_d1.50_Nk3      k + TR    1    s0 n_par=  39 |dE|=0.0e+00 |dS2|=0.0e+00  OK
+H2chain_r1.50_d1.50_Nk3      GVA-k     1    s0 n_par=  21 |dE|=0.0e+00 |dS2|=0.0e+00 |E_JW-E|=6.7e-15 (3391 terms)  OK
+H2chain_r1.50_d1.50_Nk3      GVA-k     1    s1 n_par=  21 |dE|=0.0e+00 |dS2|=0.0e+00  OK
+H2chain_r1.50_d1.50_Nk3      GVA-k     1    s2 n_par=  21 |dE|=0.0e+00 |dS2|=0.0e+00  OK
+H2chain_r1.50_d1.50_Nk3      GVA-k     2    s0 n_par=  42 |dE|=0.0e+00 |dS2|=0.0e+00  OK
+H2chain_r1.50_d1.50_Nk3      GVA-k     2    s1 n_par=  42 |dE|=0.0e+00 |dS2|=0.0e+00  OK
+H2chain_r1.50_d1.50_Nk3      GVA-k     2    s2 n_par=  42 |dE|=0.0e+00 |dS2|=0.0e+00  OK
+H2chain_r1.50_d1.50_Nk3      ADAPT-VQE None s0 n_par=  15 |dE|=0.0e+00 |dS2|=0.0e+00  OK
+H2chain_r1.50_d1.50_Nk5      UCCSD     1    s0 n_par= 875 |dE|=0.0e+00 |dS2|=0.0e+00  OK
+H2chain_r1.50_d1.50_Nk5      UCCSD     1    s1 n_par= 875 |dE|=0.0e+00 |dS2|=0.0e+00  OK
+H2chain_r1.50_d1.50_Nk5      UCCSD     1    s2 n_par= 875 |dE|=0.0e+00 |dS2|=0.0e+00  OK
+H2chain_r1.50_d1.50_Nk5      UCCSD     2    s0 n_par=1750 |dE|=0.0e+00 |dS2|=0.0e+00  OK
+H2chain_r1.50_d1.50_Nk5      UCCSD     2    s1 n_par=1750 |dE|=0.0e+00 |dS2|=0.0e+00  OK
+H2chain_r1.50_d1.50_Nk5      UCCSD     2    s2 n_par=1750 |dE|=0.0e+00 |dS2|=0.0e+00  OK
+H2chain_r1.50_d1.50_Nk5      k only    1    s0 n_par= 350 |dE|=0.0e+00 |dS2|=0.0e+00  OK
+H2chain_r1.50_d1.50_Nk5      k only    1    s1 n_par= 350 |dE|=0.0e+00 |dS2|=0.0e+00  OK
+H2chain_r1.50_d1.50_Nk5      k only    1    s2 n_par= 350 |dE|=0.0e+00 |dS2|=0.0e+00  OK
+H2chain_r1.50_d1.50_Nk5      k + spin  1    s0 n_par= 180 |dE|=0.0e+00 |dS2|=0.0e+00  OK
+H2chain_r1.50_d1.50_Nk5      k + TR    1    s0 n_par= 175 |dE|=0.0e+00 |dS2|=0.0e+00  OK
+H2chain_r1.50_d1.50_Nk5      GVA-k     1    s0 n_par=  90 |dE|=0.0e+00 |dS2|=0.0e+00  OK
+H2chain_r1.50_d1.50_Nk5      GVA-k     1    s1 n_par=  90 |dE|=0.0e+00 |dS2|=0.0e+00  OK
+H2chain_r1.50_d1.50_Nk5      GVA-k     1    s2 n_par=  90 |dE|=0.0e+00 |dS2|=0.0e+00  OK
+H2chain_r1.50_d1.50_Nk5      GVA-k     2    s0 n_par= 180 |dE|=0.0e+00 |dS2|=0.0e+00  OK
+H2chain_r1.50_d1.50_Nk5      GVA-k     2    s1 n_par= 180 |dE|=0.0e+00 |dS2|=0.0e+00  OK
+H2chain_r1.50_d1.50_Nk5      GVA-k     2    s2 n_par= 180 |dE|=0.0e+00 |dS2|=0.0e+00  OK
+H2chain_r1.50_d1.50_Nk5      ADAPT-VQE None s0 n_par= 100 |dE|=0.0e+00 |dS2|=0.0e+00  OK
+H2chain_r2.00_d2.00_Nk3      UCCSD     1    s0 n_par= 117 |dE|=0.0e+00 |dS2|=0.0e+00 |E_JW-E|=1.3e-14 (2619 terms)  OK
+H2chain_r2.00_d2.00_Nk3      UCCSD     1    s1 n_par= 117 |dE|=0.0e+00 |dS2|=0.0e+00  OK
+H2chain_r2.00_d2.00_Nk3      UCCSD     1    s2 n_par= 117 |dE|=0.0e+00 |dS2|=0.0e+00  OK
+H2chain_r2.00_d2.00_Nk3      UCCSD     2    s0 n_par= 234 |dE|=0.0e+00 |dS2|=0.0e+00  OK
+H2chain_r2.00_d2.00_Nk3      UCCSD     2    s1 n_par= 234 |dE|=0.0e+00 |dS2|=0.0e+00  OK
+H2chain_r2.00_d2.00_Nk3      UCCSD     2    s2 n_par= 234 |dE|=0.0e+00 |dS2|=0.0e+00  OK
+H2chain_r2.00_d2.00_Nk3      k only    1    s0 n_par=  78 |dE|=0.0e+00 |dS2|=0.0e+00  OK
+H2chain_r2.00_d2.00_Nk3      k only    1    s1 n_par=  78 |dE|=0.0e+00 |dS2|=0.0e+00  OK
+H2chain_r2.00_d2.00_Nk3      k only    1    s2 n_par=  78 |dE|=0.0e+00 |dS2|=0.0e+00  OK
+H2chain_r2.00_d2.00_Nk3      k + spin  1    s0 n_par=  42 |dE|=0.0e+00 |dS2|=0.0e+00  OK
+H2chain_r2.00_d2.00_Nk3      k + TR    1    s0 n_par=  39 |dE|=0.0e+00 |dS2|=0.0e+00  OK
+H2chain_r2.00_d2.00_Nk3      GVA-k     1    s0 n_par=  21 |dE|=0.0e+00 |dS2|=0.0e+00 |E_JW-E|=5.3e-15 (3391 terms)  OK
+H2chain_r2.00_d2.00_Nk3      GVA-k     1    s1 n_par=  21 |dE|=0.0e+00 |dS2|=0.0e+00  OK
+H2chain_r2.00_d2.00_Nk3      GVA-k     1    s2 n_par=  21 |dE|=0.0e+00 |dS2|=0.0e+00  OK
+H2chain_r2.00_d2.00_Nk3      GVA-k     2    s0 n_par=  42 |dE|=0.0e+00 |dS2|=0.0e+00  OK
+H2chain_r2.00_d2.00_Nk3      GVA-k     2    s1 n_par=  42 |dE|=0.0e+00 |dS2|=0.0e+00  OK
+H2chain_r2.00_d2.00_Nk3      GVA-k     2    s2 n_par=  42 |dE|=0.0e+00 |dS2|=0.0e+00  OK
+H2chain_r2.00_d2.00_Nk3      ADAPT-VQE None s0 n_par=  39 |dE|=0.0e+00 |dS2|=0.0e+00  OK
+H2chain_r2.00_d2.00_Nk5      UCCSD     1    s0 n_par= 875 |dE|=0.0e+00 |dS2|=0.0e+00  OK
+H2chain_r2.00_d2.00_Nk5      UCCSD     1    s1 n_par= 875 |dE|=0.0e+00 |dS2|=0.0e+00  OK
+H2chain_r2.00_d2.00_Nk5      UCCSD     1    s2 n_par= 875 |dE|=0.0e+00 |dS2|=0.0e+00  OK
+H2chain_r2.00_d2.00_Nk5      UCCSD     2    s0 n_par=1750 |dE|=0.0e+00 |dS2|=0.0e+00  OK
+H2chain_r2.00_d2.00_Nk5      k only    1    s0 n_par= 350 |dE|=0.0e+00 |dS2|=0.0e+00  OK
+H2chain_r2.00_d2.00_Nk5      k only    1    s1 n_par= 350 |dE|=0.0e+00 |dS2|=0.0e+00  OK
+H2chain_r2.00_d2.00_Nk5      k only    1    s2 n_par= 350 |dE|=0.0e+00 |dS2|=0.0e+00  OK
+H2chain_r2.00_d2.00_Nk5      k + spin  1    s0 n_par= 180 |dE|=0.0e+00 |dS2|=0.0e+00  OK
+H2chain_r2.00_d2.00_Nk5      k + TR    1    s0 n_par= 175 |dE|=0.0e+00 |dS2|=0.0e+00  OK
+H2chain_r2.00_d2.00_Nk5      GVA-k     1    s0 n_par=  90 |dE|=0.0e+00 |dS2|=0.0e+00  OK
+H2chain_r2.00_d2.00_Nk5      GVA-k     1    s1 n_par=  90 |dE|=0.0e+00 |dS2|=0.0e+00  OK
+H2chain_r2.00_d2.00_Nk5      GVA-k     1    s2 n_par=  90 |dE|=0.0e+00 |dS2|=0.0e+00  OK
+H2chain_r2.00_d2.00_Nk5      GVA-k     2    s0 n_par= 180 |dE|=0.0e+00 |dS2|=0.0e+00  OK
+H2chain_r2.00_d2.00_Nk5      GVA-k     2    s1 n_par= 180 |dE|=0.0e+00 |dS2|=0.0e+00  OK
+H2chain_r2.00_d2.00_Nk5      GVA-k     2    s2 n_par= 180 |dE|=0.0e+00 |dS2|=0.0e+00  OK
+H2chain_r2.00_d2.00_Nk5      ADAPT-VQE None s0 n_par= 124 |dE|=0.0e+00 |dS2|=0.0e+00  OK
+176 states rebuilt; max |dE| = 0.0e+00 Ha; max |dS2| = 0.0e+00; max |E_JW - E| = 1.9e-14 Ha; mismatches: 0

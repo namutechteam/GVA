@@ -1,0 +1,15 @@
+# uccsd_counts.py run 2026-10-23T21:31:56+09:00
+H2 STO-3G                    enum={'UCCSD': 3, 'spin': 2, 'PG': 1, 'GVA': 1} formula={'UCCSD': 3, 'spin': 2, 'PG': 1, 'GVA': 1} CNOT/layer={'UCCSD': 64, 'GVA': 48} OK
+H4 STO-3G                    enum={'UCCSD': 26, 'spin': 15, 'PG': 14, 'GVA': 9} formula={'UCCSD': 26, 'spin': 15, 'PG': 14, 'GVA': 9} CNOT/layer={'UCCSD': 1312, 'GVA': 736} OK
+LiH STO-3G                   enum={'UCCSD': 92, 'spin': 50, 'PG': 34, 'GVA': 21} formula={'UCCSD': 92, 'spin': 50, 'PG': 34, 'GVA': 21} CNOT/layer={'UCCSD': 6976, 'GVA': 2464} OK
+BeH2 STO-3G                  enum={'UCCSD': 204, 'spin': 108, 'PG': 38, 'GVA': 25} formula={'UCCSD': 204, 'spin': 108, 'PG': 38, 'GVA': 25} CNOT/layer={'UCCSD': 18208, 'GVA': 2448} OK
+Cisplatin CAS(10e,10o) C2v   enum={'UCCSD': 875, 'spin': 450, 'PG': 297, 'GVA': 161} formula={'UCCSD': 875, 'spin': 450, 'PG': 297, 'GVA': 161} CNOT/layer={'UCCSD': 108800, 'GVA': 36496} OK
+table of N_UCCSD(n_o, n_v):
+  CAS(4e,4o): n_o=n_v=2: N_UCCSD=26, N_spin=15
+  CAS(6e,6o): n_o=n_v=3: N_UCCSD=117, N_spin=63
+  CAS(8e,8o): n_o=n_v=4: N_UCCSD=360, N_spin=188
+  CAS(10e,10o): n_o=n_v=5: N_UCCSD=875, N_spin=450
+  CAS(12e,12o): n_o=n_v=6: N_UCCSD=1818, N_spin=927
+  CAS(16e,16o): n_o=n_v=8: N_UCCSD=5792, N_spin=2928
+  CAS(20e,20o): n_o=n_v=10: N_UCCSD=14250, N_spin=7175
+exit code: 0

@@ -1,0 +1,55 @@
+PASS  [r=0.74 d=1.5 Nk=3] momentum conservation  max |violating integral| = 0.0e+00
+PASS  [r=0.74 d=1.5 Nk=3] Hermiticity  4.4e-16
+PASS  [r=0.74 d=1.5 Nk=3] time reversal  6.7e-16
+PASS  [r=0.74 d=1.5 Nk=3] E_HF(integrals) = N_k E_KRHF  8.9e-16 Ha
+PASS  [r=0.74 d=1.5 Nk=3] FCI real = Bloch  1.2e-14 Ha
+PASS  [r=0.74 d=1.5 Nk=3] FCI real = explicit supercell  3.6e-14 Ha
+PASS  [r=0.74 d=1.5 Nk=3] gradient k only 1L  max |FD - adjoint| = 1.2e-10
+PASS  [r=0.74 d=1.5 Nk=3] gradient k only 2L  max |FD - adjoint| = 3.1e-11
+PASS  [r=0.74 d=1.5 Nk=3] gradient k + spin 1L  max |FD - adjoint| = 4.8e-11
+PASS  [r=0.74 d=1.5 Nk=3] gradient k + spin 2L  max |FD - adjoint| = 6.2e-11
+PASS  [r=0.74 d=1.5 Nk=3] gradient k + TR 1L  max |FD - adjoint| = 8.8e-11
+PASS  [r=0.74 d=1.5 Nk=3] gradient k + TR 2L  max |FD - adjoint| = 7.5e-11
+PASS  [r=0.74 d=1.5 Nk=3] gradient GVA-k 1L  max |FD - adjoint| = 2.5e-10
+PASS  [r=0.74 d=1.5 Nk=3] gradient GVA-k 2L  max |FD - adjoint| = 2.6e-10
+PASS  [r=0.74 d=1.5 Nk=3] zero gradient of momentum-violating excitations  78 excitations, max 0.0e+00
+PASS  [r=0.74 d=1.5 Nk=3] Jordan-Wigner energy  1.0e-15 Ha
+INFO  [r=0.74 d=1.5 Nk=3] untied optimum: max |t| = 5.755e-02; max deviation from t(TR partner) = s t* : 2.4e-04; from t(spin partner) = t : 1.2e-04
+PASS  [r=0.74 d=1.5 Nk=3] tying relations hold to < 5% of max |t|  
+PASS  [r=1.0 d=1.0 Nk=3] momentum conservation  max |violating integral| = 0.0e+00
+PASS  [r=1.0 d=1.0 Nk=3] Hermiticity  5.6e-16
+PASS  [r=1.0 d=1.0 Nk=3] time reversal  3.0e-15
+PASS  [r=1.0 d=1.0 Nk=3] E_HF(integrals) = N_k E_KRHF  1.3e-15 Ha
+PASS  [r=1.0 d=1.0 Nk=3] FCI real = Bloch  1.7e-14 Ha
+PASS  [r=1.0 d=1.0 Nk=3] FCI real = explicit supercell  1.4e-13 Ha
+PASS  [r=1.0 d=1.0 Nk=3] gradient k only 1L  max |FD - adjoint| = 1.1e-10
+PASS  [r=1.0 d=1.0 Nk=3] gradient k only 2L  max |FD - adjoint| = 4.7e-11
+PASS  [r=1.0 d=1.0 Nk=3] gradient k + spin 1L  max |FD - adjoint| = 4.0e-11
+PASS  [r=1.0 d=1.0 Nk=3] gradient k + spin 2L  max |FD - adjoint| = 7.3e-11
+PASS  [r=1.0 d=1.0 Nk=3] gradient k + TR 1L  max |FD - adjoint| = 1.3e-10
+PASS  [r=1.0 d=1.0 Nk=3] gradient k + TR 2L  max |FD - adjoint| = 6.8e-11
+PASS  [r=1.0 d=1.0 Nk=3] gradient GVA-k 1L  max |FD - adjoint| = 2.9e-10
+PASS  [r=1.0 d=1.0 Nk=3] gradient GVA-k 2L  max |FD - adjoint| = 1.7e-10
+PASS  [r=1.0 d=1.0 Nk=3] zero gradient of momentum-violating excitations  78 excitations, max 0.0e+00
+PASS  [r=1.0 d=1.0 Nk=3] Jordan-Wigner energy  1.9e-15 Ha
+INFO  [r=1.0 d=1.0 Nk=3] untied optimum: max |t| = 9.616e-02; max deviation from t(TR partner) = s t* : 3.4e-04; from t(spin partner) = t : 2.1e-04
+PASS  [r=1.0 d=1.0 Nk=3] tying relations hold to < 5% of max |t|  
+PASS  [r=0.74 d=1.5 Nk=4] momentum conservation  max |violating integral| = 0.0e+00
+PASS  [r=0.74 d=1.5 Nk=4] Hermiticity  3.6e-16
+PASS  [r=0.74 d=1.5 Nk=4] time reversal  9.5e-16
+PASS  [r=0.74 d=1.5 Nk=4] E_HF(integrals) = N_k E_KRHF  0.0e+00 Ha
+PASS  [r=0.74 d=1.5 Nk=4] FCI real = Bloch  2.8e-14 Ha
+PASS  [r=0.74 d=1.5 Nk=4] FCI real = explicit supercell  9.8e-15 Ha
+PASS  [r=0.74 d=1.5 Nk=4] gradient k only 1L  max |FD - adjoint| = 1.5e-10
+PASS  [r=0.74 d=1.5 Nk=4] gradient k only 2L  max |FD - adjoint| = 3.8e-11
+PASS  [r=0.74 d=1.5 Nk=4] gradient k + spin 1L  max |FD - adjoint| = 5.6e-11
+PASS  [r=0.74 d=1.5 Nk=4] gradient k + spin 2L  max |FD - adjoint| = 6.2e-11
+PASS  [r=0.74 d=1.5 Nk=4] gradient k + TR 1L  max |FD - adjoint| = 6.2e-11
+PASS  [r=0.74 d=1.5 Nk=4] gradient k + TR 2L  max |FD - adjoint| = 3.1e-11
+PASS  [r=0.74 d=1.5 Nk=4] gradient GVA-k 1L  max |FD - adjoint| = 1.2e-10
+PASS  [r=0.74 d=1.5 Nk=4] gradient GVA-k 2L  max |FD - adjoint| = 8.3e-11
+PASS  [r=0.74 d=1.5 Nk=4] zero gradient of momentum-violating excitations  268 excitations, max 0.0e+00
+PASS  [r=0.74 d=1.5 Nk=4] Jordan-Wigner energy  3.1e-15 Ha
+INFO  [r=0.74 d=1.5 Nk=4] untied optimum: max |t| = 4.167e-02; max deviation from t(TR partner) = s t* : 3.3e-04; from t(spin partner) = t : 1.7e-04
+PASS  [r=0.74 d=1.5 Nk=4] tying relations hold to < 5% of max |t|  
+FAILURES: 0

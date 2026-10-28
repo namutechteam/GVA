@@ -1,0 +1,28 @@
+Verified 2026-10-23 via Crossref/OpenAlex/arXiv (43 entries; #12 title corrected to "simulations").
+See manuscript reference list for the final Nature-style strings.
+
+Added 2026-10-24 (manuscript Discussion, scope for C1 fragments), verified via Crossref:
+  45 Goings et al., PNAS 119, e2203533119 (2022)            doi:10.1073/pnas.2203533119
+  46 Knizia & Chan, PRL 109, 186404 (2012)                   doi:10.1103/PhysRevLett.109.186404
+  47 Manby et al., JCTC 8, 2564-2568 (2012)                  doi:10.1021/ct300544e
+  48 Riplinger & Neese, JCP 138, 034106 (2013)               doi:10.1063/1.4773581
+  49 Kottmann et al., JPCL 12, 663-673 (2021)                doi:10.1021/acs.jpclett.0c03410
+These five are cited in the manuscript text only; no code depends on them.
+
+Added 2026-10-24 (crystal section), verified via Crossref / OpenAlex / arXiv:
+  50 Manrique et al., arXiv:2008.08694 (2020) - authors and title checked on arXiv; no journal reference listed
+  51 Yoshioka et al., Phys. Rev. Res. 4, 013052 (2022)      doi:10.1103/PhysRevResearch.4.013052
+  52 Motta et al., Phys. Rev. X 7, 031059 (2017)            doi:10.1103/PhysRevX.7.031059
+  53 McClain et al., JCTC 13, 1209-1218 (2017)              doi:10.1021/acs.jctc.7b00049
+  54 Sun et al., J. Chem. Phys. 147, 164119 (2017)          doi:10.1063/1.4998644
+  55 Beran, Chem. Rev. 116, 5567-5613 (2016)                doi:10.1021/acs.chemrev.5b00648
+
+Re-verification 2026-10-24 (npj Quantum Information version), all 52 references cited in
+the main text or the SI, one record per DOI/arXiv ID (Crossref; OpenAlex where Crossref
+failed or lacked the journal name; arXiv abstract pages for the three preprints):
+  authors, author count against the Nature 'et al.' rule (>5 authors), title, journal,
+  volume, pages/article number and year agree with the metadata for all 52.
+  Changes made: ref. 51 (Yoshioka et al.) given name Yu-ya now 'Y.-y.'.
+  Note: the DOI recorded for Jensen et al. J. Chem. Phys. 88, 3834 (1988) is
+  10.1063/1.453884 (10.1063/1.455627 belongs to a different paper); the printed
+  reference does not include DOIs and was already correct.

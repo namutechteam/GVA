@@ -1,0 +1,92 @@
+
+
+******** <class 'pyscf.pbc.scf.hf.RHF'> ********
+method = RHF
+initial guess = minao
+damping factor = 0
+level_shift factor = 0
+DIIS = <class 'pyscf.scf.diis.CDIIS'>
+diis_start_cycle = 1
+diis_space = 8
+diis_damp = 0
+SCF conv_tol = 1e-12
+SCF conv_tol_grad = None
+SCF max_cycles = 50
+direct_scf = True
+direct_scf_tol = 1e-13
+chkfile to save SCF result = /tmp/tmp7j5dbfld
+max_memory 4000 MB (current use 319 MB)
+******** PBC SCF flags ********
+kpt = [0. 0. 0.]
+Exchange divergence treatment (exxdiv) = None
+DF object = <pyscf.pbc.df.df.GDF object at 0x7faf95967ce0>
+Set gradient conv threshold to 1e-06
+Initial guess from minao.
+
+
+******** <class 'pyscf.pbc.df.rsdf_builder._RSNucBuilder'> ********
+mesh = [69 35 35] (84525 PWs)
+ke_cutoff = 15.974594755361078
+omega = 0.4627599427384597
+exclude_d_aux = False
+exclude_dd_block = True
+j2c_eig_always = False
+has_long_range = True
+
+
+******** <class 'pyscf.pbc.df.df.GDF'> ********
+auxbasis = def2-svp-jkfit
+exp_to_discard = None
+_cderi_to_save = /tmp/tmpf5b7bv5m
+len(kpts) = 1
+Drop 0 primitive fitting functions
+make aux basis, num shells = 60, num cGTOs = 180
+auxcell.rcut 14.853449038396011
+
+
+******** <class 'pyscf.pbc.df.rsdf_builder._RSGDFBuilder'> ********
+mesh = [57 29 29] (47937 PWs)
+ke_cutoff = 10.83398121816876
+omega = 0.3662922676362388
+exclude_d_aux = True
+exclude_dd_block = True
+j2c_eig_always = False
+has_long_range = True
+init E= -2.61092766935297
+  HOMO = -0.0747787687922712  LUMO = 0.0150363236194366  gap/eV = 2.44399
+cycle= 1 E= -3.49070495536464  delta_E= -0.88  |g|= 0.00529  |ddm|= 2.57
+  HOMO = -0.101377940202539  LUMO = 0.0155350256185185  gap/eV = 3.18136
+cycle= 2 E= -3.49076056512835  delta_E= -5.56e-05  |g|= 0.00262  |ddm|= 0.0304
+  HOMO = -0.101762494895429  LUMO = 0.0159804926927727  gap/eV = 3.20395
+cycle= 3 E= -3.49074276952929  delta_E= 1.78e-05  |g|= 0.00496  |ddm|= 0.0244
+  HOMO = -0.101948092052451  LUMO = 0.0161526474933255  gap/eV = 3.21368
+cycle= 4 E= -3.49077173291971  delta_E= -2.9e-05  |g|= 0.000514  |ddm|= 0.017
+  HOMO = -0.102039194503033  LUMO = 0.0162270917061874  gap/eV = 3.21819
+cycle= 5 E= -3.49077323168931  delta_E= -1.5e-06  |g|= 0.000481  |ddm|= 0.00487
+  HOMO = -0.10204569310598  LUMO = 0.0162388912260217  gap/eV = 3.21869
+cycle= 6 E= -3.49077390560598  delta_E= -6.74e-07  |g|= 0.000491  |ddm|= 0.00214
+  HOMO = -0.102018990334574  LUMO = 0.0162103108603739  gap/eV = 3.21718
+cycle= 7 E= -3.49076783963844  delta_E= 6.07e-06  |g|= 0.00032  |ddm|= 0.0236
+  HOMO = -0.102017568237512  LUMO = 0.0162162044270357  gap/eV = 3.21730
+cycle= 8 E= -3.49076442336084  delta_E= 3.42e-06  |g|= 0.000131  |ddm|= 0.0297
+  HOMO = -0.102026186351353  LUMO = 0.0162190714323303  gap/eV = 3.21762
+cycle= 9 E= -3.49076431465249  delta_E= 1.09e-07  |g|= 1.42e-05  |ddm|= 0.00681
+  HOMO = -0.102027109910807  LUMO = 0.0162211266825778  gap/eV = 3.21770
+cycle= 10 E= -3.49076431483985  delta_E= -1.87e-10  |g|= 3.66e-06  |ddm|= 5.19e-05
+  HOMO = -0.102027493645513  LUMO = 0.0162216601114248  gap/eV = 3.21772
+cycle= 11 E= -3.49076431485127  delta_E= -1.14e-11  |g|= 6.66e-08  |ddm|= 3.18e-05
+  HOMO = -0.102027491961284  LUMO = 0.0162216598092588  gap/eV = 3.21772
+cycle= 12 E= -3.49076431485127  delta_E=    0  |g|= 6.99e-08  |ddm|= 9.77e-07
+  HOMO = -0.102027495834467  LUMO = 0.0162216640045491  gap/eV = 3.21772
+Extra cycle  E= -3.49076431485124  delta_E= 3.38e-14  |g|= 1.84e-07  |ddm|= 8.3e-07
+converged SCF energy = -3.49076431485124
+
+
+******** <class 'pyscf.pbc.df.rsdf_builder._RSNucBuilder'> ********
+mesh = [69 35 35] (84525 PWs)
+ke_cutoff = 15.974594755361078
+omega = 0.4627599427384597
+exclude_d_aux = False
+exclude_dd_block = True
+j2c_eig_always = False
+has_long_range = True

@@ -1,0 +1,13 @@
+# tests_qubit.py run 2026-10-23T21:32:06+09:00
+H2 terms 14 E_qubit-E_FCI = 8.88e-16 const -0.09886396933545866
+   QWC {'largest_first': (np.int64(5), '4.88e+04'), 'dsatur': (np.int64(5), '4.88e+04'), 'sorted_insertion': (np.int64(5), '4.88e+04')}
+   GC {'largest_first': (np.int64(2), '4.88e+04'), 'dsatur': (np.int64(2), '4.88e+04'), 'sorted_insertion': (np.int64(2), '4.88e+04')}
+LiH terms 630 E_qubit-E_FCI = 3.55e-14 const -4.134285700210116
+   QWC {'largest_first': (np.int64(154), '8.81e+05'), 'dsatur': (np.int64(150), '8.66e+05'), 'sorted_insertion': (np.int64(183), '3.61e+05')}
+   GC {'largest_first': (np.int64(39), '3.00e+05'), 'dsatur': (np.int64(31), '6.67e+05'), 'sorted_insertion': (np.int64(41), '2.59e+05')}
+H4 terms 184 E_qubit-E_FCI = 4.44e-16 const -0.7091909923015186
+   QWC {'largest_first': (np.int64(68), '2.70e+06'), 'dsatur': (np.int64(67), '2.68e+06'), 'sorted_insertion': (np.int64(73), '1.60e+06')}
+   GC {'largest_first': (np.int64(9), '7.81e+05'), 'dsatur': (np.int64(8), '9.62e+05'), 'sorted_insertion': (np.int64(9), '4.21e+05')}
+BeH2 terms 665 E_qubit-E_FCI = -1.95e-14 const -8.703919784300995
+   QWC {'largest_first': (np.int64(208), '5.04e+06'), 'dsatur': (np.int64(203), '5.13e+06'), 'sorted_insertion': (np.int64(215), '2.35e+06')}
+   GC {'largest_first': (np.int64(34), '1.78e+06'), 'dsatur': (np.int64(29), '1.41e+06'), 'sorted_insertion': (np.int64(32), '5.52e+05')}

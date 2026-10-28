@@ -1,0 +1,377 @@
+#INFO: **** input file is /home/claude/gva_repro/run_periodic.py ****
+"""Periodic benchmark: chains of H2 units (STO-3G), crystal-momentum screening.
+
+Systems (r = intra-unit H-H distance, d = inter-unit distance, in Angstrom):
+  dimerized chain r = 0.74, d = 1.50, N_k = 2, 3, 4, 5
+  uniform chains  r = d = 1.0, 1.5, 2.0, N_k = 3, 5 (odd N_k keeps the RHF
+  reference closed-shell; for even N_k the folded bands touch at the zone edge)
+
+Ansaetze
+  UCCSD (real supercell basis, no screening, real amplitudes)   1L and 2L
+  k only   (Bloch basis, momentum screening, complex amplitudes) 1L
+  k + spin, k + TR                                               1L, HF start
+  GVA-k    (momentum screening + spin-flip and time-reversal tying) 1L and 2L
+  ADAPT-VQE with the GVA-k orbits as pool
+Starts: seed 0 = Hartree-Fock (all parameters zero); seeds 1, 2 =
+N(0, 0.05^2) with numpy seed 3000 + seed. Settings as in the molecular runs
+(L-BFGS-B, gtol 1e-7, ftol 1e-12, maxiter 3000).
+
+Writes results/periodic.json (resumable) and PySCF logs under
+results/logs/pyscf_pbc and results/logs/pyscf.
+"""
+import json
+import os
+import sys
+import time
+from datetime import datetime, timezone
+
+import numpy as np
+
+from gva.systems import ActiveHamiltonian, classical_references, set_pyscf_log
+from gva.ansatz import uccsd_pool, excitation_label, cnot_count_ladder
+from gva.engine import DeterminantSpace, Ansatz
+from gva.qubit import qubit_hamiltonian, civec_to_statevector, expectation
+from gva.periodic import (set_pbc_log, periodic_hamiltonian, supercell_gamma_check,
+                          CDeterminantSpace, CAnsatz, run_vqe_c, adapt_vqe_c,
+                          variant_orbits, orbit_counts, periodic_counts, VARIANTS_K,
+                          exc_momentum, pool_gradients, qubit_hamiltonian_c,
+                          civec_to_statevector_c, momentum_sector_weights)
+
+OUT = "results/periodic.json"
+SYSTEMS = [(0.74, 1.50, nk) for nk in (2, 3, 4, 5)] + \
+          [(R, R, nk) for R in (1.0, 1.5, 2.0) for nk in (3, 5)]
+if len(sys.argv) > 1:                       # optional subset, e.g. "0,2,4"
+    SYSTEMS = [SYSTEMS[int(i)] for i in sys.argv[1].split(",")]
+    OUT = f"results/periodic_part{sys.argv[1].replace(',', '_')}" + \
+        (f"_{sys.argv[2]}" if len(sys.argv) > 2 else "") + ".json"
+
+
+def now():
+    return datetime.now(timezone.utc).astimezone().isoformat(timespec="seconds")
+
+
+def stem(r, d, nk):
+    return f"H2chain_r{r:.2f}_d{d:.2f}_Nk{nk}"
+
+
+def orbit_labels(orbits, layers):
+    out = []
+    for L in range(layers):
+        for o in orbits:
+            out.append({"layer": L + 1, "mode": o.mode,
+                        "members": [[excitation_label(e), int(s), bool(c)]
+                                    for e, s, c in o.members]})
+    return out
+
+
+import glob
+data = json.load(open(OUT)) if os.path.exists(OUT) else {"systems": [], "runs": []}
+done, done_sys = set(), set()
+for f in glob.glob("results/periodic_part*.json"):     # resume across all part files
+    d_ = json.load(open(f))
+    done |= {(r["system"], r["ansatz"], r["layers"], r["seed"]) for r in d_["runs"]}
+    done_sys |= {s["system"] for s in d_["systems"]}
+# Cost reduction decided after the first two 20-qubit systems (see PROVENANCE):
+# two-layer supercell UCCSD from random starts took 25-33 min each (3,000-iteration
+# cap); for the remaining 20-qubit uniform chains it is run from the HF start only.
+UCCSD2_HF_ONLY = {"H2chain_r1.00_d1.00_Nk5", "H2chain_r2.00_d2.00_Nk5"}
+
+
+def save():
+    json.dump(data, open(OUT, "w"), indent=1, default=float)
+
+
+print(now(), "start", SYSTEMS, flush=True)
+for (r, d, nk) in SYSTEMS:
+    tag = stem(r, d, nk)
+    t_sys = time.time()
+    set_pbc_log("results/logs/pyscf_pbc", tag)
+    H = periodic_hamiltonian(r, d, nk, log_stem=tag)
+    chk = supercell_gamma_check(r, d, nk, log_stem=tag)
+    set_pyscf_log("results/logs/pyscf", tag)
+    AH = ActiveHamiltonian(label=tag, norb=H.norb, nelec=H.nelec, ecore=H.ecore,
+                           h1=H.h1_real, eri=H.eri_real, orbsym=np.zeros(H.norb, int),
+                           irrep_names=[], e_rhf_total=H.extra["E_KRHF_supercell"])
+    ref = classical_references(AH)
+    ef = ref["E_FCI"]
+    csp = CDeterminantSpace(H.norb, H.nelec, H.h1, H.eri, H.ecore)
+    rsp = DeterminantSpace(H.norb, H.nelec, H.h1_real, H.eri_real, H.ecore)
+    wfc, Vfc = csp.ground_state(k=1)
+    gs_c = Vfc[:, 0]
+    gs_r = np.asarray(ref["civec"]).ravel()
+    ksec, k_hf = momentum_sector_weights(H, gs_c)
+    pc = periodic_counts((nk,), 1, 1)
+    counts = {"UCCSD": {"n_params": pc["UCCSD_params"], "n_generators": pc["UCCSD_params"],
+                        "cnot_1L": pc["UCCSD_cnot_1L"]}}
+    orbs = {}
+    for v in VARIANTS_K:
+        orbs[v], nzero = variant_orbits(H, v)
+        counts[v] = orbit_counts(orbs[v])
+        counts[v]["n_zero_orbits"] = nzero
+    # closed forms agree with enumeration
+    pool = uccsd_pool(H.nocc, H.norb)
+    assert counts["UCCSD"]["cnot_1L"] == sum(cnot_count_ladder(e) for e in pool)
+    assert counts["UCCSD"]["n_params"] == len(pool)
+    assert counts["k only"]["n_params"] == pc["k_only_params"]
+    assert counts["k + spin"]["n_params"] == pc["k_spin_params"]
+    assert counts["k + TR"]["n_params"] == pc["k_TR_params"]
+    assert counts["GVA-k"]["n_params"] == pc["GVA_k_params"]
+    assert counts["GVA-k"]["cnot_1L"] == pc["k_cnot_1L"]
+    if tag not in done_sys:
+        data["systems"].append({
+            "system": tag, "r": r, "d": d, "a": r + d, "n_k": nk, "norb": H.norb,
+            "n_qubits": 2 * H.norb, "n_electrons": sum(H.nelec),
+            "E_KRHF_cell": H.e_krhf_cell, "E_KRHF_supercell": H.extra["E_KRHF_supercell"],
+            "E_HF_from_integrals": H.extra["E_HF_from_integrals"],
+            "E_HF_from_real_integrals": H.extra["E_HF_from_real_integrals"],
+            "E_RHF_supercell_gamma": chk["E_RHF_supercell"],
+            "E_FCI_supercell_gamma": chk["E_FCI_supercell"],
+            "E_FCI": ef, "E_FCI_bloch": float(wfc[0]), "S2_FCI_bloch": csp.s2(gs_c),
+            "E_ref": ref["E_ref"], "E_CISD": ref["E_CISD"], "E_CCSD": ref["E_CCSD"],
+            "E_CCSD(T)": ref["E_CCSD(T)"], "CCSD_converged": ref["CCSD_converged"],
+            "E_corr": ef - ref["E_ref"], "c0_sq": ref["c0_ref_weight"],
+            "t1_diag": ref["t1_diag"], "homo": H.extra["homo"], "lumo": H.extra["lumo"],
+            "mo_energy": H.mo_energy.tolist(), "kidx": H.kidx.tolist(),
+            "band": H.band.tolist(), "partner": H.partner.tolist(),
+            "momentum_violation_max": H.extra["momentum_violation_max"],
+            "hermiticity_max": H.extra["hermiticity_max"],
+            "time_reversal_max": H.extra["time_reversal_max"],
+            "imag_max_real_basis": H.extra["imag_max_real_basis"],
+            "FCI_momentum_sector_weights": ksec.tolist(), "K_HF": k_hf,
+            "counts": counts, "closed_form": pc,
+            "parameter_maps_1L": {v: orbit_labels(orbs[v], 1) for v in VARIANTS_K}})
+        np.savez(f"results/periodic_integrals_{tag}.npz", h1=H.h1, eri=H.eri,
+                 h1_real=H.h1_real, eri_real=H.eri_real, ecore=H.ecore,
+                 nelec=np.array(H.nelec), kidx=H.kidx, band=H.band, partner=H.partner,
+                 U=H.U, mo_energy=H.mo_energy)
+        save()
+    print(now(), tag, f"FCI {ef:.10f}  Bloch-FCI diff {abs(wfc[0]-ef):.1e}  "
+          f"supercell-FCI diff {abs(chk['E_FCI_supercell']-ef):.1e}  "
+          f"E_corr {1e3*(ef-ref['E_ref']):.3f} mHa  c0^2 {ref['c0_ref_weight']:.4f}  "
+          f"K-sector weight outside K_HF {1-ksec[k_hf]:.1e}", flush=True)
+    print("   counts", {k: (v["n_params"], v["cnot_1L"]) for k, v in counts.items()}, flush=True)
+
+    def record(ans, L, seed, res, n_params, cnot, labels, extra=None):
+        psi = res["psi"]
+        ov = abs(np.vdot(gs_c if ans != "UCCSD" else gs_r, psi)) ** 2
+        rec = {"system": tag, "r": r, "d": d, "n_k": nk, "ansatz": ans, "layers": L,
+               "seed": seed, "E": res["E"], "dE": res["dE"], "S2": res["S2"],
+               "nit": res.get("nit"), "nfev": res.get("nfev"), "wall_s": res["wall_s"],
+               "success": res.get("success"), "message": res.get("message"),
+               "grad_norm": res.get("grad_norm"), "iter_to_chem_acc": res.get("iter_to_chem_acc"),
+               "n_params": n_params, "cnot": cnot, "overlap_sq_FCI": float(ov),
+               "theta": np.asarray(res["theta"]).tolist(),
+               "history": np.asarray(res.get("history", [])).tolist(),
+               "finished": now()}
+        if labels is not None:
+            rec["parameter_labels"] = labels
+        if extra:
+            rec.update(extra)
+        data["runs"].append(rec)
+        done.add((tag, ans, L, seed))
+        save()
+        print(f"   {ans:9s} {L}L s{seed}: dE {1e3*res['dE']:9.4f} mHa  S2 {res['S2']:.1e}  "
+              f"|<FCI|psi>|^2 {ov:.5f}  nit {res.get('nit')}  {res['wall_s']:.0f}s", flush=True)
+
+    plan = [("UCCSD", 1, s) for s in (0, 1, 2)] + [("UCCSD", 2, s) for s in (0, 1, 2)] + \
+           [("k only", 1, s) for s in (0, 1, 2)] + [("k + spin", 1, 0), ("k + TR", 1, 0)] + \
+           [("GVA-k", 1, s) for s in (0, 1, 2)] + [("GVA-k", 2, s) for s in (0, 1, 2)]
+    for ans, L, s in plan:
+        if (tag, ans, L, s) in done:
+            continue
+        if ans == "UCCSD" and L == 2 and s > 0 and tag in UCCSD2_HF_ONLY:
+            continue
+        if ans == "UCCSD":
+            A = Ansatz(rsp, [(e,) for e in pool], layers=L)
+            labels = None
+        else:
+            A = CAnsatz(csp, orbs[ans], layers=L)
+            labels = orbit_labels(orbs[ans], L) if L > 1 else None
+        th0 = np.zeros(A.n_params) if s == 0 else \
+            np.random.default_rng(3000 + s).normal(0, 0.05, A.n_params)
+        res = run_vqe_c(A, theta0=th0, e_exact=ef)
+        cn = counts[ans]["cnot_1L"] * L
+        extra = {}
+        if ans == "GVA-k" and L == 2 and s == 0:
+            forb = [e for e in pool if exc_momentum(e, H.kidx, nk) != 0]
+            g = pool_gradients(csp, res["psi"], forb) if forb else np.zeros(1)
+            extra["max_grad_forbidden"] = float(g.max())
+            extra["n_forbidden"] = len(forb)
+        if ans in ("GVA-k", "UCCSD") and L == 1 and s == 0 and H.norb <= 10:
+            if ans == "GVA-k":
+                qh = qubit_hamiltonian_c(H.h1, H.eri, H.ecore)
+                sv = civec_to_statevector_c(res["psi"], H.norb, H.nelec)
+            else:
+                qh = qubit_hamiltonian(AH)
+                sv = civec_to_statevector(np.asarray(res["psi"]).reshape(rsp.sa, rsp.sb),
+                                          H.norb, H.nelec)
+            ejw, _ = expectation(qh, sv)
+            extra["E_jordan_wigner"] = float(ejw)
+            extra["jw_abs_diff"] = float(abs(ejw - res["E"]))
+            extra["n_pauli_terms"] = int(len(qh["coef"])) + 1
+        record(ans, L, s, res, A.n_params, cn, labels, extra)
+        if extra.get("jw_abs_diff") is not None:
+            print(f"      JW check |E_JW - E| = {extra['jw_abs_diff']:.1e} Ha, "
+                  f"{extra['n_pauli_terms']} Pauli terms", flush=True)
+        if "max_grad_forbidden" in extra:
+            print(f"      max |dE/dt| over {extra['n_forbidden']} momentum-violating "
+                  f"excitations: {extra['max_grad_forbidden']:.1e}", flush=True)
+    if (tag, "ADAPT-VQE", None, 0) not in done:
+        # 30-min wall cap added after ADAPT-VQE on the 20-qubit uniform chains exceeded
+        # the 2-h job limit (PROVENANCE); systems run earlier finished well within it
+        ad = adapt_vqe_c(csp, orbs["GVA-k"], e_exact=ef, max_ops=120, max_wall=1800)
+        A = CAnsatz(csp, ad["chosen"], 1)
+        psi = A.state(ad["theta"])
+        res = {"E": ad["E"], "dE": ad["dE"], "S2": csp.s2(psi), "wall_s": ad["wall_s"],
+               "theta": ad["theta"], "psi": psi}
+        cn = sum(cnot_count_ladder(m[0]) for o in ad["chosen"] for m in o.members)
+        record("ADAPT-VQE", None, 0, res, A.n_params, cn, orbit_labels(ad["chosen"], 1),
+               {"n_ops": ad["n_ops"], "stop_reason": ad["stop_reason"],
+                "trace": ad["trace"]})
+    print(now(), tag, f"system done in {time.time()-t_sys:.0f}s", flush=True)
+print(now(), "all done", flush=True)
+#INFO: ******************** input file end ********************
+
+
+System: uname_result(system='Linux', node='vm', release='6.18.44-fc-v153', version='#1 SMP PREEMPT_DYNAMIC @0', machine='x86_64')  Threads 1
+Python 3.13.17 (main, Oct 22 2026, 14:06:04) [GCC 13.3.0]
+numpy 2.5.3  scipy 1.18.1  h5py 3.16.0
+Date: Sat Oct 24 07:21:25 2026
+PySCF version 2.14.0
+PySCF path  /usr/local/lib/python3.13/dist-packages/pyscf
+
+[CONFIG] conf_file None
+[INPUT] verbose = 4
+[INPUT] num. atoms = 2
+[INPUT] num. electrons = 2
+[INPUT] charge = 0
+[INPUT] spin (= nelec alpha-beta = 2S) = 0
+[INPUT] symmetry False subgroup None
+[INPUT] Mole.unit = Angstrom
+[INPUT] Symbol           X                Y                Z      unit          X                Y                Z       unit  Magmom
+[INPUT]  1 H      0.000000000000   0.000000000000   0.000000000000 AA    0.000000000000   0.000000000000   0.000000000000 Bohr   0.0
+[INPUT]  2 H      2.000000000000   0.000000000000   0.000000000000 AA    3.779452249130   0.000000000000   0.000000000000 Bohr   0.0
+
+nuclear repulsion = 0.0968253909842777
+number of shells = 2
+number of NR pGTOs = 6
+number of NR cGTOs = 2
+basis = sto-3g
+ecp = {}
+CPU time:      1910.23
+lattice vectors  a1 [7.558904498, 0.000000000, 0.000000000]
+                 a2 [0.000000000, 18.897261246, 0.000000000]
+                 a3 [0.000000000, 0.000000000, 18.897261246]
+dimension = 3
+low_dim_ft_type = None
+Cell volume = 2699.33
+rcut = 19.67395117795893 (nimgs = [3 2 2])
+precision = 1e-12
+pseudo = None
+ke_cutoff = 400.67719709667324
+    = [ 71 173 173] mesh (2124959 PWs)
+
+
+******** <class 'pyscf.pbc.scf.khf.KRHF'> ********
+method = KRHF
+initial guess = minao
+damping factor = 0
+level_shift factor = 0
+DIIS = <class 'pyscf.scf.diis.CDIIS'>
+diis_start_cycle = 1
+diis_space = 8
+diis_damp = 0
+SCF conv_tol = 1e-12
+SCF conv_tol_grad = None
+SCF max_cycles = 200
+direct_scf = True
+direct_scf_tol = 1e-13
+chkfile to save SCF result = /tmp/tmp6irjtjqz
+max_memory 4000 MB (current use 287 MB)
+
+
+******** PBC SCF flags ********
+N kpts = 5
+Exchange divergence treatment (exxdiv) = None
+DF object = <pyscf.pbc.df.df.GDF object at 0x7faf959e2350>
+Set gradient conv threshold to 1e-06
+
+
+******** <class 'pyscf.pbc.df.rsdf_builder._RSNucBuilder'> ********
+mesh = [15 33 33] (16335 PWs)
+ke_cutoff = 14.15050608087348
+omega = 0.4355387696361974
+exclude_d_aux = False
+exclude_dd_block = True
+j2c_eig_always = False
+has_long_range = True
+
+
+******** <class 'pyscf.pbc.df.df.GDF'> ********
+auxbasis = def2-svp-jkfit
+exp_to_discard = None
+_cderi_to_save = /tmp/tmpxhz0yqsd
+len(kpts) = 5
+Drop 0 primitive fitting functions
+make aux basis, num shells = 12, num cGTOs = 36
+auxcell.rcut 14.853449038396011
+
+
+******** <class 'pyscf.pbc.df.rsdf_builder._RSGDFBuilder'> ********
+mesh = [13 29 29] (10933 PWs)
+ke_cutoff = 10.83398121816876
+omega = 0.3662922676362388
+exclude_d_aux = True
+exclude_dd_block = True
+j2c_eig_always = False
+has_long_range = True
+init E= -0.514902991278964
+  HOMO = -0.0742885585923  LUMO = 0.0156282109681  gap/eV = 2.44676
+cycle= 1 E= -0.698177852636908  delta_E= -0.183  |g|= 0.00156  |ddm|= 2.66
+  HOMO = -0.102459048358  LUMO = 0.0166938897114  gap/eV = 3.24232
+cycle= 2 E= -0.698181823029886  delta_E= -3.97e-06  |g|= 0.00181  |ddm|= 0.0185
+  HOMO = -0.10245791687  LUMO = 0.0166926489773  gap/eV = 3.24225
+cycle= 3 E= -0.698181753002909  delta_E= 7e-08  |g|= 0.00181  |ddm|= 0.0003
+  HOMO = -0.101993833508  LUMO = 0.0161192347678  gap/eV = 3.21402
+cycle= 4 E= -0.698154730659099  delta_E= 2.7e-05  |g|= 0.000496  |ddm|= 0.297
+  HOMO = -0.1020382871  LUMO = 0.0162448535545  gap/eV = 3.21865
+cycle= 5 E= -0.698152873780909  delta_E= 1.86e-06  |g|= 3.75e-05  |ddm|= 0.0639
+  HOMO = -0.102033800438  LUMO = 0.0162352512326  gap/eV = 3.21826
+cycle= 6 E= -0.698152866579643  delta_E= 7.2e-09  |g|= 2.17e-05  |ddm|= 0.0019
+  HOMO = -0.102031893419  LUMO = 0.0162311522464  gap/eV = 3.21810
+cycle= 7 E= -0.698152864697995  delta_E= 1.88e-09  |g|= 1.5e-05  |ddm|= 0.000803
+  HOMO = -0.102030851698  LUMO = 0.0162289088026  gap/eV = 3.21801
+cycle= 8 E= -0.69815286396353  delta_E= 7.34e-10  |g|= 1.14e-05  |ddm|= 0.000436
+  HOMO = -0.102030199245  LUMO = 0.0162275021493  gap/eV = 3.21796
+cycle= 9 E= -0.69815286360801  delta_E= 3.56e-10  |g|= 9.12e-06  |ddm|= 0.000271
+  HOMO = -0.102027160317  LUMO = 0.0162209338169  gap/eV = 3.21769
+cycle= 10 E= -0.698152862991323  delta_E= 6.17e-10  |g|= 1.66e-06  |ddm|= 0.00129
+  HOMO = -0.10202720511  LUMO = 0.0162210311651  gap/eV = 3.21770
+cycle= 11 E= -0.698152862985506  delta_E= 5.82e-12  |g|= 1.41e-06  |ddm|= 2.97e-05
+  HOMO = -0.102027498786  LUMO = 0.0162216683416  gap/eV = 3.21772
+cycle= 12 E= -0.698152862970239  delta_E= 1.53e-11  |g|= 3e-09  |ddm|= 0.000169
+  HOMO = -0.102027496566  LUMO = 0.0162216635486  gap/eV = 3.21772
+cycle= 13 E= -0.698152862970239  delta_E=    0  |g|= 3.84e-09  |ddm|= 7.83e-08
+  HOMO = -0.102027497482  LUMO = 0.0162216655283  gap/eV = 3.21772
+Extra cycle  E= -0.698152862970239  delta_E= 2.22e-16  |g|= 3.86e-09  |ddm|= 3.54e-08
+converged SCF energy = -0.698152862970239
+
+
+******** <class 'pyscf.pbc.df.rsdf_builder._RSNucBuilder'> ********
+mesh = [15 33 33] (16335 PWs)
+ke_cutoff = 14.15050608087348
+omega = 0.4355387696361974
+exclude_d_aux = False
+exclude_dd_block = True
+j2c_eig_always = False
+has_long_range = True
+
+
+******** <class 'pyscf.pbc.df.rsdf_builder._RSNucBuilder'> ********
+mesh = [15 33 33] (16335 PWs)
+ke_cutoff = 14.15050608087348
+omega = 0.4355387696361974
+exclude_d_aux = False
+exclude_dd_block = True
+j2c_eig_always = False
+has_long_range = True

@@ -1,0 +1,187 @@
+[
+ {
+  "system": "H2",
+  "n_qubits": 4,
+  "n_pauli_terms": 15,
+  "identity_coeff": -0.09886396933545866,
+  "E_exact": -1.137270174660904,
+  "shots_ungrouped": 48770.96241825551,
+  "QWC": {
+   "largest_first": {
+    "n_groups": 5,
+    "shots": 48770.96241825548
+   },
+   "dsatur": {
+    "n_groups": 5,
+    "shots": 48770.96241825548
+   },
+   "sorted_insertion": {
+    "n_groups": 5,
+    "shots": 48770.96241825547
+   }
+  },
+  "GC": {
+   "largest_first": {
+    "n_groups": 2,
+    "shots": 48770.96241825548
+   },
+   "dsatur": {
+    "n_groups": 2,
+    "shots": 48770.96241825548
+   },
+   "sorted_insertion": {
+    "n_groups": 2,
+    "shots": 48770.96241825548
+   }
+  },
+  "wall_s": 0.0063707828521728516
+ },
+ {
+  "system": "H4",
+  "n_qubits": 8,
+  "n_pauli_terms": 185,
+  "identity_coeff": -0.7091909923015186,
+  "E_exact": -2.0914316540214934,
+  "shots_ungrouped": 7615052.526194177,
+  "QWC": {
+   "largest_first": {
+    "n_groups": 68,
+    "shots": 2697526.1622319496
+   },
+   "dsatur": {
+    "n_groups": 67,
+    "shots": 2675806.2676329496
+   },
+   "sorted_insertion": {
+    "n_groups": 73,
+    "shots": 1600949.377842642
+   }
+  },
+  "GC": {
+   "largest_first": {
+    "n_groups": 9,
+    "shots": 781123.2055215804
+   },
+   "dsatur": {
+    "n_groups": 8,
+    "shots": 961991.3689989379
+   },
+   "sorted_insertion": {
+    "n_groups": 9,
+    "shots": 421079.0168898028
+   }
+  },
+  "wall_s": 0.15755772590637207
+ },
+ {
+  "system": "LiH",
+  "n_qubits": 12,
+  "n_pauli_terms": 631,
+  "identity_coeff": -4.134285700210116,
+  "E_exact": -7.882401932290228,
+  "shots_ungrouped": 5990862.310640059,
+  "QWC": {
+   "largest_first": {
+    "n_groups": 154,
+    "shots": 881191.5751810246
+   },
+   "dsatur": {
+    "n_groups": 150,
+    "shots": 866270.472456979
+   },
+   "sorted_insertion": {
+    "n_groups": 183,
+    "shots": 360506.4689158675
+   }
+  },
+  "GC": {
+   "largest_first": {
+    "n_groups": 39,
+    "shots": 299815.338630805
+   },
+   "dsatur": {
+    "n_groups": 31,
+    "shots": 667290.0491437919
+   },
+   "sorted_insertion": {
+    "n_groups": 41,
+    "shots": 259249.89267983622
+   }
+  },
+  "wall_s": 0.7538809776306152
+ },
+ {
+  "system": "BeH2",
+  "n_qubits": 14,
+  "n_pauli_terms": 666,
+  "identity_coeff": -8.703919784300995,
+  "E_exact": -15.59517686892316,
+  "shots_ungrouped": 21927348.586789805,
+  "QWC": {
+   "largest_first": {
+    "n_groups": 208,
+    "shots": 5041884.613392144
+   },
+   "dsatur": {
+    "n_groups": 203,
+    "shots": 5125169.628722753
+   },
+   "sorted_insertion": {
+    "n_groups": 215,
+    "shots": 2347347.922991355
+   }
+  },
+  "GC": {
+   "largest_first": {
+    "n_groups": 34,
+    "shots": 1776694.1047736777
+   },
+   "dsatur": {
+    "n_groups": 29,
+    "shots": 1412425.7588231293
+   },
+   "sorted_insertion": {
+    "n_groups": 32,
+    "shots": 552391.4358134789
+   }
+  },
+  "wall_s": 1.7959039211273193
+ },
+ {
+  "system": "Cisplatin CAS(10e,10o)",
+  "n_qubits": 20,
+  "n_pauli_terms": 5071,
+  "identity_coeff": -1145.4247400551021,
+  "E_exact": -1149.5682645129466,
+  "shots_ungrouped": 85698320.27653906,
+  "QWC": {
+   "largest_first": {
+    "n_groups": 1447,
+    "shots": 16532109.25889298
+   },
+   "dsatur": {
+    "n_groups": 1415,
+    "shots": 15684593.142204784
+   },
+   "sorted_insertion": {
+    "n_groups": 1663,
+    "shots": 8991534.796075523
+   }
+  },
+  "GC": {
+   "largest_first": {
+    "n_groups": 117,
+    "shots": 3967495.1424515755
+   },
+   "dsatur": {
+    "n_groups": 123,
+    "shots": 4002477.8472327706
+   },
+   "sorted_insertion": {
+    "n_groups": 160,
+    "shots": 1897598.272569797
+   }
+  },
+  "wall_s": 1406.8187191486359
+ }
+]

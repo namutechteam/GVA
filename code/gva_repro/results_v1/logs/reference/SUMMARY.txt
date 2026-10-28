@@ -1,0 +1,156 @@
+Reference energies recomputed with full PySCF output and compared with stored values (tolerance 1e-07 Ha)
+
+H2_x1.0
+  E_RHF          new=-1.1166843871  stored=-1.1166843871  |diff|=0.0e+00  OK
+  E_CISD         new=-1.1372701747  stored=-1.1372701747  |diff|=0.0e+00  OK
+  E_CCSD         new=-1.1372701747  stored=-1.1372701747  |diff|=0.0e+00  OK
+  E_CCSD(T)      new=-1.1372701747  stored=-1.1372701747  |diff|=0.0e+00  OK
+  E_FCI          new=-1.1372701747  stored=-1.1372701747  |diff|=0.0e+00  OK
+H2_x1.5
+  E_RHF          new=-1.0328045704  stored=-1.0328045704  |diff|=0.0e+00  OK
+  E_CISD         new=-1.0764699591  stored=-1.0764699591  |diff|=0.0e+00  OK
+  E_CCSD         new=-1.0764699591  stored=-1.0764699591  |diff|=0.0e+00  OK
+  E_CCSD(T)      new=-1.0764699591  stored=-1.0764699591  |diff|=0.0e+00  OK
+  E_FCI          new=-1.0764699591  stored=-1.0764699591  |diff|=0.0e+00  OK
+H2_x2.0
+  E_RHF          new=-0.9160435818  stored=-0.9160435818  |diff|=0.0e+00  OK
+  E_CISD         new=-1.0009431927  stored=-1.0009431927  |diff|=0.0e+00  OK
+  E_CCSD         new=-1.0009431927  stored=-1.0009431927  |diff|=0.0e+00  OK
+  E_CCSD(T)      new=-1.0009431927  stored=-1.0009431927  |diff|=0.0e+00  OK
+  E_FCI          new=-1.0009431927  stored=-1.0009431927  |diff|=0.0e+00  OK
+H4_x1.0
+  E_RHF          new=-1.9870845220  stored=-1.9870845220  |diff|=0.0e+00  OK
+  E_CISD         new=-2.0869370688  stored=-2.0869370688  |diff|=0.0e+00  OK
+  E_CCSD         new=-2.0915290959  stored=-2.0915290959  |diff|=0.0e+00  OK
+  E_CCSD(T)      new=-2.0917253623  stored=-2.0917253623  |diff|=0.0e+00  OK
+  E_FCI          new=-2.0914316540  stored=-2.0914316540  |diff|=0.0e+00  OK
+H4_x1.5
+  E_RHF          new=-1.6450458670  stored=-1.6450458670  |diff|=0.0e+00  OK
+  E_CISD         new=-1.8793616356  stored=-1.8793616356  |diff|=0.0e+00  OK
+  E_CCSD         new=-1.9281837310  stored=-1.9281837310  |diff|=0.0e+00  OK
+  E_CCSD(T)      new=-1.9295431212  stored=-1.9295431212  |diff|=0.0e+00  OK
+  E_FCI          new=-1.9171555867  stored=-1.9171555867  |diff|=0.0e+00  OK
+H4_x2.0
+  E_RHF          new=-1.4200886762  stored=-1.4200886762  |diff|=0.0e+00  OK
+  E_CISD         new=-1.8501752992  stored=-1.8501752992  |diff|=0.0e+00  OK
+  E_CCSD         new=-1.9040659511  stored=-1.9040659511  |diff|=0.0e+00  OK
+  E_CCSD(T)      new=-1.9079544048  stored=-1.9079544048  |diff|=0.0e+00  OK
+  E_FCI          new=-1.8730943917  stored=-1.8730943917  |diff|=0.0e+00  OK
+LiH_x1.0
+  E_RHF          new=-7.8620238601  stored=-7.8620238601  |diff|=0.0e+00  OK
+  E_CISD         new=-7.8823886149  stored=-7.8823886149  |diff|=0.0e+00  OK
+  E_CCSD         new=-7.8823914363  stored=-7.8823914363  |diff|=0.0e+00  OK
+  E_CCSD(T)      new=-7.8823998253  stored=-7.8823998253  |diff|=0.0e+00  OK
+  E_FCI          new=-7.8824019323  stored=-7.8824019323  |diff|=0.0e+00  OK
+LiH_x1.5
+  E_RHF          new=-7.7843179685  stored=-7.7843179685  |diff|=0.0e+00  OK
+  E_CISD         new=-7.8311302836  stored=-7.8311302836  |diff|=0.0e+00  OK
+  E_CCSD         new=-7.8311365305  stored=-7.8311365305  |diff|=0.0e+00  OK
+  E_CCSD(T)      new=-7.8311661116  stored=-7.8311661116  |diff|=0.0e+00  OK
+  E_FCI          new=-7.8311702163  stored=-7.8311702163  |diff|=0.0e+00  OK
+LiH_x2.0
+  E_RHF          new=-7.6904399975  stored=-7.6904399975  |diff|=0.0e+00  OK
+  E_CISD         new=-7.7934001577  stored=-7.7934001577  |diff|=0.0e+00  OK
+  E_CCSD         new=-7.7934100294  stored=-7.7934100294  |diff|=0.0e+00  OK
+  E_CCSD(T)      new=-7.7935329675  stored=-7.7935329675  |diff|=0.0e+00  OK
+  E_FCI          new=-7.7935053948  stored=-7.7935053948  |diff|=0.0e+00  OK
+BeH2_x1.0
+  E_RHF          new=-15.5603123428  stored=-15.5603123428  |diff|=0.0e+00  OK
+  E_CISD         new=-15.5944235423  stored=-15.5944235423  |diff|=0.0e+00  OK
+  E_CCSD         new=-15.5947832048  stored=-15.5947832048  |diff|=0.0e+00  OK
+  E_CCSD(T)      new=-15.5949930604  stored=-15.5949930604  |diff|=0.0e+00  OK
+  E_FCI          new=-15.5951768689  stored=-15.5951768689  |diff|=0.0e+00  OK
+BeH2_x1.5
+  E_RHF          new=-15.3586115045  stored=-15.3586115045  |diff|=0.0e+00  OK
+  E_CISD         new=-15.4423853577  stored=-15.4423853577  |diff|=0.0e+00  OK
+  E_CCSD         new=-15.4461244856  stored=-15.4461244856  |diff|=0.0e+00  OK
+  E_CCSD(T)      new=-15.4474964554  stored=-15.4474964554  |diff|=0.0e+00  OK
+  E_FCI          new=-15.4488725042  stored=-15.4488725042  |diff|=0.0e+00  OK
+BeH2_x2.0
+  E_RHF          new=-15.1135136883  stored=-15.1135136883  |diff|=0.0e+00  OK
+  E_CISD         new=-15.3136916822  stored=-15.3136916822  |diff|=0.0e+00  OK
+  E_CCSD         new=-15.3363622201  stored=-15.3363622201  |diff|=0.0e+00  OK
+  E_CCSD(T)      new=-15.3486023051  stored=-15.3486023051  |diff|=0.0e+00  OK
+  E_FCI          new=-15.3422114067  stored=-15.3422114067  |diff|=0.0e+00  OK
+cisplatin_C2v_eq
+  E_RHF          new=-1149.5430136892  stored=-1149.5430136892  |diff|=0.0e+00  OK
+  E_MP2_corr     new=-1.0354999355  stored=-1.0354999355  |diff|=0.0e+00  OK
+  E_ref          new=-1149.5430136892  stored=-1149.5430136892  |diff|=0.0e+00  OK
+  E_CISD         new=-1149.5677559640  stored=-1149.5677559640  |diff|=0.0e+00  OK
+  E_CCSD         new=-1149.5679475064  stored=-1149.5679475064  |diff|=0.0e+00  OK
+  E_CCSD(T)      new=-1149.5681917280  stored=-1149.5681917280  |diff|=0.0e+00  OK
+  E_CASCI        new=-1149.5682645129  stored=-1149.5682645129  |diff|=0.0e+00  OK
+  point group C2v, n_core 31, active irreps ['A1', 'B1', 'A1', 'B1', 'A1', 'B1', 'A1', 'A1', 'B2', 'A1']
+  max |h1 - stored h1| = 0.0e+00, max |eri - stored eri| = 0.0e+00
+cisplatin_Cs_R2.32
+  E_RHF          new=-1149.5430136892  stored=-1149.5430136892  |diff|=0.0e+00  OK
+  E_ref          new=-1149.5430136892  stored=-1149.5430136892  |diff|=0.0e+00  OK
+  E_CISD         new=-1149.5677559640  stored=-1149.5677559640  |diff|=0.0e+00  OK
+  E_CCSD         new=-1149.5679475064  stored=-1149.5679475064  |diff|=0.0e+00  OK
+  E_CCSD(T)      new=-1149.5681917280  stored=-1149.5681917280  |diff|=0.0e+00  OK
+  E_CASCI        new=-1149.5682645129  stored=-1149.5682645129  |diff|=0.0e+00  OK
+  tracked from R = none (occupation selection)
+cisplatin_Cs_R2.50
+  E_RHF          new=-1149.5378664591  stored=-1149.5378664591  |diff|=0.0e+00  OK
+  E_ref          new=-1149.5378664591  stored=-1149.5378664591  |diff|=0.0e+00  OK
+  E_CISD         new=-1149.5633899347  stored=-1149.5633899347  |diff|=0.0e+00  OK
+  E_CCSD         new=-1149.5635974133  stored=-1149.5635974133  |diff|=0.0e+00  OK
+  E_CCSD(T)      new=-1149.5638567093  stored=-1149.5638567093  |diff|=0.0e+00  OK
+  E_CASCI        new=-1149.5639305080  stored=-1149.5639305080  |diff|=0.0e+00  OK
+  tracked from R = previous point
+cisplatin_Cs_R2.70
+  E_RHF          new=-1149.5232314431  stored=-1149.5232314431  |diff|=0.0e+00  OK
+  E_ref          new=-1149.5232314431  stored=-1149.5232314431  |diff|=0.0e+00  OK
+  E_CISD         new=-1149.5507441964  stored=-1149.5507441964  |diff|=0.0e+00  OK
+  E_CCSD         new=-1149.5510045586  stored=-1149.5510045586  |diff|=0.0e+00  OK
+  E_CCSD(T)      new=-1149.5512790532  stored=-1149.5512790532  |diff|=0.0e+00  OK
+  E_CASCI        new=-1149.5513526924  stored=-1149.5513526924  |diff|=0.0e+00  OK
+  tracked from R = previous point
+cisplatin_Cs_R2.90
+  E_RHF          new=-1149.5056487849  stored=-1149.5056487849  |diff|=0.0e+00  OK
+  E_ref          new=-1149.5056487849  stored=-1149.5056487849  |diff|=0.0e+00  OK
+  E_CISD         new=-1149.5346168143  stored=-1149.5346168143  |diff|=0.0e+00  OK
+  E_CCSD         new=-1149.5349248608  stored=-1149.5349248608  |diff|=0.0e+00  OK
+  E_CCSD(T)      new=-1149.5352097917  stored=-1149.5352097917  |diff|=0.0e+00  OK
+  E_CASCI        new=-1149.5352810044  stored=-1149.5352810044  |diff|=0.0e+00  OK
+  tracked from R = previous point
+cisplatin_Cs_R3.20
+  E_RHF          new=-1149.4799445702  stored=-1149.4799445702  |diff|=0.0e+00  OK
+  E_ref          new=-1149.4799445702  stored=-1149.4799445702  |diff|=0.0e+00  OK
+  E_CISD         new=-1149.5097653291  stored=-1149.5097653291  |diff|=0.0e+00  OK
+  E_CCSD         new=-1149.5101126958  stored=-1149.5101126958  |diff|=0.0e+00  OK
+  E_CCSD(T)      new=-1149.5104012992  stored=-1149.5104012992  |diff|=0.0e+00  OK
+  E_CASCI        new=-1149.5104658787  stored=-1149.5104658787  |diff|=0.0e+00  OK
+  tracked from R = previous point
+cisplatin_Cs_R3.50
+  E_RHF          new=-1149.4576503189  stored=-1149.4576503189  |diff|=0.0e+00  OK
+  E_ref          new=-1149.4576503189  stored=-1149.4576503189  |diff|=0.0e+00  OK
+  E_CISD         new=-1149.4874957878  stored=-1149.4874957878  |diff|=0.0e+00  OK
+  E_CCSD         new=-1149.4878544898  stored=-1149.4878544898  |diff|=0.0e+00  OK
+  E_CCSD(T)      new=-1149.4881349633  stored=-1149.4881349633  |diff|=0.0e+00  OK
+  E_CASCI        new=-1149.4881920435  stored=-1149.4881920435  |diff|=0.0e+00  OK
+  tracked from R = previous point
+cisplatin_Cs_R3.80
+  E_RHF          new=-1149.4389007103  stored=-1149.4389007103  |diff|=0.0e+00  OK
+  E_ref          new=-1149.4389007103  stored=-1149.4389007103  |diff|=0.0e+00  OK
+  E_CISD         new=-1149.4684135759  stored=-1149.4684135759  |diff|=0.0e+00  OK
+  E_CCSD         new=-1149.4687640845  stored=-1149.4687640845  |diff|=0.0e+00  OK
+  E_CCSD(T)      new=-1149.4690317362  stored=-1149.4690317362  |diff|=0.0e+00  OK
+  E_CASCI        new=-1149.4690823998  stored=-1149.4690823998  |diff|=0.0e+00  OK
+  tracked from R = previous point
+cisplatin_Cs_R2.20
+  E_RHF          new=-1149.5373955492  stored=-1149.5373955492  |diff|=0.0e+00  OK
+  E_ref          new=-1149.5373955492  stored=-1149.5373955492  |diff|=0.0e+00  OK
+  E_CISD         new=-1149.5621708011  stored=-1149.5621708011  |diff|=0.0e+00  OK
+  E_CCSD         new=-1149.5623665098  stored=-1149.5623665098  |diff|=0.0e+00  OK
+  E_CCSD(T)      new=-1149.5626002023  stored=-1149.5626002023  |diff|=0.0e+00  OK
+  E_CASCI        new=-1149.5626717448  stored=-1149.5626717448  |diff|=0.0e+00  OK
+  tracked from R = previous point
+cisplatin_Cs_R2.00
+  E_RHF          new=-1149.4950790641  stored=-1149.4950790641  |diff|=0.0e+00  OK
+  E_ref          new=-1149.4950790641  stored=-1149.4950790641  |diff|=0.0e+00  OK
+  E_CISD         new=-1149.5205280590  stored=-1149.5205280590  |diff|=0.0e+00  OK
+  E_CCSD         new=-1149.5207479107  stored=-1149.5207479107  |diff|=0.0e+00  OK
+  E_CCSD(T)      new=-1149.5209634038  stored=-1149.5209634038  |diff|=0.0e+00  OK
+  E_CASCI        new=-1149.5210327733  stored=-1149.5210327733  |diff|=0.0e+00  OK
+  tracked from R = previous point

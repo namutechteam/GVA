@@ -1,0 +1,321 @@
+Rebuilt 319 final states from stored parameters; 319 OK, 0 mismatches (tolerances 1e-09 Ha, 1e-08 for <S^2>)
+
+H2 x1.0 UCCSD 1L s0                           n_par=    3  |E - E_stored|=0.0e+00 Ha  |S2 - S2_stored|=0.0e+00  OK
+H2 x1.0 UCCSD 1L s1                           n_par=    3  |E - E_stored|=0.0e+00 Ha  |S2 - S2_stored|=0.0e+00  OK
+H2 x1.0 UCCSD 1L s2                           n_par=    3  |E - E_stored|=0.0e+00 Ha  |S2 - S2_stored|=0.0e+00  OK
+H2 x1.0 UCCSD 1L s3                           n_par=    3  |E - E_stored|=0.0e+00 Ha  |S2 - S2_stored|=0.0e+00  OK
+H2 x1.0 UCCSD 1L s4                           n_par=    3  |E - E_stored|=0.0e+00 Ha  |S2 - S2_stored|=0.0e+00  OK
+H2 x1.0 UCCSD 2L s0                           n_par=    6  |E - E_stored|=0.0e+00 Ha  |S2 - S2_stored|=0.0e+00  OK
+H2 x1.0 UCCSD 2L s1                           n_par=    6  |E - E_stored|=0.0e+00 Ha  |S2 - S2_stored|=0.0e+00  OK
+H2 x1.0 UCCSD 2L s2                           n_par=    6  |E - E_stored|=0.0e+00 Ha  |S2 - S2_stored|=0.0e+00  OK
+H2 x1.0 UCCSD 2L s3                           n_par=    6  |E - E_stored|=0.0e+00 Ha  |S2 - S2_stored|=0.0e+00  OK
+H2 x1.0 UCCSD 2L s4                           n_par=    6  |E - E_stored|=0.0e+00 Ha  |S2 - S2_stored|=0.0e+00  OK
+H2 x1.0 GVA 1L s0                             n_par=    1  |E - E_stored|=0.0e+00 Ha  |S2 - S2_stored|=0.0e+00  OK
+H2 x1.0 GVA 1L s1                             n_par=    1  |E - E_stored|=0.0e+00 Ha  |S2 - S2_stored|=0.0e+00  OK
+H2 x1.0 GVA 1L s2                             n_par=    1  |E - E_stored|=0.0e+00 Ha  |S2 - S2_stored|=0.0e+00  OK
+H2 x1.0 GVA 1L s3                             n_par=    1  |E - E_stored|=0.0e+00 Ha  |S2 - S2_stored|=0.0e+00  OK
+H2 x1.0 GVA 1L s4                             n_par=    1  |E - E_stored|=0.0e+00 Ha  |S2 - S2_stored|=0.0e+00  OK
+H2 x1.0 GVA 2L s0                             n_par=    2  |E - E_stored|=0.0e+00 Ha  |S2 - S2_stored|=0.0e+00  OK
+H2 x1.0 GVA 2L s1                             n_par=    2  |E - E_stored|=0.0e+00 Ha  |S2 - S2_stored|=0.0e+00  OK
+H2 x1.0 GVA 2L s2                             n_par=    2  |E - E_stored|=0.0e+00 Ha  |S2 - S2_stored|=0.0e+00  OK
+H2 x1.0 GVA 2L s3                             n_par=    2  |E - E_stored|=0.0e+00 Ha  |S2 - S2_stored|=0.0e+00  OK
+H2 x1.0 GVA 2L s4                             n_par=    2  |E - E_stored|=0.0e+00 Ha  |S2 - S2_stored|=0.0e+00  OK
+H2 x1.0 PG only 1L s0                         n_par=    1  |E - E_stored|=0.0e+00 Ha  |S2 - S2_stored|=0.0e+00  OK
+H2 x1.0 spin only 1L s0                       n_par=    2  |E - E_stored|=0.0e+00 Ha  |S2 - S2_stored|=0.0e+00  OK
+H2 x1.0 ADAPT-VQE NoneL s0                    n_par=    1  |E - E_stored|=0.0e+00 Ha  |S2 - S2_stored|=0.0e+00  OK
+H2 x1.5 UCCSD 1L s0                           n_par=    3  |E - E_stored|=0.0e+00 Ha  |S2 - S2_stored|=0.0e+00  OK
+H2 x1.5 UCCSD 1L s1                           n_par=    3  |E - E_stored|=0.0e+00 Ha  |S2 - S2_stored|=0.0e+00  OK
+H2 x1.5 UCCSD 1L s2                           n_par=    3  |E - E_stored|=0.0e+00 Ha  |S2 - S2_stored|=0.0e+00  OK
+H2 x1.5 UCCSD 1L s3                           n_par=    3  |E - E_stored|=0.0e+00 Ha  |S2 - S2_stored|=0.0e+00  OK
+H2 x1.5 UCCSD 1L s4                           n_par=    3  |E - E_stored|=0.0e+00 Ha  |S2 - S2_stored|=0.0e+00  OK
+H2 x1.5 UCCSD 2L s0                           n_par=    6  |E - E_stored|=0.0e+00 Ha  |S2 - S2_stored|=0.0e+00  OK
+H2 x1.5 UCCSD 2L s1                           n_par=    6  |E - E_stored|=0.0e+00 Ha  |S2 - S2_stored|=0.0e+00  OK
+H2 x1.5 UCCSD 2L s2                           n_par=    6  |E - E_stored|=0.0e+00 Ha  |S2 - S2_stored|=0.0e+00  OK
+H2 x1.5 UCCSD 2L s3                           n_par=    6  |E - E_stored|=0.0e+00 Ha  |S2 - S2_stored|=0.0e+00  OK
+H2 x1.5 UCCSD 2L s4                           n_par=    6  |E - E_stored|=0.0e+00 Ha  |S2 - S2_stored|=0.0e+00  OK
+H2 x1.5 GVA 1L s0                             n_par=    1  |E - E_stored|=0.0e+00 Ha  |S2 - S2_stored|=0.0e+00  OK
+H2 x1.5 GVA 1L s1                             n_par=    1  |E - E_stored|=0.0e+00 Ha  |S2 - S2_stored|=0.0e+00  OK
+H2 x1.5 GVA 1L s2                             n_par=    1  |E - E_stored|=0.0e+00 Ha  |S2 - S2_stored|=0.0e+00  OK
+H2 x1.5 GVA 1L s3                             n_par=    1  |E - E_stored|=0.0e+00 Ha  |S2 - S2_stored|=0.0e+00  OK
+H2 x1.5 GVA 1L s4                             n_par=    1  |E - E_stored|=0.0e+00 Ha  |S2 - S2_stored|=0.0e+00  OK
+H2 x1.5 GVA 2L s0                             n_par=    2  |E - E_stored|=0.0e+00 Ha  |S2 - S2_stored|=0.0e+00  OK
+H2 x1.5 GVA 2L s1                             n_par=    2  |E - E_stored|=0.0e+00 Ha  |S2 - S2_stored|=0.0e+00  OK
+H2 x1.5 GVA 2L s2                             n_par=    2  |E - E_stored|=0.0e+00 Ha  |S2 - S2_stored|=0.0e+00  OK
+H2 x1.5 GVA 2L s3                             n_par=    2  |E - E_stored|=0.0e+00 Ha  |S2 - S2_stored|=0.0e+00  OK
+H2 x1.5 GVA 2L s4                             n_par=    2  |E - E_stored|=0.0e+00 Ha  |S2 - S2_stored|=0.0e+00  OK
+H2 x1.5 PG only 1L s0                         n_par=    1  |E - E_stored|=0.0e+00 Ha  |S2 - S2_stored|=0.0e+00  OK
+H2 x1.5 spin only 1L s0                       n_par=    2  |E - E_stored|=0.0e+00 Ha  |S2 - S2_stored|=0.0e+00  OK
+H2 x1.5 ADAPT-VQE NoneL s0                    n_par=    1  |E - E_stored|=0.0e+00 Ha  |S2 - S2_stored|=0.0e+00  OK
+H2 x2.0 UCCSD 1L s0                           n_par=    3  |E - E_stored|=0.0e+00 Ha  |S2 - S2_stored|=0.0e+00  OK
+H2 x2.0 UCCSD 1L s1                           n_par=    3  |E - E_stored|=0.0e+00 Ha  |S2 - S2_stored|=0.0e+00  OK
+H2 x2.0 UCCSD 1L s2                           n_par=    3  |E - E_stored|=0.0e+00 Ha  |S2 - S2_stored|=0.0e+00  OK
+H2 x2.0 UCCSD 1L s3                           n_par=    3  |E - E_stored|=0.0e+00 Ha  |S2 - S2_stored|=0.0e+00  OK
+H2 x2.0 UCCSD 1L s4                           n_par=    3  |E - E_stored|=0.0e+00 Ha  |S2 - S2_stored|=0.0e+00  OK
+H2 x2.0 UCCSD 2L s0                           n_par=    6  |E - E_stored|=0.0e+00 Ha  |S2 - S2_stored|=0.0e+00  OK
+H2 x2.0 UCCSD 2L s1                           n_par=    6  |E - E_stored|=0.0e+00 Ha  |S2 - S2_stored|=0.0e+00  OK
+H2 x2.0 UCCSD 2L s2                           n_par=    6  |E - E_stored|=0.0e+00 Ha  |S2 - S2_stored|=0.0e+00  OK
+H2 x2.0 UCCSD 2L s3                           n_par=    6  |E - E_stored|=0.0e+00 Ha  |S2 - S2_stored|=0.0e+00  OK
+H2 x2.0 UCCSD 2L s4                           n_par=    6  |E - E_stored|=0.0e+00 Ha  |S2 - S2_stored|=0.0e+00  OK
+H2 x2.0 GVA 1L s0                             n_par=    1  |E - E_stored|=0.0e+00 Ha  |S2 - S2_stored|=0.0e+00  OK
+H2 x2.0 GVA 1L s1                             n_par=    1  |E - E_stored|=0.0e+00 Ha  |S2 - S2_stored|=0.0e+00  OK
+H2 x2.0 GVA 1L s2                             n_par=    1  |E - E_stored|=0.0e+00 Ha  |S2 - S2_stored|=0.0e+00  OK
+H2 x2.0 GVA 1L s3                             n_par=    1  |E - E_stored|=0.0e+00 Ha  |S2 - S2_stored|=0.0e+00  OK
+H2 x2.0 GVA 1L s4                             n_par=    1  |E - E_stored|=0.0e+00 Ha  |S2 - S2_stored|=0.0e+00  OK
+H2 x2.0 GVA 2L s0                             n_par=    2  |E - E_stored|=0.0e+00 Ha  |S2 - S2_stored|=0.0e+00  OK
+H2 x2.0 GVA 2L s1                             n_par=    2  |E - E_stored|=0.0e+00 Ha  |S2 - S2_stored|=0.0e+00  OK
+H2 x2.0 GVA 2L s2                             n_par=    2  |E - E_stored|=0.0e+00 Ha  |S2 - S2_stored|=0.0e+00  OK
+H2 x2.0 GVA 2L s3                             n_par=    2  |E - E_stored|=0.0e+00 Ha  |S2 - S2_stored|=0.0e+00  OK
+H2 x2.0 GVA 2L s4                             n_par=    2  |E - E_stored|=0.0e+00 Ha  |S2 - S2_stored|=0.0e+00  OK
+H2 x2.0 PG only 1L s0                         n_par=    1  |E - E_stored|=0.0e+00 Ha  |S2 - S2_stored|=0.0e+00  OK
+H2 x2.0 spin only 1L s0                       n_par=    2  |E - E_stored|=0.0e+00 Ha  |S2 - S2_stored|=0.0e+00  OK
+H2 x2.0 ADAPT-VQE NoneL s0                    n_par=    1  |E - E_stored|=0.0e+00 Ha  |S2 - S2_stored|=0.0e+00  OK
+H4 x1.0 UCCSD 1L s0                           n_par=   26  |E - E_stored|=0.0e+00 Ha  |S2 - S2_stored|=0.0e+00  OK
+H4 x1.0 UCCSD 1L s1                           n_par=   26  |E - E_stored|=0.0e+00 Ha  |S2 - S2_stored|=0.0e+00  OK
+H4 x1.0 UCCSD 1L s2                           n_par=   26  |E - E_stored|=0.0e+00 Ha  |S2 - S2_stored|=0.0e+00  OK
+H4 x1.0 UCCSD 1L s3                           n_par=   26  |E - E_stored|=0.0e+00 Ha  |S2 - S2_stored|=0.0e+00  OK
+H4 x1.0 UCCSD 1L s4                           n_par=   26  |E - E_stored|=0.0e+00 Ha  |S2 - S2_stored|=0.0e+00  OK
+H4 x1.0 UCCSD 2L s0                           n_par=   52  |E - E_stored|=0.0e+00 Ha  |S2 - S2_stored|=0.0e+00  OK
+H4 x1.0 UCCSD 2L s1                           n_par=   52  |E - E_stored|=0.0e+00 Ha  |S2 - S2_stored|=0.0e+00  OK
+H4 x1.0 UCCSD 2L s2                           n_par=   52  |E - E_stored|=0.0e+00 Ha  |S2 - S2_stored|=0.0e+00  OK
+H4 x1.0 UCCSD 2L s3                           n_par=   52  |E - E_stored|=0.0e+00 Ha  |S2 - S2_stored|=0.0e+00  OK
+H4 x1.0 UCCSD 2L s4                           n_par=   52  |E - E_stored|=0.0e+00 Ha  |S2 - S2_stored|=0.0e+00  OK
+H4 x1.0 GVA 1L s0                             n_par=    9  |E - E_stored|=0.0e+00 Ha  |S2 - S2_stored|=0.0e+00  OK
+H4 x1.0 GVA 1L s1                             n_par=    9  |E - E_stored|=0.0e+00 Ha  |S2 - S2_stored|=0.0e+00  OK
+H4 x1.0 GVA 1L s2                             n_par=    9  |E - E_stored|=0.0e+00 Ha  |S2 - S2_stored|=0.0e+00  OK
+H4 x1.0 GVA 1L s3                             n_par=    9  |E - E_stored|=0.0e+00 Ha  |S2 - S2_stored|=0.0e+00  OK
+H4 x1.0 GVA 1L s4                             n_par=    9  |E - E_stored|=0.0e+00 Ha  |S2 - S2_stored|=0.0e+00  OK
+H4 x1.0 GVA 2L s0                             n_par=   18  |E - E_stored|=0.0e+00 Ha  |S2 - S2_stored|=0.0e+00  OK
+H4 x1.0 GVA 2L s1                             n_par=   18  |E - E_stored|=0.0e+00 Ha  |S2 - S2_stored|=0.0e+00  OK
+H4 x1.0 GVA 2L s2                             n_par=   18  |E - E_stored|=0.0e+00 Ha  |S2 - S2_stored|=0.0e+00  OK
+H4 x1.0 GVA 2L s3                             n_par=   18  |E - E_stored|=0.0e+00 Ha  |S2 - S2_stored|=0.0e+00  OK
+H4 x1.0 GVA 2L s4                             n_par=   18  |E - E_stored|=0.0e+00 Ha  |S2 - S2_stored|=0.0e+00  OK
+H4 x1.0 PG only 1L s0                         n_par=   14  |E - E_stored|=0.0e+00 Ha  |S2 - S2_stored|=0.0e+00  OK
+H4 x1.0 spin only 1L s0                       n_par=   15  |E - E_stored|=0.0e+00 Ha  |S2 - S2_stored|=0.0e+00  OK
+H4 x1.0 ADAPT-VQE NoneL s0                    n_par=    9  |E - E_stored|=0.0e+00 Ha  |S2 - S2_stored|=0.0e+00  OK
+H4 x1.5 UCCSD 1L s0                           n_par=   26  |E - E_stored|=0.0e+00 Ha  |S2 - S2_stored|=0.0e+00  OK
+H4 x1.5 UCCSD 1L s1                           n_par=   26  |E - E_stored|=0.0e+00 Ha  |S2 - S2_stored|=0.0e+00  OK
+H4 x1.5 UCCSD 1L s2                           n_par=   26  |E - E_stored|=0.0e+00 Ha  |S2 - S2_stored|=0.0e+00  OK
+H4 x1.5 UCCSD 1L s3                           n_par=   26  |E - E_stored|=0.0e+00 Ha  |S2 - S2_stored|=0.0e+00  OK
+H4 x1.5 UCCSD 1L s4                           n_par=   26  |E - E_stored|=0.0e+00 Ha  |S2 - S2_stored|=0.0e+00  OK
+H4 x1.5 UCCSD 2L s0                           n_par=   52  |E - E_stored|=0.0e+00 Ha  |S2 - S2_stored|=0.0e+00  OK
+H4 x1.5 UCCSD 2L s1                           n_par=   52  |E - E_stored|=0.0e+00 Ha  |S2 - S2_stored|=0.0e+00  OK
+H4 x1.5 UCCSD 2L s2                           n_par=   52  |E - E_stored|=0.0e+00 Ha  |S2 - S2_stored|=0.0e+00  OK
+H4 x1.5 UCCSD 2L s3                           n_par=   52  |E - E_stored|=0.0e+00 Ha  |S2 - S2_stored|=0.0e+00  OK
+H4 x1.5 UCCSD 2L s4                           n_par=   52  |E - E_stored|=0.0e+00 Ha  |S2 - S2_stored|=0.0e+00  OK
+H4 x1.5 GVA 1L s0                             n_par=    9  |E - E_stored|=0.0e+00 Ha  |S2 - S2_stored|=0.0e+00  OK
+H4 x1.5 GVA 1L s1                             n_par=    9  |E - E_stored|=0.0e+00 Ha  |S2 - S2_stored|=0.0e+00  OK
+H4 x1.5 GVA 1L s2                             n_par=    9  |E - E_stored|=0.0e+00 Ha  |S2 - S2_stored|=0.0e+00  OK
+H4 x1.5 GVA 1L s3                             n_par=    9  |E - E_stored|=0.0e+00 Ha  |S2 - S2_stored|=0.0e+00  OK
+H4 x1.5 GVA 1L s4                             n_par=    9  |E - E_stored|=0.0e+00 Ha  |S2 - S2_stored|=0.0e+00  OK
+H4 x1.5 GVA 2L s0                             n_par=   18  |E - E_stored|=0.0e+00 Ha  |S2 - S2_stored|=0.0e+00  OK
+H4 x1.5 GVA 2L s1                             n_par=   18  |E - E_stored|=0.0e+00 Ha  |S2 - S2_stored|=0.0e+00  OK
+H4 x1.5 GVA 2L s2                             n_par=   18  |E - E_stored|=0.0e+00 Ha  |S2 - S2_stored|=0.0e+00  OK
+H4 x1.5 GVA 2L s3                             n_par=   18  |E - E_stored|=0.0e+00 Ha  |S2 - S2_stored|=0.0e+00  OK
+H4 x1.5 GVA 2L s4                             n_par=   18  |E - E_stored|=0.0e+00 Ha  |S2 - S2_stored|=0.0e+00  OK
+H4 x1.5 PG only 1L s0                         n_par=   14  |E - E_stored|=0.0e+00 Ha  |S2 - S2_stored|=0.0e+00  OK
+H4 x1.5 spin only 1L s0                       n_par=   15  |E - E_stored|=0.0e+00 Ha  |S2 - S2_stored|=0.0e+00  OK
+H4 x1.5 ADAPT-VQE NoneL s0                    n_par=   12  |E - E_stored|=0.0e+00 Ha  |S2 - S2_stored|=0.0e+00  OK
+H4 x2.0 UCCSD 1L s0                           n_par=   26  |E - E_stored|=0.0e+00 Ha  |S2 - S2_stored|=0.0e+00  OK
+H4 x2.0 UCCSD 1L s1                           n_par=   26  |E - E_stored|=0.0e+00 Ha  |S2 - S2_stored|=0.0e+00  OK
+H4 x2.0 UCCSD 1L s2                           n_par=   26  |E - E_stored|=0.0e+00 Ha  |S2 - S2_stored|=0.0e+00  OK
+H4 x2.0 UCCSD 1L s3                           n_par=   26  |E - E_stored|=0.0e+00 Ha  |S2 - S2_stored|=0.0e+00  OK
+H4 x2.0 UCCSD 1L s4                           n_par=   26  |E - E_stored|=0.0e+00 Ha  |S2 - S2_stored|=0.0e+00  OK
+H4 x2.0 UCCSD 2L s0                           n_par=   52  |E - E_stored|=0.0e+00 Ha  |S2 - S2_stored|=0.0e+00  OK
+H4 x2.0 UCCSD 2L s1                           n_par=   52  |E - E_stored|=0.0e+00 Ha  |S2 - S2_stored|=0.0e+00  OK
+H4 x2.0 UCCSD 2L s2                           n_par=   52  |E - E_stored|=0.0e+00 Ha  |S2 - S2_stored|=0.0e+00  OK
+H4 x2.0 UCCSD 2L s3                           n_par=   52  |E - E_stored|=0.0e+00 Ha  |S2 - S2_stored|=0.0e+00  OK
+H4 x2.0 UCCSD 2L s4                           n_par=   52  |E - E_stored|=0.0e+00 Ha  |S2 - S2_stored|=0.0e+00  OK
+H4 x2.0 GVA 1L s0                             n_par=    9  |E - E_stored|=0.0e+00 Ha  |S2 - S2_stored|=0.0e+00  OK
+H4 x2.0 GVA 1L s1                             n_par=    9  |E - E_stored|=0.0e+00 Ha  |S2 - S2_stored|=0.0e+00  OK
+H4 x2.0 GVA 1L s2                             n_par=    9  |E - E_stored|=0.0e+00 Ha  |S2 - S2_stored|=0.0e+00  OK
+H4 x2.0 GVA 1L s3                             n_par=    9  |E - E_stored|=0.0e+00 Ha  |S2 - S2_stored|=0.0e+00  OK
+H4 x2.0 GVA 1L s4                             n_par=    9  |E - E_stored|=0.0e+00 Ha  |S2 - S2_stored|=0.0e+00  OK
+H4 x2.0 GVA 2L s0                             n_par=   18  |E - E_stored|=0.0e+00 Ha  |S2 - S2_stored|=0.0e+00  OK
+H4 x2.0 GVA 2L s1                             n_par=   18  |E - E_stored|=0.0e+00 Ha  |S2 - S2_stored|=0.0e+00  OK
+H4 x2.0 GVA 2L s2                             n_par=   18  |E - E_stored|=0.0e+00 Ha  |S2 - S2_stored|=0.0e+00  OK
+H4 x2.0 GVA 2L s3                             n_par=   18  |E - E_stored|=0.0e+00 Ha  |S2 - S2_stored|=0.0e+00  OK
+H4 x2.0 GVA 2L s4                             n_par=   18  |E - E_stored|=0.0e+00 Ha  |S2 - S2_stored|=0.0e+00  OK
+H4 x2.0 PG only 1L s0                         n_par=   14  |E - E_stored|=0.0e+00 Ha  |S2 - S2_stored|=0.0e+00  OK
+H4 x2.0 spin only 1L s0                       n_par=   15  |E - E_stored|=0.0e+00 Ha  |S2 - S2_stored|=0.0e+00  OK
+H4 x2.0 ADAPT-VQE NoneL s0                    n_par=   10  |E - E_stored|=0.0e+00 Ha  |S2 - S2_stored|=0.0e+00  OK
+LiH x1.0 UCCSD 1L s0                          n_par=   92  |E - E_stored|=0.0e+00 Ha  |S2 - S2_stored|=0.0e+00  OK
+LiH x1.0 UCCSD 1L s1                          n_par=   92  |E - E_stored|=0.0e+00 Ha  |S2 - S2_stored|=0.0e+00  OK
+LiH x1.0 UCCSD 1L s2                          n_par=   92  |E - E_stored|=0.0e+00 Ha  |S2 - S2_stored|=0.0e+00  OK
+LiH x1.0 UCCSD 1L s3                          n_par=   92  |E - E_stored|=0.0e+00 Ha  |S2 - S2_stored|=0.0e+00  OK
+LiH x1.0 UCCSD 1L s4                          n_par=   92  |E - E_stored|=0.0e+00 Ha  |S2 - S2_stored|=0.0e+00  OK
+LiH x1.0 UCCSD 2L s0                          n_par=  184  |E - E_stored|=0.0e+00 Ha  |S2 - S2_stored|=0.0e+00  OK
+LiH x1.0 UCCSD 2L s1                          n_par=  184  |E - E_stored|=0.0e+00 Ha  |S2 - S2_stored|=0.0e+00  OK
+LiH x1.0 UCCSD 2L s2                          n_par=  184  |E - E_stored|=0.0e+00 Ha  |S2 - S2_stored|=0.0e+00  OK
+LiH x1.0 UCCSD 2L s3                          n_par=  184  |E - E_stored|=0.0e+00 Ha  |S2 - S2_stored|=0.0e+00  OK
+LiH x1.0 UCCSD 2L s4                          n_par=  184  |E - E_stored|=0.0e+00 Ha  |S2 - S2_stored|=0.0e+00  OK
+LiH x1.0 GVA 1L s0                            n_par=   21  |E - E_stored|=0.0e+00 Ha  |S2 - S2_stored|=0.0e+00  OK
+LiH x1.0 GVA 1L s1                            n_par=   21  |E - E_stored|=0.0e+00 Ha  |S2 - S2_stored|=0.0e+00  OK
+LiH x1.0 GVA 1L s2                            n_par=   21  |E - E_stored|=0.0e+00 Ha  |S2 - S2_stored|=0.0e+00  OK
+LiH x1.0 GVA 1L s3                            n_par=   21  |E - E_stored|=0.0e+00 Ha  |S2 - S2_stored|=0.0e+00  OK
+LiH x1.0 GVA 1L s4                            n_par=   21  |E - E_stored|=0.0e+00 Ha  |S2 - S2_stored|=0.0e+00  OK
+LiH x1.0 GVA 2L s0                            n_par=   42  |E - E_stored|=0.0e+00 Ha  |S2 - S2_stored|=0.0e+00  OK
+LiH x1.0 GVA 2L s1                            n_par=   42  |E - E_stored|=0.0e+00 Ha  |S2 - S2_stored|=0.0e+00  OK
+LiH x1.0 GVA 2L s2                            n_par=   42  |E - E_stored|=0.0e+00 Ha  |S2 - S2_stored|=0.0e+00  OK
+LiH x1.0 GVA 2L s3                            n_par=   42  |E - E_stored|=0.0e+00 Ha  |S2 - S2_stored|=0.0e+00  OK
+LiH x1.0 GVA 2L s4                            n_par=   42  |E - E_stored|=0.0e+00 Ha  |S2 - S2_stored|=0.0e+00  OK
+LiH x1.0 PG only 1L s0                        n_par=   34  |E - E_stored|=0.0e+00 Ha  |S2 - S2_stored|=0.0e+00  OK
+LiH x1.0 spin only 1L s0                      n_par=   50  |E - E_stored|=0.0e+00 Ha  |S2 - S2_stored|=0.0e+00  OK
+LiH x1.0 ADAPT-VQE NoneL s0                   n_par=   21  |E - E_stored|=0.0e+00 Ha  |S2 - S2_stored|=0.0e+00  OK
+LiH x1.5 UCCSD 1L s0                          n_par=   92  |E - E_stored|=0.0e+00 Ha  |S2 - S2_stored|=0.0e+00  OK
+LiH x1.5 UCCSD 1L s1                          n_par=   92  |E - E_stored|=0.0e+00 Ha  |S2 - S2_stored|=0.0e+00  OK
+LiH x1.5 UCCSD 1L s2                          n_par=   92  |E - E_stored|=0.0e+00 Ha  |S2 - S2_stored|=0.0e+00  OK
+LiH x1.5 UCCSD 1L s3                          n_par=   92  |E - E_stored|=0.0e+00 Ha  |S2 - S2_stored|=0.0e+00  OK
+LiH x1.5 UCCSD 1L s4                          n_par=   92  |E - E_stored|=0.0e+00 Ha  |S2 - S2_stored|=0.0e+00  OK
+LiH x1.5 UCCSD 2L s0                          n_par=  184  |E - E_stored|=0.0e+00 Ha  |S2 - S2_stored|=0.0e+00  OK
+LiH x1.5 UCCSD 2L s1                          n_par=  184  |E - E_stored|=0.0e+00 Ha  |S2 - S2_stored|=0.0e+00  OK
+LiH x1.5 UCCSD 2L s2                          n_par=  184  |E - E_stored|=0.0e+00 Ha  |S2 - S2_stored|=0.0e+00  OK
+LiH x1.5 UCCSD 2L s3                          n_par=  184  |E - E_stored|=0.0e+00 Ha  |S2 - S2_stored|=0.0e+00  OK
+LiH x1.5 UCCSD 2L s4                          n_par=  184  |E - E_stored|=0.0e+00 Ha  |S2 - S2_stored|=0.0e+00  OK
+LiH x1.5 GVA 1L s0                            n_par=   21  |E - E_stored|=0.0e+00 Ha  |S2 - S2_stored|=0.0e+00  OK
+LiH x1.5 GVA 1L s1                            n_par=   21  |E - E_stored|=0.0e+00 Ha  |S2 - S2_stored|=0.0e+00  OK
+LiH x1.5 GVA 1L s2                            n_par=   21  |E - E_stored|=0.0e+00 Ha  |S2 - S2_stored|=0.0e+00  OK
+LiH x1.5 GVA 1L s3                            n_par=   21  |E - E_stored|=0.0e+00 Ha  |S2 - S2_stored|=0.0e+00  OK
+LiH x1.5 GVA 1L s4                            n_par=   21  |E - E_stored|=0.0e+00 Ha  |S2 - S2_stored|=0.0e+00  OK
+LiH x1.5 GVA 2L s0                            n_par=   42  |E - E_stored|=0.0e+00 Ha  |S2 - S2_stored|=0.0e+00  OK
+LiH x1.5 GVA 2L s1                            n_par=   42  |E - E_stored|=0.0e+00 Ha  |S2 - S2_stored|=0.0e+00  OK
+LiH x1.5 GVA 2L s2                            n_par=   42  |E - E_stored|=0.0e+00 Ha  |S2 - S2_stored|=0.0e+00  OK
+LiH x1.5 GVA 2L s3                            n_par=   42  |E - E_stored|=0.0e+00 Ha  |S2 - S2_stored|=0.0e+00  OK
+LiH x1.5 GVA 2L s4                            n_par=   42  |E - E_stored|=0.0e+00 Ha  |S2 - S2_stored|=0.0e+00  OK
+LiH x1.5 PG only 1L s0                        n_par=   34  |E - E_stored|=0.0e+00 Ha  |S2 - S2_stored|=0.0e+00  OK
+LiH x1.5 spin only 1L s0                      n_par=   50  |E - E_stored|=0.0e+00 Ha  |S2 - S2_stored|=0.0e+00  OK
+LiH x1.5 ADAPT-VQE NoneL s0                   n_par=   19  |E - E_stored|=0.0e+00 Ha  |S2 - S2_stored|=0.0e+00  OK
+LiH x2.0 UCCSD 1L s0                          n_par=   92  |E - E_stored|=0.0e+00 Ha  |S2 - S2_stored|=0.0e+00  OK
+LiH x2.0 UCCSD 1L s1                          n_par=   92  |E - E_stored|=0.0e+00 Ha  |S2 - S2_stored|=0.0e+00  OK
+LiH x2.0 UCCSD 1L s2                          n_par=   92  |E - E_stored|=0.0e+00 Ha  |S2 - S2_stored|=0.0e+00  OK
+LiH x2.0 UCCSD 1L s3                          n_par=   92  |E - E_stored|=0.0e+00 Ha  |S2 - S2_stored|=0.0e+00  OK
+LiH x2.0 UCCSD 1L s4                          n_par=   92  |E - E_stored|=0.0e+00 Ha  |S2 - S2_stored|=0.0e+00  OK
+LiH x2.0 UCCSD 2L s0                          n_par=  184  |E - E_stored|=0.0e+00 Ha  |S2 - S2_stored|=0.0e+00  OK
+LiH x2.0 UCCSD 2L s1                          n_par=  184  |E - E_stored|=0.0e+00 Ha  |S2 - S2_stored|=0.0e+00  OK
+LiH x2.0 UCCSD 2L s2                          n_par=  184  |E - E_stored|=0.0e+00 Ha  |S2 - S2_stored|=0.0e+00  OK
+LiH x2.0 UCCSD 2L s3                          n_par=  184  |E - E_stored|=0.0e+00 Ha  |S2 - S2_stored|=0.0e+00  OK
+LiH x2.0 UCCSD 2L s4                          n_par=  184  |E - E_stored|=0.0e+00 Ha  |S2 - S2_stored|=0.0e+00  OK
+LiH x2.0 GVA 1L s0                            n_par=   21  |E - E_stored|=0.0e+00 Ha  |S2 - S2_stored|=0.0e+00  OK
+LiH x2.0 GVA 1L s1                            n_par=   21  |E - E_stored|=0.0e+00 Ha  |S2 - S2_stored|=0.0e+00  OK
+LiH x2.0 GVA 1L s2                            n_par=   21  |E - E_stored|=0.0e+00 Ha  |S2 - S2_stored|=0.0e+00  OK
+LiH x2.0 GVA 1L s3                            n_par=   21  |E - E_stored|=0.0e+00 Ha  |S2 - S2_stored|=0.0e+00  OK
+LiH x2.0 GVA 1L s4                            n_par=   21  |E - E_stored|=0.0e+00 Ha  |S2 - S2_stored|=0.0e+00  OK
+LiH x2.0 GVA 2L s0                            n_par=   42  |E - E_stored|=0.0e+00 Ha  |S2 - S2_stored|=0.0e+00  OK
+LiH x2.0 GVA 2L s1                            n_par=   42  |E - E_stored|=0.0e+00 Ha  |S2 - S2_stored|=0.0e+00  OK
+LiH x2.0 GVA 2L s2                            n_par=   42  |E - E_stored|=0.0e+00 Ha  |S2 - S2_stored|=0.0e+00  OK
+LiH x2.0 GVA 2L s3                            n_par=   42  |E - E_stored|=0.0e+00 Ha  |S2 - S2_stored|=0.0e+00  OK
+LiH x2.0 GVA 2L s4                            n_par=   42  |E - E_stored|=0.0e+00 Ha  |S2 - S2_stored|=0.0e+00  OK
+LiH x2.0 PG only 1L s0                        n_par=   34  |E - E_stored|=0.0e+00 Ha  |S2 - S2_stored|=0.0e+00  OK
+LiH x2.0 spin only 1L s0                      n_par=   50  |E - E_stored|=0.0e+00 Ha  |S2 - S2_stored|=0.0e+00  OK
+LiH x2.0 ADAPT-VQE NoneL s0                   n_par=   20  |E - E_stored|=0.0e+00 Ha  |S2 - S2_stored|=0.0e+00  OK
+BeH2 x1.0 UCCSD 1L s0                         n_par=  204  |E - E_stored|=0.0e+00 Ha  |S2 - S2_stored|=0.0e+00  OK
+BeH2 x1.0 UCCSD 1L s1                         n_par=  204  |E - E_stored|=0.0e+00 Ha  |S2 - S2_stored|=0.0e+00  OK
+BeH2 x1.0 UCCSD 1L s2                         n_par=  204  |E - E_stored|=0.0e+00 Ha  |S2 - S2_stored|=0.0e+00  OK
+BeH2 x1.0 UCCSD 1L s3                         n_par=  204  |E - E_stored|=0.0e+00 Ha  |S2 - S2_stored|=0.0e+00  OK
+BeH2 x1.0 UCCSD 1L s4                         n_par=  204  |E - E_stored|=0.0e+00 Ha  |S2 - S2_stored|=0.0e+00  OK
+BeH2 x1.0 UCCSD 2L s0                         n_par=  408  |E - E_stored|=0.0e+00 Ha  |S2 - S2_stored|=0.0e+00  OK
+BeH2 x1.0 UCCSD 2L s1                         n_par=  408  |E - E_stored|=0.0e+00 Ha  |S2 - S2_stored|=0.0e+00  OK
+BeH2 x1.0 UCCSD 2L s2                         n_par=  408  |E - E_stored|=0.0e+00 Ha  |S2 - S2_stored|=0.0e+00  OK
+BeH2 x1.0 UCCSD 2L s3                         n_par=  408  |E - E_stored|=0.0e+00 Ha  |S2 - S2_stored|=0.0e+00  OK
+BeH2 x1.0 UCCSD 2L s4                         n_par=  408  |E - E_stored|=0.0e+00 Ha  |S2 - S2_stored|=0.0e+00  OK
+BeH2 x1.0 GVA 1L s0                           n_par=   25  |E - E_stored|=0.0e+00 Ha  |S2 - S2_stored|=0.0e+00  OK
+BeH2 x1.0 GVA 1L s1                           n_par=   25  |E - E_stored|=0.0e+00 Ha  |S2 - S2_stored|=0.0e+00  OK
+BeH2 x1.0 GVA 1L s2                           n_par=   25  |E - E_stored|=0.0e+00 Ha  |S2 - S2_stored|=0.0e+00  OK
+BeH2 x1.0 GVA 1L s3                           n_par=   25  |E - E_stored|=0.0e+00 Ha  |S2 - S2_stored|=0.0e+00  OK
+BeH2 x1.0 GVA 1L s4                           n_par=   25  |E - E_stored|=0.0e+00 Ha  |S2 - S2_stored|=0.0e+00  OK
+BeH2 x1.0 GVA 2L s0                           n_par=   50  |E - E_stored|=0.0e+00 Ha  |S2 - S2_stored|=0.0e+00  OK
+BeH2 x1.0 GVA 2L s1                           n_par=   50  |E - E_stored|=0.0e+00 Ha  |S2 - S2_stored|=0.0e+00  OK
+BeH2 x1.0 GVA 2L s2                           n_par=   50  |E - E_stored|=0.0e+00 Ha  |S2 - S2_stored|=0.0e+00  OK
+BeH2 x1.0 GVA 2L s3                           n_par=   50  |E - E_stored|=0.0e+00 Ha  |S2 - S2_stored|=0.0e+00  OK
+BeH2 x1.0 GVA 2L s4                           n_par=   50  |E - E_stored|=0.0e+00 Ha  |S2 - S2_stored|=0.0e+00  OK
+BeH2 x1.0 PG only 1L s0                       n_par=   38  |E - E_stored|=0.0e+00 Ha  |S2 - S2_stored|=0.0e+00  OK
+BeH2 x1.0 spin only 1L s0                     n_par=  108  |E - E_stored|=0.0e+00 Ha  |S2 - S2_stored|=0.0e+00  OK
+BeH2 x1.0 ADAPT-VQE NoneL s0                  n_par=   25  |E - E_stored|=0.0e+00 Ha  |S2 - S2_stored|=0.0e+00  OK
+BeH2 x1.5 UCCSD 1L s0                         n_par=  204  |E - E_stored|=0.0e+00 Ha  |S2 - S2_stored|=0.0e+00  OK
+BeH2 x1.5 UCCSD 1L s1                         n_par=  204  |E - E_stored|=0.0e+00 Ha  |S2 - S2_stored|=0.0e+00  OK
+BeH2 x1.5 UCCSD 1L s2                         n_par=  204  |E - E_stored|=0.0e+00 Ha  |S2 - S2_stored|=0.0e+00  OK
+BeH2 x1.5 UCCSD 1L s3                         n_par=  204  |E - E_stored|=0.0e+00 Ha  |S2 - S2_stored|=0.0e+00  OK
+BeH2 x1.5 UCCSD 1L s4                         n_par=  204  |E - E_stored|=0.0e+00 Ha  |S2 - S2_stored|=0.0e+00  OK
+BeH2 x1.5 UCCSD 2L s0                         n_par=  408  |E - E_stored|=0.0e+00 Ha  |S2 - S2_stored|=0.0e+00  OK
+BeH2 x1.5 UCCSD 2L s1                         n_par=  408  |E - E_stored|=0.0e+00 Ha  |S2 - S2_stored|=0.0e+00  OK
+BeH2 x1.5 UCCSD 2L s2                         n_par=  408  |E - E_stored|=0.0e+00 Ha  |S2 - S2_stored|=0.0e+00  OK
+BeH2 x1.5 UCCSD 2L s3                         n_par=  408  |E - E_stored|=0.0e+00 Ha  |S2 - S2_stored|=0.0e+00  OK
+BeH2 x1.5 UCCSD 2L s4                         n_par=  408  |E - E_stored|=0.0e+00 Ha  |S2 - S2_stored|=0.0e+00  OK
+BeH2 x1.5 GVA 1L s0                           n_par=   25  |E - E_stored|=0.0e+00 Ha  |S2 - S2_stored|=0.0e+00  OK
+BeH2 x1.5 GVA 1L s1                           n_par=   25  |E - E_stored|=0.0e+00 Ha  |S2 - S2_stored|=0.0e+00  OK
+BeH2 x1.5 GVA 1L s2                           n_par=   25  |E - E_stored|=0.0e+00 Ha  |S2 - S2_stored|=0.0e+00  OK
+BeH2 x1.5 GVA 1L s3                           n_par=   25  |E - E_stored|=0.0e+00 Ha  |S2 - S2_stored|=0.0e+00  OK
+BeH2 x1.5 GVA 1L s4                           n_par=   25  |E - E_stored|=0.0e+00 Ha  |S2 - S2_stored|=0.0e+00  OK
+BeH2 x1.5 GVA 2L s0                           n_par=   50  |E - E_stored|=0.0e+00 Ha  |S2 - S2_stored|=0.0e+00  OK
+BeH2 x1.5 GVA 2L s1                           n_par=   50  |E - E_stored|=0.0e+00 Ha  |S2 - S2_stored|=0.0e+00  OK
+BeH2 x1.5 GVA 2L s2                           n_par=   50  |E - E_stored|=0.0e+00 Ha  |S2 - S2_stored|=0.0e+00  OK
+BeH2 x1.5 GVA 2L s3                           n_par=   50  |E - E_stored|=0.0e+00 Ha  |S2 - S2_stored|=0.0e+00  OK
+BeH2 x1.5 GVA 2L s4                           n_par=   50  |E - E_stored|=0.0e+00 Ha  |S2 - S2_stored|=0.0e+00  OK
+BeH2 x1.5 PG only 1L s0                       n_par=   38  |E - E_stored|=0.0e+00 Ha  |S2 - S2_stored|=0.0e+00  OK
+BeH2 x1.5 spin only 1L s0                     n_par=  108  |E - E_stored|=0.0e+00 Ha  |S2 - S2_stored|=0.0e+00  OK
+BeH2 x1.5 ADAPT-VQE NoneL s0                  n_par=   38  |E - E_stored|=0.0e+00 Ha  |S2 - S2_stored|=0.0e+00  OK
+BeH2 x2.0 UCCSD 1L s0                         n_par=  204  |E - E_stored|=0.0e+00 Ha  |S2 - S2_stored|=0.0e+00  OK
+BeH2 x2.0 UCCSD 1L s1                         n_par=  204  |E - E_stored|=0.0e+00 Ha  |S2 - S2_stored|=0.0e+00  OK
+BeH2 x2.0 UCCSD 1L s2                         n_par=  204  |E - E_stored|=0.0e+00 Ha  |S2 - S2_stored|=0.0e+00  OK
+BeH2 x2.0 UCCSD 1L s3                         n_par=  204  |E - E_stored|=0.0e+00 Ha  |S2 - S2_stored|=0.0e+00  OK
+BeH2 x2.0 UCCSD 1L s4                         n_par=  204  |E - E_stored|=0.0e+00 Ha  |S2 - S2_stored|=0.0e+00  OK
+BeH2 x2.0 UCCSD 2L s0                         n_par=  408  |E - E_stored|=0.0e+00 Ha  |S2 - S2_stored|=0.0e+00  OK
+BeH2 x2.0 UCCSD 2L s1                         n_par=  408  |E - E_stored|=0.0e+00 Ha  |S2 - S2_stored|=0.0e+00  OK
+BeH2 x2.0 UCCSD 2L s2                         n_par=  408  |E - E_stored|=0.0e+00 Ha  |S2 - S2_stored|=0.0e+00  OK
+BeH2 x2.0 UCCSD 2L s3                         n_par=  408  |E - E_stored|=0.0e+00 Ha  |S2 - S2_stored|=0.0e+00  OK
+BeH2 x2.0 UCCSD 2L s4                         n_par=  408  |E - E_stored|=0.0e+00 Ha  |S2 - S2_stored|=0.0e+00  OK
+BeH2 x2.0 GVA 1L s0                           n_par=   25  |E - E_stored|=0.0e+00 Ha  |S2 - S2_stored|=0.0e+00  OK
+BeH2 x2.0 GVA 1L s1                           n_par=   25  |E - E_stored|=0.0e+00 Ha  |S2 - S2_stored|=0.0e+00  OK
+BeH2 x2.0 GVA 1L s2                           n_par=   25  |E - E_stored|=0.0e+00 Ha  |S2 - S2_stored|=0.0e+00  OK
+BeH2 x2.0 GVA 1L s3                           n_par=   25  |E - E_stored|=0.0e+00 Ha  |S2 - S2_stored|=0.0e+00  OK
+BeH2 x2.0 GVA 1L s4                           n_par=   25  |E - E_stored|=0.0e+00 Ha  |S2 - S2_stored|=0.0e+00  OK
+BeH2 x2.0 GVA 2L s0                           n_par=   50  |E - E_stored|=0.0e+00 Ha  |S2 - S2_stored|=0.0e+00  OK
+BeH2 x2.0 GVA 2L s1                           n_par=   50  |E - E_stored|=0.0e+00 Ha  |S2 - S2_stored|=0.0e+00  OK
+BeH2 x2.0 GVA 2L s2                           n_par=   50  |E - E_stored|=0.0e+00 Ha  |S2 - S2_stored|=0.0e+00  OK
+BeH2 x2.0 GVA 2L s3                           n_par=   50  |E - E_stored|=0.0e+00 Ha  |S2 - S2_stored|=0.0e+00  OK
+BeH2 x2.0 GVA 2L s4                           n_par=   50  |E - E_stored|=0.0e+00 Ha  |S2 - S2_stored|=0.0e+00  OK
+BeH2 x2.0 PG only 1L s0                       n_par=   38  |E - E_stored|=0.0e+00 Ha  |S2 - S2_stored|=0.0e+00  OK
+BeH2 x2.0 spin only 1L s0                     n_par=  108  |E - E_stored|=0.0e+00 Ha  |S2 - S2_stored|=0.0e+00  OK
+BeH2 x2.0 ADAPT-VQE NoneL s0                  n_par=   34  |E - E_stored|=0.0e+00 Ha  |S2 - S2_stored|=0.0e+00  OK
+cisplatin C2v GVA 1L s0                       n_par=  161  |E - E_stored|=0.0e+00 Ha  |S2 - S2_stored|=0.0e+00  OK
+cisplatin C2v GVA 1L s1                       n_par=  161  |E - E_stored|=0.0e+00 Ha  |S2 - S2_stored|=0.0e+00  OK
+cisplatin C2v GVA 1L s2                       n_par=  161  |E - E_stored|=0.0e+00 Ha  |S2 - S2_stored|=0.0e+00  OK
+cisplatin C2v GVA 2L s0                       n_par=  322  |E - E_stored|=0.0e+00 Ha  |S2 - S2_stored|=0.0e+00  OK
+cisplatin C2v GVA 2L s1                       n_par=  322  |E - E_stored|=0.0e+00 Ha  |S2 - S2_stored|=0.0e+00  OK
+cisplatin C2v GVA 2L s2                       n_par=  322  |E - E_stored|=0.0e+00 Ha  |S2 - S2_stored|=0.0e+00  OK
+cisplatin C2v GVA 3L s0                       n_par=  483  |E - E_stored|=0.0e+00 Ha  |S2 - S2_stored|=0.0e+00  OK
+cisplatin C2v UCCSD 1L s0                     n_par=  875  |E - E_stored|=0.0e+00 Ha  |S2 - S2_stored|=0.0e+00  OK
+cisplatin C2v UCCSD 1L s1                     n_par=  875  |E - E_stored|=0.0e+00 Ha  |S2 - S2_stored|=0.0e+00  OK
+cisplatin C2v UCCSD 1L s2                     n_par=  875  |E - E_stored|=0.0e+00 Ha  |S2 - S2_stored|=0.0e+00  OK
+cisplatin C2v UCCSD 2L s0                     n_par= 1750  |E - E_stored|=0.0e+00 Ha  |S2 - S2_stored|=0.0e+00  OK
+cisplatin C2v UCCSD 2L s1                     n_par= 1750  |E - E_stored|=0.0e+00 Ha  |S2 - S2_stored|=0.0e+00  OK
+cisplatin C2v UCCSD 3L s0                     n_par= 2625  |E - E_stored|=0.0e+00 Ha  |S2 - S2_stored|=0.0e+00  OK
+cisplatin C2v PG only 1L s0                   n_par=  297  |E - E_stored|=0.0e+00 Ha  |S2 - S2_stored|=0.0e+00  OK
+cisplatin C2v spin only 1L s0                 n_par=  450  |E - E_stored|=0.0e+00 Ha  |S2 - S2_stored|=0.0e+00  OK
+cisplatin C2v ADAPT-VQE NoneL s0              n_par=  120  |E - E_stored|=0.0e+00 Ha  |S2 - S2_stored|=0.0e+00  OK
+Pt-Cl R=2.32 GVA_1L                           n_par=  305  |E - E_stored|=0.0e+00 Ha  |S2 - S2_stored|=0.0e+00  OK
+Pt-Cl R=2.32 GVA_2L                           n_par=  610  |E - E_stored|=0.0e+00 Ha  |S2 - S2_stored|=0.0e+00  OK
+Pt-Cl R=2.32 UCCSD_1L                         n_par=  875  |E - E_stored|=0.0e+00 Ha  |S2 - S2_stored|=0.0e+00  OK
+Pt-Cl R=2.50 GVA_1L                           n_par=  305  |E - E_stored|=0.0e+00 Ha  |S2 - S2_stored|=0.0e+00  OK
+Pt-Cl R=2.50 GVA_2L                           n_par=  610  |E - E_stored|=0.0e+00 Ha  |S2 - S2_stored|=0.0e+00  OK
+Pt-Cl R=2.50 UCCSD_1L                         n_par=  875  |E - E_stored|=0.0e+00 Ha  |S2 - S2_stored|=0.0e+00  OK
+Pt-Cl R=2.70 GVA_1L                           n_par=  305  |E - E_stored|=0.0e+00 Ha  |S2 - S2_stored|=0.0e+00  OK
+Pt-Cl R=2.70 GVA_2L                           n_par=  610  |E - E_stored|=0.0e+00 Ha  |S2 - S2_stored|=0.0e+00  OK
+Pt-Cl R=2.70 UCCSD_1L                         n_par=  875  |E - E_stored|=0.0e+00 Ha  |S2 - S2_stored|=0.0e+00  OK
+Pt-Cl R=2.90 GVA_1L                           n_par=  305  |E - E_stored|=0.0e+00 Ha  |S2 - S2_stored|=0.0e+00  OK
+Pt-Cl R=2.90 GVA_2L                           n_par=  610  |E - E_stored|=0.0e+00 Ha  |S2 - S2_stored|=0.0e+00  OK
+Pt-Cl R=2.90 UCCSD_1L                         n_par=  875  |E - E_stored|=0.0e+00 Ha  |S2 - S2_stored|=0.0e+00  OK
+Pt-Cl R=3.20 GVA_1L                           n_par=  305  |E - E_stored|=0.0e+00 Ha  |S2 - S2_stored|=0.0e+00  OK
+Pt-Cl R=3.20 GVA_2L                           n_par=  610  |E - E_stored|=0.0e+00 Ha  |S2 - S2_stored|=0.0e+00  OK
+Pt-Cl R=3.20 UCCSD_1L                         n_par=  875  |E - E_stored|=0.0e+00 Ha  |S2 - S2_stored|=0.0e+00  OK
+Pt-Cl R=3.50 GVA_1L                           n_par=  305  |E - E_stored|=0.0e+00 Ha  |S2 - S2_stored|=0.0e+00  OK
+Pt-Cl R=3.50 GVA_2L                           n_par=  610  |E - E_stored|=0.0e+00 Ha  |S2 - S2_stored|=0.0e+00  OK
+Pt-Cl R=3.50 UCCSD_1L                         n_par=  875  |E - E_stored|=0.0e+00 Ha  |S2 - S2_stored|=0.0e+00  OK
+Pt-Cl R=3.80 GVA_1L                           n_par=  305  |E - E_stored|=0.0e+00 Ha  |S2 - S2_stored|=0.0e+00  OK
+Pt-Cl R=3.80 GVA_2L                           n_par=  610  |E - E_stored|=0.0e+00 Ha  |S2 - S2_stored|=0.0e+00  OK
+Pt-Cl R=3.80 UCCSD_1L                         n_par=  875  |E - E_stored|=0.0e+00 Ha  |S2 - S2_stored|=0.0e+00  OK
+Pt-Cl R=2.20 GVA_1L                           n_par=  305  |E - E_stored|=0.0e+00 Ha  |S2 - S2_stored|=0.0e+00  OK
+Pt-Cl R=2.20 GVA_2L                           n_par=  610  |E - E_stored|=0.0e+00 Ha  |S2 - S2_stored|=0.0e+00  OK
+Pt-Cl R=2.20 UCCSD_1L                         n_par=  875  |E - E_stored|=0.0e+00 Ha  |S2 - S2_stored|=0.0e+00  OK
+Pt-Cl R=2.00 GVA_1L                           n_par=  305  |E - E_stored|=0.0e+00 Ha  |S2 - S2_stored|=0.0e+00  OK
+Pt-Cl R=2.00 GVA_2L                           n_par=  610  |E - E_stored|=0.0e+00 Ha  |S2 - S2_stored|=0.0e+00  OK
+Pt-Cl R=2.00 UCCSD_1L                         n_par=  875  |E - E_stored|=0.0e+00 Ha  |S2 - S2_stored|=0.0e+00  OK

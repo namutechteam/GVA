@@ -1,0 +1,13 @@
+H2 1.0: done (0s)
+H2 1.5: done (1s)
+H2 2.0: done (1s)
+H4 1.0: done (8s)
+H4 1.5: done (13s)
+H4 2.0: done (20s)
+LiH 1.0: done (131s)
+LiH 1.5: done (285s)
+LiH 2.0: done (481s)
+BeH2 1.0: done (1321s)
+BeH2 1.5: done (2171s)
+BeH2 2.0: done (3044s)
+total 3044.1062359809875

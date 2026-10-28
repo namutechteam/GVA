@@ -1,0 +1,3 @@
+E_CASCI (determinant space) = -1149.568264512947 Ha
+OpenFermion default (pruning 1e-8): 5071 Pauli terms, |E_JW - E_CASCI| = 2.50e-12 Ha
+pruning disabled: 23771 Pauli terms, |E_JW - E_CASCI| = 2.50e-12 Ha

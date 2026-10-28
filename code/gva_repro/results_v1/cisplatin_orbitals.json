@@ -1,0 +1,54 @@
+{
+ "orbitals": [
+  {
+   "irrep": "A1",
+   "occupation": 1.9629565266112585,
+   "composition": "N p 0.57, Pt d 0.15, Cl p 0.12, Pt s 0.07"
+  },
+  {
+   "irrep": "A1",
+   "occupation": 1.9607872125182217,
+   "composition": "Pt d 0.76, Pt s 0.17, N p 0.05, Cl p 0.02"
+  },
+  {
+   "irrep": "B1",
+   "occupation": 1.959032789733341,
+   "composition": "N p 0.68, Cl p 0.16, N s 0.05, H s 0.04"
+  },
+  {
+   "irrep": "A1",
+   "occupation": 1.9573070725391701,
+   "composition": "Cl p 0.71, N p 0.16, Pt p 0.04, Pt s 0.04"
+  },
+  {
+   "irrep": "B1",
+   "occupation": 1.9461924883989157,
+   "composition": "Cl p 0.60, Pt d 0.31, N p 0.06, H s 0.01"
+  },
+  {
+   "irrep": "B1",
+   "occupation": 0.0561397161512752,
+   "composition": "Pt d 0.63, Cl p 0.19, N p 0.13, Cl d 0.02"
+  },
+  {
+   "irrep": "A1",
+   "occupation": 0.033505591139296104,
+   "composition": "Pt s 0.41, N p 0.20, Pt d 0.16, Cl p 0.13"
+  },
+  {
+   "irrep": "A1",
+   "occupation": 0.023141394448516307,
+   "composition": "N p 0.43, H s 0.38, Pt d 0.11, Cl d 0.05"
+  },
+  {
+   "irrep": "B2",
+   "occupation": 0.02213581595263343,
+   "composition": "Pt p 0.35, N p 0.27, Cl d 0.12, H s 0.11"
+  },
+  {
+   "irrep": "A1",
+   "occupation": 0.020333697708929795,
+   "composition": "Pt d 0.38, Cl d 0.30, N p 0.09, Pt p 0.07"
+  }
+ ]
+}

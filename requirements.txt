@@ -1,0 +1,6 @@
+-r requirements-figures.txt
+scipy
+pyscf==2.14.0
+openfermion==1.8.1
+networkx
+python-docx
