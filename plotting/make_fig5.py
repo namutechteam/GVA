@@ -3,7 +3,8 @@
 Content identical to the original figure; only the design differs.
 a: dimerized chain (r = 0.74, d = 1.50 A) vs N_k; b: uniform chains at three spacings, N_k = 5 (solid) and 3 (faint);
 c: best error vs CNOT gates for the four N_k = 5 chains. Single-layer and ADAPT-VQE: HF start; two layers:
-median and min..max over starts (a, b) or best start (c). CCSD/CCSD(T) as absolute values.
+median and min..max over starts (a, b) or best start (c). CCSD/CCSD(T) as absolute values;
+CCSD(T) is not drawn where CCSD did not converge (uniform 2.0 A, N_k = 5; n.c. in Table 3).
 Data: sheet Fig5_SuppFig7_Data; c0^2 from TableS11_PeriodicSystems.
 Usage: python make_fig5.py <GVA_Source_Data.xlsx> <out_dir>
 """
@@ -31,6 +32,7 @@ def sheet(name):
 
 data = sheet('Fig5_SuppFig7_Data')
 c0sq = {r['System']: r['c0^2'] for r in sheet('TableS11_PeriodicSystems')}
+ccsd_ok = {r['System']: r['CCSD converged'] for r in sheet('TableS11_PeriodicSystems')}
 
 
 def tag(r, d, nk):
@@ -90,9 +92,9 @@ for (an, L, col, mk, filled, _), dx in zip(spec, offs):
         for i, R in enumerate(Rs):
             point(axb, i + dx + (0.0 if solid else 0.04), *err(tag(R, R, nk), an, L), col, mk,
                   filled and solid, alpha=1.0 if solid else 0.45)
-for key, shade in REF:
-    axb.plot(range(len(Rs)), [err(tag(R, R, 5), key, None)[1] for R in Rs], ls=REF_LS[key], color=shade, lw=0.9,
-             zorder=2)
+for key, shade in REF:   # CCSD(T) omitted where CCSD did not converge (n.c. in Table 3)
+    axb.plot(range(len(Rs)), [err(tag(R, R, 5), key, None)[1] if key == 'CCSD' or ccsd_ok[tag(R, R, 5)] else np.nan
+                              for R in Rs], ls=REF_LS[key], color=shade, lw=0.9, zorder=2)
 axb.axhline(CHEM, color='#777777', ls=(0, (1.2, 1.6)), lw=0.7)
 axb.set_yscale('log')
 axb.set_xticks(range(len(Rs)))

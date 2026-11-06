@@ -57,3 +57,10 @@ patterns; this was a targeted check, not an exhaustive security audit.
 The working manuscript now cites source-data commit
 f65a20ed047628c767385dab5690079d86c2977a, MIT code and CC BY 4.0 original data.
 No DOI or tagged release is claimed.
+
+## Fig. 5 revision
+
+On 2026-11-06 the CCSD(T) point for the uniform 2.0 Å chain with Nk = 5 was
+removed from Fig. 5b. CCSD did not converge for this system, and the manuscript
+tables now report the (T) value as n.c. Only `plotting/make_fig5.py` and the
+Fig. 5 exports changed; the source workbook still contains the computed value.
